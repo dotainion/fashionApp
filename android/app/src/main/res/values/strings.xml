@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">fashionApp</string>
+    <string name="title_activity_main">fashionApp</string>
+    <string name="package_name">com.fashionApp.cam</string>
+    <string name="custom_url_scheme">com.fashionApp.cam</string>
+</resources>

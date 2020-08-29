@@ -1,0 +1,18 @@
+.itemStyle:hover{
+    cursor: pointer;
+    color:aqua;
+}
+
+.backOnClick:active{
+  background-color: lightgray;
+}
+
+.backButtonStyle{
+  font-size:30px;
+  text-align:center;
+  padding-top:5px;
+  border-radius:25px;
+  width:40px;
+  height:40px;
+}
+

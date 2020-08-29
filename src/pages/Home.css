@@ -1,0 +1,50 @@
+.cardItemOnHover:hover{
+    background-color: lightgrey;
+    color:navy;
+}
+
+.addToCartHover:hover{
+    background-color: SteelBlue;
+}
+
+.loginBottomNavHover:hover{
+    cursor: pointer;
+    color:navy;
+    background-color: gray;
+}
+
+.underLine:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.registerItemStyle{
+    border:1px solid lightgray;
+    margin-bottom:15px;
+    color:blue;
+}
+
+.loginItemStyle{
+    border:1px solid lightgray;
+    color:blue;
+}
+
+.searchDeleteHover:hover{
+    color:red;
+}
+.searchGoHover:hover{
+    color:green;
+}
+
+.searchIconFg{
+    color:blue;
+}
+
+.recoverResendCode:hover{
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+.textHover:hover{
+    color:gray;
+}

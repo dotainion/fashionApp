@@ -1,0 +1,7 @@
+{
+  "name": "fashionApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
