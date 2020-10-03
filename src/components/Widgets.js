@@ -98,7 +98,7 @@ class Widgets{
         return(
             <>
                 <div hidden={tools.compare(tools.platform(),true,true,false)} 
-                    style={{width:"100%", backgroundColor:"SteelBlue",paddingTop:"10px",bottom:0}}>
+                    style={{width:"100%", backgroundColor:"SteelBlue",paddingTop:"10px",bottom:0,position:"absolute"}}>
                     <IonItem color="medium" style={{marginBottom:"20px"}}>
                         <div style={{float:"right",width:"100%",paddingTop:"20px",height:"130px"}}>
                             <IonLabel style={{backgroundColor:"gray"}}><b>Company Info</b></IonLabel>
