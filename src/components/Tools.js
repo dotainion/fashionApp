@@ -112,7 +112,11 @@ class Tools{
     }
 
     getSaveCartItems(){
-        return JSON.parse(window.localStorage.getItem("cart"));
+        var cartItem = JSON.parse(window.localStorage.getItem("cart"));
+        if (cartItem){
+            return cartItem;
+        }
+        return "";
     }
 
     cartEmpty(){
