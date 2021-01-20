@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonToolbar, IonTitle, IonButton, IonHeader, IonList, IonCheckbox } from '@ionic/react';
-import Widgets from '../components/Widgets';
+import { Languages, LoadSpinner, PasswordProgressBar, Routes, TextStyle } from '../components/Widgets';
 import tools from '../components/Tools';
 import axios from 'axios';
 import AppInfo from '../components/AppInfo';
@@ -116,9 +116,9 @@ class Register extends Component{
         });
         return(
             <IonPage>
-                <Widgets.routes/>
-                <Widgets.loadSpinner/>
-                <Widgets.languages/>
+                <Routes/>
+                <LoadSpinner/>
+                <Languages/>
                 <AppInfo.All/>
 
                 <IonHeader>
@@ -133,7 +133,7 @@ class Register extends Component{
                     </IonItem>
                     <IonList style={{marginLeft:MARGIN,marginRight:MARGIN,
                             padding:"4%",border:"1px solid #000"}}>
-                        <Widgets.textStyle subtitle="Register" textColor="blue" title={tools.MSG.APPNAME} L="22%" C=""/>
+                        <TextStyle subtitle="Register" textColor="blue" title={tools.MSG.APPNAME} L="22%" C=""/>
 
                         {/*this is the first page*/}
                         <div hidden={firstPage} id="register-firstpage">
@@ -241,7 +241,7 @@ class Register extends Component{
 
                         {/*this is the third page*/}
                         <div hidden={thirdPage}>
-                            <Widgets.passwordProgressBar max={4} creds={password} mTop="22.3%"/>
+                            <PasswordProgressBar max={4} creds={password} mTop="22.3%"/>
                             <IonItem id="register-password" class="registerItemStyle">
                                 <IonLabel position="floating">Password</IonLabel>
                                 <IonInput onIonChange={e=>{

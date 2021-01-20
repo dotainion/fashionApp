@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { bookmarkOutline, heartOutline, heartSharp, cartOutline, cartSharp, logInOutline, logInSharp, arrowBackSharp } from 'ionicons/icons';
 import './Menu.css';
 import tools from './Tools';
-import Widgets from './Widgets';
+import { PageArrow } from './Widgets';
 
   
 
@@ -66,10 +66,10 @@ class Menu extends Component{
         const contentRef = React.useRef();
         return(
             <IonMenu contentId="menu" type="overlay">
-                <Widgets.pageArrow onClick={()=>{
+                <PageArrow onClick={()=>{
                     contentRef.current.scrollToTop();                
                 }} face="up" show={true}/>
-                <Widgets.pageArrow onClick={()=>{
+                <PageArrow onClick={()=>{
                     contentRef.current.scrollToBottom();
                 }} face="down" show={true}/>
 

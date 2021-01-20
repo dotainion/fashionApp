@@ -1,4 +1,5 @@
 import { isPlatform } from '@ionic/react';
+var fs = require('fs');
 
 
 class Tools{
@@ -264,8 +265,22 @@ class Tools{
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+
+    authUser(email){
+        return "564sg56as4df6a4sh54a56gf4a65s4f6a54h56a456f4654f6asdfadf"
+    }
+
+    async toBase64(file){
+        return await new Promise((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = e => res(e.target.result);
+            reader.onerror = e => rej(e);
+            reader.readAsDataURL(file);
+        });
+    };
 }
 
-var systemTools = new Tools()
+var tools = new Tools()
 
-export default systemTools;
+export default tools;

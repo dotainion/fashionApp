@@ -3,6 +3,7 @@ import { IonHeader, IonToolbar, IonTitle, IonIcon, IonButtons, IonItem, IonConte
 import tools from './Tools';
 import { cart, close } from 'ionicons/icons';
 import './Widgets.css';
+import shoppinBags from './../images/shopping-bags.jpg';
 import IMG from '../components/Images';
 
 
@@ -43,9 +44,8 @@ class ModelsPopUp{
         )
     }
 
-    Cart(){
+    Cart(props){
         /*cart counter is in Widgets.js file in header*/
-        const [ modelShow, setModelShow ] = useState(false);
         const [ closeColor, setCloseColor ] = useState("primary");
         const [ hilightCheckoutBg, setHilightCheckoutBg ] = useState("Olive");
         const [ hilightShoppingBg, setHilightShoppingBg ] = useState("Olive");
@@ -59,14 +59,14 @@ class ModelsPopUp{
         }
         return(
             <>
-                <IonModal isOpen={modelShow} onDidDismiss={()=>{
-                    setModelShow(false);
+                <IonModal isOpen={props.state} onDidDismiss={()=>{
+                    if (props.onClose) props.onClose();
                 }} cssClass='my-custom-class'>
                     <IonHeader>
                         <IonToolbar>
                             <IonButtons hidden={tools.compare(tools.platform(),true,false,true)} slot="start">
                                 <IonBackButton defaultHref="" onClick={()=>{
-                                    setModelShow(false);
+                                    if (props.onClose) props.onClose();
                                 }}/>
                             </IonButtons>
                             <IonItem lines="none" style={{width:"50%"}}>
@@ -75,7 +75,7 @@ class ModelsPopUp{
                             </IonItem>
                             <IonItem hidden={tools.compare(tools.platform(),true,true,false)} slot="end" lines="none">
                                 <IonIcon color={closeColor} icon={close} onClick={()=>{
-                                   setModelShow(false);
+                                   if (props.onClose) props.onClose();
                                 }} onMouseEnter={()=>{
                                     setCloseColor("danger");
                                 }} onMouseLeave={()=>{
@@ -136,12 +136,12 @@ class ModelsPopUp{
                                 </IonCard>
                             ):
                             <div hidden={tools.cartEmpty()} style={{textAlign:"center"}}>
-                                <div>
-                                    <IonImg src={IMG.noItemImg}/>
-                                </div>
+                                <IonThumbnail style={{width:"100%",height:"100%"}}>
+                                    <IonImg src={shoppinBags}/>
+                                </IonThumbnail>
                                 <div><b>Your shopping cart is empty</b></div>
                                 <IonButton color="light" onClick={()=>{
-                                    setModelShow(false)
+                                    if (props.onClose) props.onClose();
                                 }}>Continue shopping</IonButton>
                             </div>
                         }
@@ -165,7 +165,7 @@ class ModelsPopUp{
                                     //to avoid highlight color when opening model
                                     setHilightShoppingBg("Olive");
                                     setHilightCheckoutBg("Olive");
-                                    setModelShow(false);
+                                    if (props.onClose) props.onClose();
                                 }}>
                                     <b>Continue Shopping</b>
                                 </div>
@@ -182,10 +182,6 @@ class ModelsPopUp{
                         </IonItem>
                     </div>
                 </IonModal>
-
-                <IonButton hidden id="show-cart" onClick={()=>{
-                    setModelShow(true);
-                }}/>
             </>
         )
     }

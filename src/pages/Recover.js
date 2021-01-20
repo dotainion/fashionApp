@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonButton } from '@ionic/react';
-import Widgets from '../components/Widgets';
+import { Languages, LoadSpinner, Routes, TextStyle } from '../components/Widgets';
 import tools from '../components/Tools';
 import axios from 'axios';
 import AppInfo from '../components/AppInfo';
@@ -78,9 +78,9 @@ class Recover extends Component{
         var MARGIN = tools.compare(tools.platform(),true,"10%","35%");
         return(
             <IonPage>
-                <Widgets.languages/>
-                <Widgets.routes/>
-                <Widgets.loadSpinner/>
+                <Languages/>
+                <Routes/>
+                <LoadSpinner/>
 
                 <IonHeader>
                     <IonToolbar>
@@ -94,7 +94,7 @@ class Recover extends Component{
                     </IonItem>
                     <IonList style={{marginLeft:MARGIN,marginRight:MARGIN,
                             padding:"4%",border:"1px solid #000"}}>
-                        <Widgets.textStyle subtitle="Recovery" textColor="blue" title={tools.MSG.APPNAME} L="20%" C=""/>
+                        <TextStyle subtitle="Recovery" textColor="blue" title={tools.MSG.APPNAME} L="20%" C=""/>
 
                         <div hidden={firstPage}>
                             <IonItem lines="none">

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withIonLifeCycle, IonPage, IonItem, IonLabel, IonInput, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonButton, IonCheckbox } from '@ionic/react';
-import Widgets from '../components/Widgets';
+import { Languages, LoadSpinner, Routes, TextStyle } from '../components/Widgets';
 import tools from '../components/Tools';
 import AppInfo from '../components/AppInfo';
 import axios from 'axios';
@@ -78,9 +78,9 @@ class Login extends Component{
         });
         return(
             <IonPage>
-                <Widgets.languages/>
-                <Widgets.routes/>
-                <Widgets.loadSpinner/>
+                <Languages/>
+                <Routes/>
+                <LoadSpinner/>
                 <AppInfo.All/>
 
                 <IonHeader>
@@ -95,7 +95,7 @@ class Login extends Component{
                     </IonItem>
                     <IonList style={{marginLeft:MARGIN,marginRight:MARGIN,
                             padding:"4%",border:"1px solid #000"}}>
-                        <Widgets.textStyle subtitle="Sign in" textColor="blue" title={tools.MSG.APPNAME} L="22%" C=""/>
+                        <TextStyle subtitle="Sign in" textColor="blue" title={tools.MSG.APPNAME} L="22%" C=""/>
 
                         <IonItem id="login-email" class="loginItemStyle">
                             <IonLabel position="floating">Email</IonLabel>

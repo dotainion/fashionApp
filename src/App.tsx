@@ -24,21 +24,21 @@ import './theme/variables.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Profile from './pages/profile';
 import PasswordRecover from './pages/Recover';
+import { routes } from './global/routes';
 
 
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route path="/recover" component={PasswordRecover} exact={true} />
-        <Route exact path="/" render={() => <Redirect to="/recover"/>} />
-        <Route path="/login" component={Login} exact={true} />
-        <Route exact path="/" render={() => <Redirect to="/login" />} />
-        <Route path="/register" component={Register} exact={true} />
-        <Route exact path="/" render={() => <Redirect to="/register" />} />
-        <Route path="/home" component={Home} exact={true} />
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
+        <Route path={routes.recover} component={PasswordRecover} exact={true} />
+        <Route path={routes.login} component={Login} exact={true} />
+        <Route path={routes.register} component={Register} exact={true} />
+        <Route path={routes.home} component={Home} exact={true} />
+        <Route path={routes.profile} component={Profile} exact={true} />
+        <Route render={()=><Redirect to={routes.home}/>}/>
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
