@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonToolbar, IonTitle, IonButton, IonHeader, IonList, IonCheckbox } from '@ionic/react';
-import { Languages, LoadSpinner, PasswordProgressBar, Routes, TextStyle } from '../components/Widgets';
 import tools from '../components/Tools';
 import axios from 'axios';
-import AppInfo from '../components/AppInfo';
+import { TextStyle } from '../widgets/textStyle';
+import './Register.css';
+import { auth } from '../auth/authentication';
+
 
 class Register extends Component{
     constructor(){
@@ -16,8 +18,6 @@ class Register extends Component{
         }
 
         this.registration = {
-            SERVERUSERNAME:tools.SERVERUSERNAME,
-            SERVERPASSWORD:tools.SERVERPASSWORD,
             firstname:"",
             lastname:"",
             email:"",
@@ -36,31 +36,8 @@ class Register extends Component{
         this.rememberChecked = false;
     }
 
-    server(){
-        this.errorText = "";
-        tools.clickById("start-loader");
-        axios.post(tools.URL.REGISTER,this.registration)
-        .then(response =>{
-            if (response.data === true){
-                if (this.rememberChecked){
-                    tools.saveCreds(this.registration.email,this.registration.password);
-                }
-                tools.clickById("home")
-            }else if (response.data === false){
-                this.errorText =tools.MSG.userExist;
-            }else if (response.data === null){
-                this.errorText = tools.MSG.somethingWrong;
-            }else{
-                this.errorText =tools.MSG.somethingWrong;
-            }
-        })
-        .catch(error=>{
-            this.errorText = tools.MSG.serverDown;
-        })
-        .finally(final=>{
-            tools.clickById("stop-loader");
-            this.setState({errorText:this.errorText})
-        })
+    register(){
+        auth.signUp(this.registration);
     }
 
     nextPage(page, validate){
@@ -116,11 +93,6 @@ class Register extends Component{
         });
         return(
             <IonPage>
-                <Routes/>
-                <LoadSpinner/>
-                <Languages/>
-                <AppInfo.All/>
-
                 <IonHeader>
                     <IonToolbar>
                         <IonTitle>{tools.MSG.APPNAME}</IonTitle>
@@ -241,7 +213,6 @@ class Register extends Component{
 
                         {/*this is the third page*/}
                         <div hidden={thirdPage}>
-                            <PasswordProgressBar max={4} creds={password} mTop="22.3%"/>
                             <IonItem id="register-password" class="registerItemStyle">
                                 <IonLabel position="floating">Password</IonLabel>
                                 <IonInput onIonChange={e=>{
@@ -278,7 +249,7 @@ class Register extends Component{
                                     if (tools.inputValidation(validate)){
                                         if (tools.credsConfirmValidation(validate)){
                                             if (tools.passwordStrength(this.registration.password).value >= 3){
-                                                this.server();
+                                                this.register();
                                             }else{
                                                 tools.inputValidation([
                                                     ["","register-password"],
@@ -302,10 +273,6 @@ class Register extends Component{
                             tools.clickById("home")
                         }} style={{color:"Teal"}}>Back to home</IonLabel>
                     </IonList>
-                    <IonItem style={{marginLeft:MARGIN,marginRight:MARGIN,textAlign:"center",
-                            fontWeight:"bold",color:"Black"}} lines="full">
-                        <AppInfo.Nav/>
-                    </IonItem>
                 </IonContent>
             </IonPage>
         )

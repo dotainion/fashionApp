@@ -1,0 +1,6 @@
+.login-main-container{
+    user-select: none;
+}
+.loginItemStyle{
+    border: 1px solid lightgray;
+}

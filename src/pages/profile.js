@@ -1,31 +1,35 @@
-import { IonButton, IonContent, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonPage, IonThumbnail } from '@ionic/react';
-import React, { useState } from 'react';
+import { IonButton, IonCheckbox, IonContent, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonPage, IonThumbnail } from '@ionic/react';
+import React, { useEffect, useState } from 'react';
 import './profile.css';
 import img from '../images/test.jpg';
 import { imagesOutline } from 'ionicons/icons';
 import tools from '../components/Tools';
 import { data } from '../database/database';
+import { useHistory } from 'react-router';
+import { routes } from '../global/routes';
 
 
 const Profile = () =>{
+    const history = useHistory();
     const [toUpload, setToUpload] = useState({
-        image: img, name: "", email: "", 
-        number: "", number2: "", title: "",price: "", detail: ""
+        image: img, title: "",price: "", detail: "", userId: ""
     });
     const addUserInfo = (cmd,value) =>{
         setToUpload({
             image: tools.compare(cmd,"i",value,toUpload.image), 
-            name: tools.compare(cmd,"n",value,toUpload.name), 
-            email: tools.compare(cmd,"e",value,toUpload.email), 
-            number: tools.compare(cmd,"c",value,toUpload.number), 
             title: tools.compare(cmd,"t",value,toUpload.title),
             price: tools.compare(cmd,"p",value,toUpload.price),
-            detail: tools.compare(cmd,"d",value,toUpload.detail)
+            detail: tools.compare(cmd,"d",value,toUpload.detail),
+            userId: tools.getCreds().id
         });
     };
 
     const sendToDatabase = () =>{
         data.addData(toUpload);
+        setToUpload({
+            image: img, title: "",
+            price: "", detail: "", userId: ""
+        });
     }
     return(
         <IonPage>
@@ -36,43 +40,25 @@ const Profile = () =>{
                     </IonItem>
                     <IonList class="profile-spliter">
                         <IonList class="profile-user-info">
-                            <IonItem>
-                                <IonLabel position="floating">Name</IonLabel>
-                                <IonInput onIonChange={(e)=>{
-                                    addUserInfo("n",e.detail.value);
-                                }}/>
-                            </IonItem>
-                            <IonItem>
-                                <IonLabel position="floating">Email Address</IonLabel>
-                                <IonInput onIonChange={(e)=>{
-                                    addUserInfo("e",e.detail.value);
-                                }}/>
-                            </IonItem>
-                            <IonItem>
-                                <IonLabel position="floating">Phone Number</IonLabel>
-                                <IonInput onIonChange={(e)=>{
-                                    addUserInfo("c",e.detail.value);
-                                }}/>
-                            </IonItem>
                             <IonList class="profile-product-info">
                                 <IonLabel color="medium">Product Information</IonLabel>
                                 <IonItem>
                                     <IonLabel position="floating">Item Title</IonLabel>
                                     <IonInput onIonChange={(e)=>{
                                         addUserInfo("t",e.detail.value);
-                                    }}/>
+                                    }} value={toUpload.title}/>
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel position="floating">Item Price</IonLabel>
                                     <IonInput onIonChange={(e)=>{
                                         addUserInfo("p",e.detail.value);
-                                    }}/>
+                                    }} value={toUpload.price} type="number"/>
                                 </IonItem>
                                 <IonItem>
                                     <IonLabel position="floating">Item Details</IonLabel>
                                     <IonInput onIonChange={(e)=>{
                                         addUserInfo("d",e.detail.value);
-                                    }}/>
+                                    }} value={toUpload.detail}/>
                                 </IonItem>
                             </IonList>
                         </IonList>
@@ -91,7 +77,10 @@ const Profile = () =>{
                         </IonList>
                         <IonButton onClick={()=>{
                             sendToDatabase();
-                        }}>test Click</IonButton>
+                        }}>Save</IonButton>
+                        <IonButton onClick={()=>{
+                            history.push(routes.home);
+                        }}>Home</IonButton>
                     </IonItem>
                 </IonList>
             </IonContent>

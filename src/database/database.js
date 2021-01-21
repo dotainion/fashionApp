@@ -1,15 +1,14 @@
-import firebase from 'firebase';
-import { FB_DB_CONFIG } from '../config/firebase';
-import testImage from '../images/test.jpg';
-import tools from '../components/Tools';
+import { db } from '../auth/authentication';
 
-const db = firebase.initializeApp(FB_DB_CONFIG).firestore();
 
 class Database{
-    //add data to database
+    async addUser(uid,data){
+        delete data.password;
+        await db.collection("fashionUsers").doc(uid).set(data);
+    }
     async addData(record){
         const dataToAdd = db.collection("fashion");
-        console.log(await dataToAdd.add(record));
+        await dataToAdd.add(record);
     }
     async getData(){
         let storeRecords = [];
@@ -25,16 +24,4 @@ class Database{
 const data = new Database();
 export { data };
 
-export const getData = async() =>{
-    const data = [
-        {
-            img: "",
-            title: "testing",
-            price: "505df",
-            detail: "this is just a test",
-            id: "some id"
-        }
-    ]
-    return {state:true,data:data};
-}
 

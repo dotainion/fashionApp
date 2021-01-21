@@ -153,17 +153,16 @@ class Tools{
         return cost;
     }
 
-    saveCreds(username, password){
-        window.localStorage.setItem("username",username);
-        window.localStorage.setItem("password",password);
+    saveCreds(username, password, id){
+        window.localStorage.setItem("credentials",JSON.stringify({
+            username: username, password: password, id: id
+        }));
     }
 
     getCreds(){
-        var creds = {
-            username:window.localStorage.getItem("username"),
-            password:window.localStorage.getItem("password"),
-        }
-        return creds;
+        const creds = window.localStorage.getItem("credentials");
+        if (creds) return JSON.parse(creds);
+        else return null;
     }
 
     clearStorage(){

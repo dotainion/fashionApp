@@ -2,85 +2,10 @@ import React, { useState } from 'react';
 import { IonHeader, IonToolbar, IonTitle, IonFooter, IonIcon, IonButtons, IonItem, IonMenuButton, IonRouterOutlet, IonButton, IonLabel, IonLoading, IonPopover, IonList, IonToast } from '@ionic/react';
 import tools from '../components/Tools';
 import './Widgets.css';
-import AppInfo from '../components/AppInfo';
 import { cart, arrowUpCircleSharp, arrowDownCircleSharp } from 'ionicons/icons';
 
 
 class Widgets{
-    Header(){
-        const [ cartCount, setCartCount ] = useState();
-        const [ cartBackground, setCartBackground ] = useState();
-        const [ inCartHighlight, setInCartHighlight ] = useState("");
-        return(
-            <>
-                <AppInfo.All/>
-                <IonHeader>
-                    <IonToolbar>
-                        <IonButtons hidden={tools.compare(tools.platform(),true,false,true)} slot="start">
-                            <IonMenuButton id="side-menu-button" autoHide={false}/>
-                        </IonButtons>
-                        <IonTitle>{tools.MSG.APPNAME}</IonTitle>
-
-                        <IonItem hidden={tools.compare(tools.platform(),true,true,false)} slot="end" lines="none">
-                            <div className="onHover topBarButtonNav" onClick={()=>{
-                                tools.clickById("login");
-                            }}>LOGIN</div>
-                            <div className="onHover topBarButtonNav" onClick={()=>{
-
-                            }}>CAGEGORY</div>
-                            <div className="onHover topBarButtonNav" onClick={()=>{
-                                tools.clickById("show-contact-us")
-                            }}>CONTACT US</div>
-                            <div className="onHover topBarButtonNav" onClick={()=>{
-
-                            }}>SPECIAL OFFERS</div>
-                            <div className="onHover topBarButtonNav" onClick={()=>{
-                                tools.clickById("show-about-us");
-                            }}>ABOUT US</div>
-                        </IonItem>
-
-                        <IonButtons slot="end" style={{marginRight:tools.compare(tools.platform(),true,"","30px"),cursor:"pointer"}} onClick={()=>{
-                            tools.clickById("show-cart");
-                        }} onMouseEnter={()=>{
-                            setCartBackground("medium")
-                        }} onMouseLeave={()=>{
-                            setCartBackground(inCartHighlight)
-                        }}>
-                            <IonItem style={{borderRadius:"20px"}} class="addToCartHover" color={cartBackground} lines="none">
-                                <IonTitle>Cart</IonTitle>
-                                <IonIcon icon={cart}/>
-                                <div style={{marginTop:"-20px",color:"OrangeRed"}}><b>{cartCount}</b></div>
-                            </IonItem>
-                        </IonButtons>
-                    </IonToolbar>
-                </IonHeader>
-
-                <IonRouterOutlet id="menu"></IonRouterOutlet> 
-
-                <IonButton hidden id="cart-counter" onClick={()=>{
-                    
-                    if (parseInt(cartCount)){
-                        var index = cartCount + 1;
-                        setCartCount(index);
-                    }else{
-                        setCartCount(1);
-                    }
-                    setInCartHighlight("success");
-                    setCartBackground("success");
-                }}/>
-                <IonButton hidden id="cart-de-counter" onClick={()=>{
-                    var index = cartCount - 1;
-                    if (index === 0){
-                        setCartCount("");
-                        setInCartHighlight("");
-                        setCartBackground("");
-                    }else{
-                        setCartCount(index);                      
-                    }
-                }}/>
-            </>
-        )
-    };
 
     BottomNavMobileBar(){
         return(
@@ -217,17 +142,6 @@ class Widgets{
                         <IonLabel>{data.subtitle}</IonLabel>
                     </div>
                 </div>
-            </>
-        )
-    }
-
-    routes(){
-        return(
-            <>
-                <IonButton hidden id="home" routerLink="home"/>
-                <IonButton hidden id="login" routerLink="login"/>
-                <IonButton hidden id="register" routerLink="register"/>
-                <IonButton hidden id="password-recover" routerLink="recover"/>
             </>
         )
     }
@@ -398,5 +312,6 @@ class Widgets{
     }
 }
 
-var systemWidgets = new Widgets()
-export default systemWidgets;
+
+//var systemWidgets = new Widgets()
+//export default systemWidgets;

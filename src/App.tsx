@@ -27,6 +27,7 @@ import Register from './pages/Register';
 import Profile from './pages/profile';
 import PasswordRecover from './pages/Recover';
 import { routes } from './global/routes';
+import AuthRouter from './authRoute';
 
 
 const App: React.FC = () => (
@@ -37,7 +38,7 @@ const App: React.FC = () => (
         <Route path={routes.login} component={Login} exact={true} />
         <Route path={routes.register} component={Register} exact={true} />
         <Route path={routes.home} component={Home} exact={true} />
-        <Route path={routes.profile} component={Profile} exact={true} />
+        <Route path={routes.profile} render={() =><AuthRouter component={Profile}/>} exact={true} />
         <Route render={()=><Redirect to={routes.home}/>}/>
       </IonRouterOutlet>
     </IonReactRouter>

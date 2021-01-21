@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonButton } from '@ionic/react';
-import { Languages, LoadSpinner, Routes, TextStyle } from '../components/Widgets';
 import tools from '../components/Tools';
 import axios from 'axios';
-import AppInfo from '../components/AppInfo';
+import { TextStyle } from '../widgets/textStyle';
 
 
 class Recover extends Component{
@@ -78,10 +77,6 @@ class Recover extends Component{
         var MARGIN = tools.compare(tools.platform(),true,"10%","35%");
         return(
             <IonPage>
-                <Languages/>
-                <Routes/>
-                <LoadSpinner/>
-
                 <IonHeader>
                     <IonToolbar>
                         <IonTitle>{tools.MSG.APPNAME}</IonTitle>
@@ -174,11 +169,6 @@ class Recover extends Component{
                                 tools.clickById("home")
                         }} style={{color:"Teal"}}>Back to home</IonLabel> 
                     </IonList>
-
-                    <IonItem style={{marginLeft:MARGIN,marginRight:MARGIN,textAlign:"center",
-                            fontWeight:"bold",color:"Black"}} lines="full">
-                        <AppInfo.Nav/>
-                    </IonItem>
                 </IonContent>
             </IonPage>
         )

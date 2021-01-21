@@ -1,0 +1,26 @@
+.header-container{
+    user-select: none;
+}
+.header-cart{
+    margin-right: 30px;
+    font-size: 20px;
+}
+.header-hover:hover{
+    color: rgb(11, 77, 165);
+}
+.header-count-container{
+    position: absolute;
+    top: 10px;
+    font-size: 15px;
+    color: green;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: lightgray;
+}
+.header-count{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%,-50%,0);
+}
