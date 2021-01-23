@@ -4,6 +4,7 @@ class Routes{
     recover = "/recover";
     register = "/register";
     profile = "/profile";
+    checkout = "/checkout";
 }
 
 export const routes = new Routes();

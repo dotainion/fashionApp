@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonButton } from '@ionic/react';
 import tools from '../components/Tools';
-import axios from 'axios';
 import { TextStyle } from '../widgets/textStyle';
+import { routes } from '../global/routes';
+import './Recover.css';
 
 
 class Recover extends Component{
@@ -10,8 +11,6 @@ class Recover extends Component{
         super();
 
         this.credentials = {
-            SERVERUSERNAME:tools.SERVERUSERNAME,
-            SERVERPASSWORD:tools.SERVERPASSWORD,
             email:"",
             verification:"",
         }
@@ -25,29 +24,20 @@ class Recover extends Component{
         this.errorText = "";
     }
 
-    server(){
+    componentDidMount(){
+        document.title = "Recover";
+    }
+
+    submit(){
         this.errorText = "";
-        tools.clickById("start-loader");
-        axios.post(tools.URL.RECOVER,this.credentials)
-        .then(response =>{
-            if (response.data === true){
-                console.log("pass")
-            }else if (response.data === false){
-                console.log("false")
-            }else if (response.data === null){
-                console.log("none")
-            }else{
+        try{
 
-            }
-        })
-        .catch(error=>{
+        }catch(error){
 
-        })
-        .finally(final=>{
-            tools.clickById("stop-loader");
+        }finally{
             this.pages.resend = false;
             this.setState({resend:this.pages.resend});
-        })
+        }
     }
 
     nextPage(page, validate){
@@ -74,7 +64,6 @@ class Recover extends Component{
         const { firstPage, secondPage, resend } = this.pages;
         const { email, verification } = this.credentials;
         const vfcode = tools.MSG.resendverificationcode;
-        var MARGIN = tools.compare(tools.platform(),true,"10%","35%");
         return(
             <IonPage>
                 <IonHeader>
@@ -87,9 +76,8 @@ class Recover extends Component{
                     <IonItem style={{textAlign:"center",color:"red"}} lines="none">
                         <IonLabel>{this.errorText}</IonLabel>
                     </IonItem>
-                    <IonList style={{marginLeft:MARGIN,marginRight:MARGIN,
-                            padding:"4%",border:"1px solid #000"}}>
-                        <TextStyle subtitle="Recovery" textColor="blue" title={tools.MSG.APPNAME} L="20%" C=""/>
+                    <IonList class="recover-sub-container">
+                        <TextStyle subtitle="Recovery" textColor="blue" title={tools.MSG.APPNAME}/>
 
                         <div hidden={firstPage}>
                             <IonItem lines="none">
@@ -143,7 +131,7 @@ class Recover extends Component{
                                 <p hidden={resend} style={{fontSize:"12px",color:"black"}}>
                                     <span>{vfcode[1]}</span>
                                     <span style={{color:"navy"}} className="recoverResendCode textHover" onClick={()=>{
-                                        this.server();
+                                        this.submit();
                                     }}>{vfcode[2]}</span>
                                 </p>
 
@@ -156,7 +144,7 @@ class Recover extends Component{
                                         [this.credentials.verification,"recover-verification"],
                                     ]
                                     if (tools.inputValidation(validate)){
-                                        this.server();
+                                        this.submit();
                                     }else{
                                         this.errorText = tools.MSG.fieldsRequired;
                                         this.setState({errorText:this.errorText});
@@ -164,9 +152,15 @@ class Recover extends Component{
                                 }}>Submit</IonButton>
                             </IonItem>
                         </div>
-
+                        <IonItem lines="none">
+                            <IonLabel class="underLine" onClick={()=>{
+                                    const { history } = this.props;
+                                    history.push(routes.login);
+                            }} style={{color:"Teal"}}>Login</IonLabel> 
+                        </IonItem>
                         <IonLabel class="underLine" onClick={()=>{
-                                tools.clickById("home")
+                                const { history } = this.props;
+                                history.push(routes.home);
                         }} style={{color:"Teal"}}>Back to home</IonLabel> 
                     </IonList>
                 </IonContent>

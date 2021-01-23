@@ -10,18 +10,15 @@ const appPages = [
     {
         title: 'Cart',
         id: 'show-cart',
-        iosIcon: cartOutline,
-        mdIcon: cartSharp,
+        icon: cartOutline,
     },{
         title: 'Login',
         id: 'login',
-        iosIcon: logInOutline,
-        mdIcon: logInSharp,
+        icon: logInOutline,
     },{
         title: 'Favorites',
         id: 'show-favorites',
-        iosIcon: heartOutline,
-        mdIcon: heartSharp,
+        icon: heartOutline,
     }
 ];
 
@@ -61,10 +58,11 @@ const toolSection = [
 export const Menu = () => {
     return (
         <IonMenu contentId="menu" type="overlay" className="menuMain">
-            <IonContent>
-            <IonList id="inbox-list">
-                <IonListHeader>{"name"}</IonListHeader>
-                <IonNote>NAWASA authority</IonNote>
+            <IonContent class="menu-container">
+            <IonList>
+                <IonListHeader>FASHION</IonListHeader>
+                &nbsp;&nbsp;
+                <IonNote>Fashion App</IonNote>
                 {appPages.map((appPage, index) => {
                 return (
                     <IonMenuToggle key={index} autoHide={false}>
@@ -77,7 +75,19 @@ export const Menu = () => {
                 })}
             </IonList>
     
-            <IonList id="labels-list">
+            <IonList>
+                <IonListHeader>Settings</IonListHeader>
+                {labels.map((settings, index) => (
+                <IonMenuToggle key={index} autoHide={false}>
+                    <IonItem className="menuItemContainer" routerLink={settings.url} lines="none">
+                    <IonIcon color="tertiary" slot="start" icon={bookmarkOutline} />
+                    <IonLabel>{settings.title}</IonLabel>
+                    </IonItem>
+                </IonMenuToggle>
+                ))}
+            </IonList>
+
+            <IonList>
                 <IonListHeader>Settings</IonListHeader>
                 {toolSection.map((settings, index) => (
                 <IonMenuToggle key={index} autoHide={false}>

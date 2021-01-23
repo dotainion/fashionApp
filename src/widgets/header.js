@@ -13,10 +13,13 @@ export const Header = (props) =>{
                 <IonButtons slot="start">
                     <IonMenuButton />
                 </IonButtons>
-                <IonTitle class="header-hover" onClick={()=>{
+                <IonTitle hidden={!props.home} class="header-hover" onClick={()=>{
+                    history.push(routes.home);
+                }} slot="end">Home</IonTitle>
+                <IonTitle hidden={!props.sales} class="header-hover" onClick={()=>{
                     history.push(routes.profile);
                 }} slot="end">My Sales</IonTitle>
-                <span className="header-cart header-hover" onClick={()=>{
+                <span hidden={!props.cart} className="header-cart header-hover" onClick={()=>{
                     if (props.cartClick) props.cartClick();
                 }} slot="end">Cart<span hidden={!props?.count} className="header-count-container">
                     <span className="header-count">{props?.count}</span>

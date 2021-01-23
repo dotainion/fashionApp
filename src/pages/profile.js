@@ -31,6 +31,11 @@ const Profile = () =>{
             price: "", detail: "", userId: ""
         });
     }
+
+    useEffect(()=>{
+        document.title = "Sales Upload";
+    },[]);
+
     return(
         <IonPage>
             <IonContent>

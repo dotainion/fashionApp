@@ -1,3 +1,6 @@
+.menu-container{
+  user-select: none;
+}
 .itemStyle:hover{
     cursor: pointer;
     color:aqua;

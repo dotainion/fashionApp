@@ -49,3 +49,15 @@
     color: white;
     background-color: var(--sys-color);
 }
+
+@media screen and (max-width:767px){
+    .profile-container{
+        padding: 2px;
+        width: 98%;
+        margin-top: 40px;
+        margin-left: 50%;
+        user-select: none;
+        transform: translateX(-50%);
+        background-color: var(--sys-color);
+    }
+}

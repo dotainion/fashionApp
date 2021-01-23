@@ -102,3 +102,15 @@
     background-color: var(--sys-color);
     transform: translate3d(-50%,-50%,0);
 }
+.cart-click:active{
+    box-shadow: 1px 1px 2px black;
+}
+
+@media screen and (max-width:767px){
+    .cart-continue-button{
+        font-size: 15px;
+    }
+    .cart-checkout-button{
+        font-size: 15px;
+    }
+}

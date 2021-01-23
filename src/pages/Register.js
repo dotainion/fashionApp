@@ -36,6 +36,10 @@ class Register extends Component{
         this.rememberChecked = false;
     }
 
+    async ionViewWillEnter(){
+        document.title = "Register";
+    }
+
     register(){
         auth.signUp(this.registration);
     }
@@ -76,17 +80,13 @@ class Register extends Component{
         var { firstname, lastname, email, contact, city, stateaddress, address,
             password, shippingaddress,} = this.registration;
         const { firstPage, secondPage, thirdPage } = this.pages;
-        var MARGIN = tools.compare(tools.platform(),true,"10%","35%")
         document.addEventListener("keypress",function(e){
             if (e.keyCode === 13){
                 if (!firstPage){
-                    console.log("fisrt")
                     tools.clickById("firstPage-go");
                 }else if (!secondPage){
-                    console.log("fisrt2")
                     tools.clickById("secondPage-go");
                 }else if (!thirdPage){
-                    console.log("fisrt3")
                     tools.clickById("thirdPage-go");
                 }
             }
@@ -103,8 +103,7 @@ class Register extends Component{
                     <IonItem style={{textAlign:"center",color:"red"}} lines="none">
                         <IonLabel>{this.errorText}</IonLabel>
                     </IonItem>
-                    <IonList style={{marginLeft:MARGIN,marginRight:MARGIN,
-                            padding:"4%",border:"1px solid #000"}}>
+                    <IonList  class="register-sub-container">
                         <TextStyle subtitle="Register" textColor="blue" title={tools.MSG.APPNAME} L="22%" C=""/>
 
                         {/*this is the first page*/}

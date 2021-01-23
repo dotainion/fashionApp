@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import tools from '../components/Tools';
 import { FB_DB_CONFIG } from '../config/firebase';
 import { data } from '../database/database';
+import { anonymousCreds } from './config';
 
 const fb = firebase.initializeApp(FB_DB_CONFIG);
 const db = fb.firestore();
@@ -27,10 +28,25 @@ class Auth{
         }
     }
     isLogin(){
+        //if anonymous creds is in login then
+        //return false and so user can login
         const user = fb.auth().currentUser;
-        if (user !== null) return true;
-        else if (tools.getCreds()) return true;
+        const creds = tools.getCreds();
+        if (user !== null && user?.uid !== anonymousCreds.id) return true;
+        else if (creds && user?.uid !== anonymousCreds.id){ 
+            this.signIn(creds.username,creds.password);
+            return true;
+        }
         return false;
+    }
+    anonymous(){
+        //if user is not logged in then
+        //login with anonymouse credentials
+        //this only allow login for home page
+        if (!this.isLogin()){
+            const creds = anonymousCreds;
+            this.signIn(creds.email,creds.password);
+        }
     }
 }
 

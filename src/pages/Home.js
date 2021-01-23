@@ -1,19 +1,20 @@
-import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading } from '@ionic/react';
-import React, { Component } from 'react';
+import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading, IonSearchbar } from '@ionic/react';
+import React, { Component, useRef } from 'react';
 import './Home.css';
 import { Menu } from '../components/Menu';
 import { Header } from '../widgets/header';
+import { Searchbar } from '../widgets/searchbar';
 import no_item_img from '../images/shopping-bags.jpg';
 import { data } from '../database/database';
 import { searchOutline } from 'ionicons/icons';
 import { CartDisplay } from '../cart/cartDisplay';
 import { cart } from '../cart/utils';
+import { auth } from '../auth/authentication';
 
 
 class Home extends Component{
     constructor(){
         super()
-
         this.showLoading = true;
 
         this.cartOpen = false;
@@ -28,9 +29,34 @@ class Home extends Component{
         };;
 
         this.records = [];
+
+        this.searchLimit = 50;
     };
+    limitIterate(isMoreCheck=false){
+        if (isMoreCheck){
+            if (this.records.length >= this.searchLimit) return true;
+            else return false;
+        }else if (this.records.length >= this.searchLimit){
+            this.searchLimit += this.searchLimit;
+        }
+    }
+    async search(value){
+        if (!value){
+            this.showLoading = true;
+            this.setState({showLoading:this.showLoading});
+            this.records = await data.search(value,this.searchLimit);
+            this.showLoading = false;
+            this.setState({
+                records:this.records,
+                showLoading:this.showLoading
+            });
+            this.limitIterate();
+        }
+    }
     async ionViewWillEnter(){
-        const res = await data.getData();
+        document.title = "Home";
+        auth.anonymous();
+        const res = await data.getData(this.searchLimit);
         this.records = res.records;
         this.showLoading = false;
         this.setState({
@@ -69,6 +95,8 @@ class Home extends Component{
         return(
             <IonPage>
                 <Header 
+                    cart
+                    sales
                     count={cart.get()?.length}
                     cartClick={()=>{
                         this.setItemInCart();
@@ -107,6 +135,7 @@ class Home extends Component{
                     subHeader="Duplicate"
                     message="Item already in you cart"
                     buttons={['OK']}
+                    duration={200}
                 />
                 <IonPopover
                     cssClass=''
@@ -157,8 +186,26 @@ class Home extends Component{
                         }} slot="end">Save</IonButton>
                     </IonItem>
                 </IonPopover>
+                
+                <div className="home-search-bar">
+                    <Searchbar
+                        onSearch={(value)=>{
+                            this.search(value);
+                        }}
+                        onClear={()=>{
 
-                <IonContent>
+                        }} 
+                        onChange={(value)=>{
+
+                        }}
+                    />
+                </div>
+
+                <IonContent id="scroll-content" onIonScroll={(e)=>{
+                    const element = document.getElementById('scroll-content');
+                    console.log(element.clientHeight);
+                    console.log(e.detail.scroll);
+                }} scrollEvents={true}>
                     {
                         this.records.length?
                         this.records.map((info, key)=>(
@@ -170,7 +217,7 @@ class Home extends Component{
                                 <div className="home-item-info-container">
                                     <div>{info?.record?.title || "Not Provided"}</div>
                                     <div>${info?.record?.price || "Not Provided"}</div>
-                                    <div className="home-add-button" onClick={()=>{
+                                    <div className="home-add-button home-add-button-hover" onClick={()=>{
                                         this.checkDuplication(info);
                                     }}>Add To Cart</div>
                                 </div>

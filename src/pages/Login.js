@@ -22,6 +22,7 @@ class Login extends Component{
     }
 
     ionViewWillEnter(){
+        document.title = "Login";
         var creds = tools.getCreds();
         if (creds){
             this.userCreds.username = creds.username;
@@ -45,7 +46,6 @@ class Login extends Component{
 
     render(){
         var { username, password } = this.userCreds;
-        var MARGIN = tools.compare(tools.platform(),true,"10%","35%");
         return(
             <IonPage>
                 <IonHeader>
@@ -58,9 +58,8 @@ class Login extends Component{
                     <IonItem style={{textAlign:"center",color:"red"}} lines="none">
                         <IonLabel>{this.errorText}</IonLabel>
                     </IonItem>
-                    <IonList style={{marginLeft:MARGIN,marginRight:MARGIN,
-                            padding:"4%",border:"1px solid #000"}}>
-                        <TextStyle subtitle="Sign in" textColor="blue" title={tools.MSG.APPNAME} L="22%" C=""/>
+                    <IonList class="login-sub-container">
+                        <TextStyle subtitle="Sign in" textColor="blue" title={tools.MSG.APPNAME}/>
 
                         <IonItem id="login-email" class="loginItemStyle">
                             <IonLabel position="floating">Email</IonLabel>
@@ -87,13 +86,15 @@ class Login extends Component{
 
                         <div style={{marginTop:"15px",color:"Crimson"}} lines="none">
                             <IonLabel class="underLine" onClick={()=>{
-                                tools.clickById("password-recover");
+                                const { history } = this.props;
+                                history.push(routes.recover);
                             }}>Forgot credentials?</IonLabel>
                         </div>
                         
                         <IonItem style={{marginTop:"50px",color:"navy"}} lines="none">
                             <IonLabel class="underLine" onClick={()=>{
-                                tools.clickById("register");
+                                const { history } = this.props;
+                                history.push(routes.register);
                             }}>Create account</IonLabel>
                             <IonButton id="login-go" style={{cursor:"pointer"}} onClick={()=>{
                                 var validate = [

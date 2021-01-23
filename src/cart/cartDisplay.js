@@ -1,20 +1,54 @@
 import { IonAlert, IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
 import { closeOutline } from 'ionicons/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './cartDisplay.css';
 import { cart } from './utils';
 import noItemImage from '../images/shopping-bags.jpg';
+import { useHistory } from 'react-router';
+import { routes } from '../global/routes';
 
-
+let elementId = [];
+const removeDuplicate = () =>{
+    var uniqueArray = [];
+    for(var value of elementId){
+        if(uniqueArray.indexOf(value) === -1){
+            uniqueArray.push(value);
+        }
+    }
+    elementId = uniqueArray;
+}
 export const CartDisplay = (props) =>{
+    const history = useHistory();
+    const [grandTotal, setGrandTotal] = useState();
     const [showAlert, setShowAlert] = useState({
         state: false,
         data: null
     });
-    //window.localStorage.clear()
+    const appendElementId = (id) =>{
+        elementId.push(id);
+        return id;
+    }
+    const updateSubTotal = (id, qty, price) =>{
+        const sub = parseFloat(price) * parseInt(qty);
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = sub;
+        console.log(qty, price)
+    }
+    const updateGrandTotal = () =>{
+        removeDuplicate();
+        let total = 0;
+        for (let id of elementId){
+            console.log(id)
+            const el = document.getElementById(id);
+            if (el) total += parseFloat(el.innerHTML);
+        }
+        setGrandTotal(total);
+    }
     return(
         <IonModal isOpen={props.state} onDidDismiss={()=>{
             if (props.onClose) props.onClose();
+        }} onDidPresent={()=>{
+            updateGrandTotal();
         }} class="cart-main-container">
             <IonAlert
                 isOpen={showAlert.state}
@@ -80,13 +114,16 @@ export const CartDisplay = (props) =>{
                                     if (value < 1){
                                         let element = document.getElementById(item.id);
                                         element.value = 1;
+                                        updateSubTotal(`${item.id}sub`,1,item?.record?.price);
                                     }else{
                                         cart.updateQty(item.id,value);
+                                        updateSubTotal(`${item.id}sub`,value,item?.record?.price);
                                     }
+                                    updateGrandTotal();
                                 }} type="number" id={item.id} defaultValue={item.qty}/>
                             </div>
                             <div className="cart-item-info">
-                                <IonLabel class="cart-costs">{parseFloat(item.record.price) * parseInt(item.qty)}</IonLabel>
+                                <IonLabel id={appendElementId(`${item.id}sub`)} class="cart-costs">{parseFloat(item?.record?.price) * parseInt(item.qty)}</IonLabel>
                             </div>
                             <IonIcon class="cart-delete cart-hover" onClick={()=>{
                                 setShowAlert({
@@ -106,12 +143,17 @@ export const CartDisplay = (props) =>{
             </IonContent>
             <IonItem class="cart-total-container">
                 <IonLabel slot="start">Grand Total</IonLabel>
-                <IonLabel slot="end">$75.00</IonLabel>
+                <IonLabel slot="end">${grandTotal}</IonLabel>
             </IonItem>
             <IonLabel class="cart-checkout-info">Shipping cost will be calculated based on your shipping address in next page</IonLabel>
             <IonList className="cart-button-container">
-                <div className="cart-continue-button">Continue Shopping</div>
-                <div className="cart-checkout-button">Proceed To Checkout</div>
+                <div className="cart-continue-button cart-click" onClick={()=>{
+                    if (props.onClose) props.onClose();
+                }}>Continue Shopping</div>
+                <div className="cart-checkout-button cart-click" onClick={()=>{
+                    history.push(routes.checkout);
+                    if (props.onClose) props.onClose();
+                }}>Proceed To Checkout</div>
             </IonList>
         </IonModal>
     )
