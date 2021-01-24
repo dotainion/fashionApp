@@ -4,6 +4,7 @@ import tools from '../components/Tools';
 import { TextStyle } from '../widgets/textStyle';
 import { routes } from '../global/routes';
 import './Recover.css';
+import { Link } from 'react-router-dom';
 
 
 class Recover extends Component{
@@ -153,15 +154,13 @@ class Recover extends Component{
                             </IonItem>
                         </div>
                         <IonItem lines="none">
-                            <IonLabel class="underLine" onClick={()=>{
-                                    const { history } = this.props;
-                                    history.push(routes.login);
-                            }} style={{color:"Teal"}}>Login</IonLabel> 
+                            <Link style={{textDecoration:"none"}} to={routes.login}>
+                                <IonLabel class="underLine" style={{color:"Teal"}}>Login</IonLabel> 
+                            </Link>
                         </IonItem>
-                        <IonLabel class="underLine" onClick={()=>{
-                                const { history } = this.props;
-                                history.push(routes.home);
-                        }} style={{color:"Teal"}}>Back to home</IonLabel> 
+                        <Link style={{textDecoration:"none"}} to={routes.home}>
+                            <IonLabel class="underLine" style={{color:"Teal"}}>Back to home</IonLabel> 
+                        </Link>
                     </IonList>
                 </IonContent>
             </IonPage>

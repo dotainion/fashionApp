@@ -35,10 +35,10 @@ export const Searchbar = (props) =>{
                 if (props.onChange) props.onChange(e.detail.value);
             }} value={inputValue} class="searchbar-input" placeholder="Search"/>
             <div className="searchbar-clear-container">
-                <IonIcon hidden={!showClear} onClick={()=>{
+                <IonIcon hidden={!showClear} icon={closeOutline} onClick={()=>{
                     setInputValue("");
                     if (props.onClear) props.onClear();
-                }} className="searchbar-clear" icon={closeOutline}/>
+                }} className="searchbar-clear searchbar-clear-hover"/>
             </div>
         </IonCard>
     )

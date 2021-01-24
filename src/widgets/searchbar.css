@@ -1,6 +1,7 @@
 .searchbar-container{
     display: flex;
     padding-left: 20px;
+    --ion-background-color: white;
 }
 .searchbar-icon-container{
     color: black;
@@ -24,4 +25,7 @@
     transform: translate3d(-50%,-50%,0);
     font-size: 20px;
     color: black;
+}
+.searchbar-clear-hover:hover{
+    color: red;
 }

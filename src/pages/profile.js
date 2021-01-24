@@ -1,7 +1,7 @@
 import { IonButton, IonCheckbox, IonContent, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonPage, IonThumbnail } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import './profile.css';
-import img from '../images/test.jpg';
+import img from '../images/defaultImage.jpg';
 import { imagesOutline } from 'ionicons/icons';
 import tools from '../components/Tools';
 import { data } from '../database/database';
@@ -53,12 +53,15 @@ const Profile = () =>{
                                         addUserInfo("t",e.detail.value);
                                     }} value={toUpload.title}/>
                                 </IonItem>
-                                <IonItem>
-                                    <IonLabel position="floating">Item Price</IonLabel>
-                                    <IonInput onIonChange={(e)=>{
-                                        addUserInfo("p",e.detail.value);
-                                    }} value={toUpload.price} type="number"/>
-                                </IonItem>
+                                <div className="profile-dollar-sign-container">
+                                    <span className="profile-dollar-sign">$</span>
+                                    <IonItem>
+                                        <IonLabel position="floating">Item Price</IonLabel>
+                                        <IonInput onIonChange={(e)=>{
+                                            addUserInfo("p",e.detail.value);
+                                        }} defaultValue="$" value={toUpload.price} type="number"/>
+                                    </IonItem>
+                                </div>
                                 <IonItem>
                                     <IonLabel position="floating">Item Details</IonLabel>
                                     <IonInput onIonChange={(e)=>{
@@ -68,7 +71,10 @@ const Profile = () =>{
                             </IonList>
                         </IonList>
                         <IonList class="profile-image-side">
-                            <IonThumbnail class="profile-upload-image">
+                            <IonThumbnail onClick={()=>{
+                                let element = document.getElementById("profile-choose-file");
+                                if (element) element.click();
+                            }} class="profile-upload-image">
                                 <IonImg src={toUpload.image}/>
                             </IonThumbnail>
                         </IonList>

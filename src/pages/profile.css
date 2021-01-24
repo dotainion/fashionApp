@@ -49,6 +49,14 @@
     color: white;
     background-color: var(--sys-color);
 }
+.profile-dollar-sign-container{
+    position: relative;
+}
+.profile-dollar-sign{
+    position: absolute;
+    z-index: 99;
+    top: 50%;
+}
 
 @media screen and (max-width:767px){
     .profile-container{

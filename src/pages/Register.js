@@ -5,6 +5,8 @@ import axios from 'axios';
 import { TextStyle } from '../widgets/textStyle';
 import './Register.css';
 import { auth } from '../auth/authentication';
+import { routes } from '../global/routes';
+import { Link } from 'react-router-dom';
 
 
 class Register extends Component{
@@ -36,7 +38,7 @@ class Register extends Component{
         this.rememberChecked = false;
     }
 
-    async ionViewWillEnter(){
+    componentDidMount(){
         document.title = "Register";
     }
 
@@ -138,10 +140,10 @@ class Register extends Component{
                                 }} type="number" value={contact}/>
                             </IonItem>
                             <IonItem style={{color:"navy"}} lines="none">
-                                <IonLabel class="underLine" onClick={()=>{
-                                    tools.clickById("login");
-                                }}>Sign in instead</IonLabel>
-                                <IonButton id="firstPage-go" style={{cursor:"pointer"}} onClick={()=>{
+                                <Link style={{textDecoration:"none"}} to={routes.login}>
+                                    <IonLabel class="underLine" >Sign in instead</IonLabel>
+                                </Link>
+                                <IonButton slot="end" id="firstPage-go" style={{cursor:"pointer"}} onClick={()=>{
                                     var validate = [
                                         [this.registration.firstname,"register-firstname"],
                                         [this.registration.lastname,"register-lastname"],
@@ -268,9 +270,9 @@ class Register extends Component{
                                 }}>Finish</IonButton>
                             </IonItem>
                         </div>
-                        <IonLabel class="underLine" onClick={()=>{
-                            tools.clickById("home")
-                        }} style={{color:"Teal"}}>Back to home</IonLabel>
+                        <Link style={{textDecoration:"none"}} to={routes.home}>
+                            <IonLabel class="underLine" style={{color:"Teal"}}>Back to home</IonLabel>
+                        </Link>
                     </IonList>
                 </IonContent>
             </IonPage>

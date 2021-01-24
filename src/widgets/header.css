@@ -1,5 +1,6 @@
 .header-container{
     user-select: none;
+    --ion-background-color: white;
 }
 .header-cart{
     margin-right: 30px;
@@ -10,7 +11,7 @@
 }
 .header-count-container{
     position: absolute;
-    top: 10px;
+    top: -8px;
     font-size: 15px;
     color: green;
     width: 20px;

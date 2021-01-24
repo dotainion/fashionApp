@@ -6,6 +6,7 @@ import { cart } from './utils';
 import noItemImage from '../images/shopping-bags.jpg';
 import { useHistory } from 'react-router';
 import { routes } from '../global/routes';
+import tools from '../components/Tools';
 
 let elementId = [];
 const removeDuplicate = () =>{
@@ -151,6 +152,7 @@ export const CartDisplay = (props) =>{
                     if (props.onClose) props.onClose();
                 }}>Continue Shopping</div>
                 <div className="cart-checkout-button cart-click" onClick={()=>{
+                    tools.lastRoute(routes.checkout);
                     history.push(routes.checkout);
                     if (props.onClose) props.onClose();
                 }}>Proceed To Checkout</div>

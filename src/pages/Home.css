@@ -1,9 +1,16 @@
+.home-page{
+    background-color: var(--home-bg);
+    --ion-background-color: var(--home-bg);
+}
 .home-item-container{
     position: relative;
     display: inline-block;
-    width: 18.4%;
-    height: 35%;
+    /*width: 18.4%;
+    height: 35%;*/
+    width: 23.4%;
+    height: 70%;
     user-select: none;
+    background-color: white;
 }
 .home-item-enlarge-icon{
     position: absolute;
@@ -31,6 +38,12 @@
     text-align: center;
     font-weight: bold;
 }
+.home-item-info-sub-container{
+    position: absolute;
+    width: 100%;
+    bottom: 20px;
+    font-size: 20px;
+}
 .home-add-button{
     padding: 3px;
     border-radius: 3px;
@@ -38,9 +51,25 @@
     color: white;
     background-color: var(--sys-color);
 }
-.home-no-items-image{
+.home-no-items-container{
     width: 30%;
+    margin-left: 50%;
+    user-select: none;
+    transform: translateX(-50%);
+}
+.home-no-items-image{
+    width: 100%;
     height: auto;
+}
+.home-no-items-content{
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--sys-color);
+    text-shadow: 1px 1px 3px black;
+}
+.home-no-items-content2{
+    text-align: center;
 }
 .home-add-button-hover:hover{
     background-color: red;
@@ -50,6 +79,20 @@
     margin-left: 50%;
     transform: translateX(-50%);
 }
+.home-no-more-records-container{
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    user-select: none;
+    text-shadow: 1px 1px 3px black;
+    background-color: gray;
+}
+.home-no-more-records-icon{
+    font-size: 25px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px lightgray;
+}
 
 @media screen and (max-width:767px){
     .home-item-container{
@@ -58,5 +101,13 @@
         width: 95%;
         height: 99%;
         user-select: none;
+    }
+    .home-search-bar{
+        width: 90%;
+    }
+    .home-no-items-container{
+        width: 90%;
+        margin-left: 50%;
+        transform: translateX(-50%);
     }
 }

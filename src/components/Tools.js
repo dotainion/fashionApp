@@ -84,7 +84,7 @@ class Tools{
             passwordMatch:"Passwords dose not match",
             somethingWrong:"Something went wrong",
             serverDown:"Server is down",
-            wrongPassword:"Username or password is incorrect",
+            wrongPassword:"Invalid username or password",
             userNotExist:"User not exist",
             provideValidCreds:"Please provide valid credentials",
             recoverinfo:"A verification email will be sent to your email address. Please check your email account for your confirmation id after submiting this form.",
@@ -278,6 +278,15 @@ class Tools{
             reader.readAsDataURL(file);
         });
     };
+    lastRoute(value){
+        if (value === "get"){
+            const data = window.localStorage.getItem("last-route");
+            if (data) return JSON.parse(data);
+            return "";
+        }else{
+            window.localStorage.setItem("last-route",JSON.stringify(value));
+        }
+    }
 }
 
 var tools = new Tools()

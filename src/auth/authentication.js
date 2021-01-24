@@ -21,10 +21,18 @@ class Auth{
         try{
             const user = await fb.auth().createUserWithEmailAndPassword(record?.email,record?.password);
             tools.saveCreds(record?.email,record?.password,user.user.uid);
-            data.addUser(user.user.uid,record)
+            data.addUser(user.user.uid,record);
             return true;
         }catch(error){
             return false;
+        }
+    }
+    async signOut(){
+        const anonymous = anonymousCreds;
+        const creds = tools.getCreds();
+        if (creds.id !== anonymous.id){
+            await fb.auth().signOut();
+            this.signIn(anonymous.email,anonymous.password);
         }
     }
     isLogin(){
@@ -33,19 +41,19 @@ class Auth{
         const user = fb.auth().currentUser;
         const creds = tools.getCreds();
         if (user !== null && user?.uid !== anonymousCreds.id) return true;
-        else if (creds && user?.uid !== anonymousCreds.id){ 
+        else if (creds.username && creds?.id !== anonymousCreds.id){ 
             this.signIn(creds.username,creds.password);
             return true;
         }
         return false;
     }
-    anonymous(){
+    async anonymous(){
         //if user is not logged in then
         //login with anonymouse credentials
         //this only allow login for home page
         if (!this.isLogin()){
             const creds = anonymousCreds;
-            this.signIn(creds.email,creds.password);
+            await this.signIn(creds.email,creds.password);
         }
     }
 }

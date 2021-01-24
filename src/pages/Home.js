@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading, IonSearchbar } from '@ionic/react';
+import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading, IonSearchbar, IonList } from '@ionic/react';
 import React, { Component, useRef } from 'react';
 import './Home.css';
 import { Menu } from '../components/Menu';
@@ -10,12 +10,18 @@ import { searchOutline } from 'ionicons/icons';
 import { CartDisplay } from '../cart/cartDisplay';
 import { cart } from '../cart/utils';
 import { auth } from '../auth/authentication';
+import { LargeView } from '../widgets/largeView';
+import { MdCloudOff } from 'react-icons/md';
 
 
 class Home extends Component{
     constructor(){
         super()
+
+        this.scrollRef = React.createRef();
+
         this.showLoading = true;
+        this.showNoData = false;
 
         this.cartOpen = false;
         this.cartData = [];
@@ -27,23 +33,36 @@ class Home extends Component{
             data: undefined,
             qty: null
         };;
+        this.showLargeView = {
+            state: false,
+            data: null
+        };
 
         this.records = [];
-
-        this.searchLimit = 50;
+        
+        this.limit = 50
+        this.searchLimit = this.limit;
+        this.searchValue = "";
     };
     limitIterate(isMoreCheck=false){
         if (isMoreCheck){
-            if (this.records.length >= this.searchLimit) return true;
-            else return false;
-        }else if (this.records.length >= this.searchLimit){
-            this.searchLimit += this.searchLimit;
+            if (this.records.length + this.limit <= this.searchLimit){
+                return true;
+            }return false;
+        }else{
+            if (this.records.length >= this.searchLimit){
+                this.searchLimit += this.limit;
+            }
         }
     }
-    async search(value){
-        if (!value){
+    async search(value=""){
+        if (this.limitIterate(true)){
             this.showLoading = true;
-            this.setState({showLoading:this.showLoading});
+            this.showNoData = false;
+            this.setState({
+                showLoading:this.showLoading,
+                showNoData:this.showNoData
+            });
             this.records = await data.search(value,this.searchLimit);
             this.showLoading = false;
             this.setState({
@@ -51,11 +70,14 @@ class Home extends Component{
                 showLoading:this.showLoading
             });
             this.limitIterate();
+        }else{
+            this.showNoData = true;
+            this.setState({showNoData:this.showNoData});
         }
     }
     async ionViewWillEnter(){
         document.title = "Home";
-        auth.anonymous();
+        await auth.anonymous();
         const res = await data.getData(this.searchLimit);
         this.records = res.records;
         this.showLoading = false;
@@ -63,6 +85,7 @@ class Home extends Component{
             records:this.records,
             showLoading:this.showLoading
         });
+        this.limitIterate();
     }
     addToCart(item){
         cart.add(item);
@@ -93,10 +116,11 @@ class Home extends Component{
     }
     render(){
         return(
-            <IonPage>
+            <IonPage className="home-page">
                 <Header 
                     cart
                     sales
+                    signout
                     count={cart.get()?.length}
                     cartClick={()=>{
                         this.setItemInCart();
@@ -123,7 +147,7 @@ class Home extends Component{
                     }}
                     message={'Please wait...'}
                     duration={5000}
-                    />
+                />
                 <IonAlert
                     isOpen={this.showAlert}
                     onDidDismiss={() =>{
@@ -186,48 +210,91 @@ class Home extends Component{
                         }} slot="end">Save</IonButton>
                     </IonItem>
                 </IonPopover>
+
+                <LargeView 
+                    state={this.showLargeView.state}
+                    data={this.showLargeView.data}
+                    onAdd={(item)=>{
+                        this.checkDuplication(item);
+                    }}
+                    onClose={()=>{
+                        this.showLargeView = {
+                            state: false,
+                            data: null
+                        }
+                        this.setState({showLargeView:this.showLargeView});
+                    }}
+                />
                 
                 <div className="home-search-bar">
                     <Searchbar
                         onSearch={(value)=>{
+                            this.searchLimit = this.limit;
+                            this.records.length = 0;
                             this.search(value);
                         }}
                         onClear={()=>{
-
+                            this.searchValue = "";
                         }} 
                         onChange={(value)=>{
-
+                            this.searchValue = value;
                         }}
                     />
                 </div>
 
-                <IonContent id="scroll-content" onIonScroll={(e)=>{
-                    const element = document.getElementById('scroll-content');
-                    console.log(element.clientHeight);
-                    console.log(e.detail.scroll);
+                <IonContent ref={this.scrollRef} onIonScroll={async(e)=>{
+                    const scrollElement = await this.scrollRef.current?.getScrollElement()
+                    var scrolHightFullLength = scrollElement?.scrollHeight;
+                    var scrollHeightContainer = this.scrollRef.current?.scrollHeight
+                    if (scrolHightFullLength && scrollHeightContainer){
+                        var bottomValue = scrolHightFullLength - scrollHeightContainer;
+                        if (bottomValue <= e.detail.scrollTop){
+                            await this.search(this.searchValue);
+                        }
+                    }
                 }} scrollEvents={true}>
                     {
                         this.records.length?
                         this.records.map((info, key)=>(
                             <IonCard key={key} class="home-item-container">
-                                <IonIcon class="home-item-enlarge-icon" icon={searchOutline}/>
+                                <IonIcon class="home-item-enlarge-icon" onMouseEnter={()=>{
+                                    this.showLargeView = {
+                                        state: true,
+                                        data: info
+                                    }
+                                    this.setState({showLargeView:this.showLargeView});
+                                }} icon={searchOutline}/>
                                 <IonThumbnail class="home-item-image">
                                     <IonImg src={info?.record?.image}/>
                                 </IonThumbnail>
                                 <div className="home-item-info-container">
-                                    <div>{info?.record?.title || "Not Provided"}</div>
-                                    <div>${info?.record?.price || "Not Provided"}</div>
-                                    <div className="home-add-button home-add-button-hover" onClick={()=>{
-                                        this.checkDuplication(info);
-                                    }}>Add To Cart</div>
+                                    <div className="home-item-info-sub-container">
+                                        <div>{info?.record?.title || "Not Provided"}</div>
+                                        <div>${info?.record?.price || "Not Provided"}</div>
+                                        <div className="home-add-button home-add-button-hover" onClick={()=>{
+                                            this.checkDuplication(info);
+                                        }}>Add To Cart</div>
+                                    </div>
                                 </div>
                             </IonCard>
                         )):
-                        <IonThumbnail class="home-no-items-image">
-                            <IonImg src={no_item_img}/>
-                        </IonThumbnail>
+                        <IonList class="home-no-items-container">
+                            <IonThumbnail class="home-no-items-image">
+                                <IonImg src={no_item_img}/>
+                            </IonThumbnail>
+                            <IonItem class="home-no-items-content" lines="full">
+                                <IonLabel>No Results</IonLabel>
+                            </IonItem>
+                            <IonItem  class="home-no-items-content2"lines="none">
+                                <IonLabel>Try to search by a different different key word</IonLabel>
+                            </IonItem>
+                        </IonList>
                     }
                 </IonContent>
+                <IonList hidden={!this.showNoData} class="home-no-more-records-container">
+                    <MdCloudOff className="home-no-more-records-icon"/>
+                    <IonLabel>No more records</IonLabel>
+                </IonList>
             </IonPage>
         );
     };
