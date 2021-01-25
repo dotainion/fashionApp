@@ -57,47 +57,47 @@ const toolSection = [
 
 export const Menu = () => {
     return (
-        <IonMenu contentId="menu" type="overlay" className="menuMain">
+        <IonMenu contentId="menu" type="overlay">
             <IonContent class="menu-container">
-            <IonList>
-                <IonListHeader>FASHION</IonListHeader>
-                &nbsp;&nbsp;
-                <IonNote>Fashion App</IonNote>
-                {appPages.map((appPage, index) => {
-                return (
+                <IonList>
+                    <IonListHeader class="menu-item-header">FASHION</IonListHeader>
+                    &nbsp;&nbsp;
+                    <IonNote class="menu-item-header">Fashion App</IonNote>
+                    {appPages.map((appPage, index) => {
+                    return (
+                        <IonMenuToggle key={index} autoHide={false}>
+                            <IonItem class="menu-items" routerLink={appPage.url} routerDirection="none" lines="none">
+                                <IonIcon class="menu-icon" slot="start" icon={appPage.icon} />
+                                <IonLabel>{appPage.title}</IonLabel>
+                            </IonItem>
+                        </IonMenuToggle>
+                    );
+                    })}
+                </IonList>
+        
+                <IonList>
+                    <IonListHeader class="menu-item-header">Help/Information</IonListHeader>
+                    {labels.map((settings, index) => (
                     <IonMenuToggle key={index} autoHide={false}>
-                    <IonItem className="menuItemContainer" routerLink={appPage.url} routerDirection="none" lines="none">
-                        <IonIcon color="tertiary" slot="start" icon={appPage.icon} />
-                        <IonLabel>{appPage.title}</IonLabel>
-                    </IonItem>
+                        <IonItem class="menu-items" lines="none">
+                            <IonIcon class="menu-icon" slot="start" icon={settings.icon} />
+                            <IonLabel>{settings.title}</IonLabel>
+                        </IonItem>
                     </IonMenuToggle>
-                );
-                })}
-            </IonList>
-    
-            <IonList>
-                <IonListHeader>Settings</IonListHeader>
-                {labels.map((settings, index) => (
-                <IonMenuToggle key={index} autoHide={false}>
-                    <IonItem className="menuItemContainer" routerLink={settings.url} lines="none">
-                    <IonIcon color="tertiary" slot="start" icon={bookmarkOutline} />
-                    <IonLabel>{settings.title}</IonLabel>
-                    </IonItem>
-                </IonMenuToggle>
-                ))}
-            </IonList>
+                    ))}
+                </IonList>
 
-            <IonList>
-                <IonListHeader>Settings</IonListHeader>
-                {toolSection.map((settings, index) => (
-                <IonMenuToggle key={index} autoHide={false}>
-                    <IonItem className="menuItemContainer" routerLink={settings.url} lines="none">
-                    <IonIcon color="tertiary" slot="start" icon={bookmarkOutline} />
-                    <IonLabel>{settings.title}</IonLabel>
-                    </IonItem>
-                </IonMenuToggle>
-                ))}
-            </IonList>
+                <IonList>
+                    <IonListHeader class="menu-item-header">Settings</IonListHeader>
+                    {toolSection.map((settings, index) => (
+                    <IonMenuToggle key={index} autoHide={false}>
+                        <IonItem class="menu-items" routerLink={settings.url} lines="none">
+                            <IonIcon class="menu-icon" slot="start" icon={settings.icon} />
+                            <IonLabel>{settings.title}</IonLabel>
+                        </IonItem>
+                    </IonMenuToggle>
+                    ))}
+                </IonList>
             </IonContent>
         </IonMenu>
     );

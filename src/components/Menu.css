@@ -1,21 +1,13 @@
 .menu-container{
   user-select: none;
+  --ion-background-color: rgb(245, 248, 248);
 }
-.itemStyle:hover{
-    cursor: pointer;
-    color:aqua;
+.menu-item-header{
+  color: rgb(4, 146, 202);
 }
-
-.backOnClick:active{
-  background-color: lightgray;
+.menu-items{
+  color: rgb(2, 177, 247);
 }
-
-.backButtonStyle{
-  font-size:30px;
-  text-align:center;
-  padding-top:5px;
-  border-radius:25px;
-  width:40px;
-  height:40px;
+.menu-icon{
+  color: rgb(2, 177, 247);
 }
-

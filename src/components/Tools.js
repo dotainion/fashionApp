@@ -1,9 +1,34 @@
 import { isPlatform } from '@ionic/react';
-var fs = require('fs');
 
+
+
+class Address{
+    getCities(){
+        return[
+            "St. Andrew",
+            "St. David",
+            "St. George",
+            "St. John",
+            "St. Mark",
+            "St. Patrick",
+        ]
+    }
+    getAddress(){
+        return[
+            "Tempe",
+        ]
+    }
+    getStates(){
+        return[
+            "Grenada",
+        ]
+    }
+}
 
 class Tools{
     constructor(){
+        this.address = new Address();
+
         this.index = 0;
 
         this.cartItems = [];
@@ -108,41 +133,12 @@ class Tools{
         }
     }
 
-    saveCartItems(items){
-        window.localStorage.setItem("cart",JSON.stringify(items));
-    }
-
-    getSaveCartItems(){
-        var cartItem = JSON.parse(window.localStorage.getItem("cart"));
-        if (cartItem){
-            return cartItem;
-        }
-        return "";
-    }
-
-    cartEmpty(){
-        if (this.cartItems.length <= 0){
-            return false;
-        }else{
+    isMobile(){
+        if (window.innerWidth <= 767){
             return true;
-        }
-    }
-
-    platform(test=false){
-        if (!test){
-            if (isPlatform("mobile") || isPlatform("tablet") || isPlatform("ios")){
-                return true;
-            }else{
-                return false;
-            }
         }else{
-            if (window.innerWidth < 500){
-                return true;
-            }else{
-                return false;
-            }
-        }
-        
+            return false;
+        }        
     }
 
     cartTotal(){

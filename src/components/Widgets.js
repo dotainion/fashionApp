@@ -10,7 +10,7 @@ class Widgets{
     BottomNavMobileBar(){
         return(
             <>
-                <IonFooter hidden={tools.compare(tools.platform(),true,false,true)}>
+                <IonFooter hidden={tools.compare(tools.isMobile(),true,false,true)}>
                     <IonToolbar>
                         <IonTitle>{tools.MSG.APPNAME}</IonTitle>
                     </IonToolbar>
@@ -22,7 +22,7 @@ class Widgets{
     BottomNavWebInfo(){
         return(
             <>
-                <div hidden={tools.compare(tools.platform(),true,true,false)} 
+                <div hidden={tools.compare(tools.isMobile(),true,true,false)} 
                     style={{width:"100%", backgroundColor:"SteelBlue",paddingTop:"10px",bottom:0,position:"absolute"}}>
                     <IonItem color="medium" style={{marginBottom:"20px"}}>
                         <div style={{float:"right",width:"100%",paddingTop:"20px",height:"130px"}}>
@@ -172,8 +172,8 @@ class Widgets{
         var style = {
             up:{
                 position: "fixed",
-                marginTop: tools.compare(tools.platform(),true,"20%","7%"),
-                marginRight: tools.compare(tools.platform(),true,"0px","20px"),
+                marginTop: tools.compare(tools.isMobile(),true,"20%","7%"),
+                marginRight: tools.compare(tools.isMobile(),true,"0px","20px"),
                 right: "0",
                 zIndex: "999",
                 fontSize: "40px",
@@ -181,8 +181,8 @@ class Widgets{
             },
             down:{
                 position: "fixed",
-                marginRight: tools.compare(tools.platform(),true,"0px","20px"),
-                marginBottom: tools.compare(tools.platform(),true,"20%","7%"),
+                marginRight: tools.compare(tools.isMobile(),true,"0px","20px"),
+                marginBottom: tools.compare(tools.isMobile(),true,"20%","7%"),
                 right: "0",
                 bottom:"0",
                 zIndex: "999",
@@ -255,7 +255,7 @@ class Widgets{
         const verticalText = "More options";
         return(
             <>
-                <div hidden={tools.compare(tools.platform(),true,true,false)} onClick={()=>{
+                <div hidden={tools.compare(tools.isMobile(),true,true,false)} onClick={()=>{
                     tools.clickById("side-menu-button")
                 }} style={mainStyle}>
                     <div style={subStyle1}>

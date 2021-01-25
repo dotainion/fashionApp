@@ -7,6 +7,7 @@ import noItemImage from '../images/shopping-bags.jpg';
 import { useHistory } from 'react-router';
 import { routes } from '../global/routes';
 import tools from '../components/Tools';
+import { DeleteConfirm } from '../widgets/deleteConfirm';
 
 let elementId = [];
 const removeDuplicate = () =>{
@@ -39,7 +40,6 @@ export const CartDisplay = (props) =>{
         removeDuplicate();
         let total = 0;
         for (let id of elementId){
-            console.log(id)
             const el = document.getElementById(id);
             if (el) total += parseFloat(el.innerHTML);
         }
@@ -51,37 +51,25 @@ export const CartDisplay = (props) =>{
         }} onDidPresent={()=>{
             updateGrandTotal();
         }} class="cart-main-container">
-            <IonAlert
-                isOpen={showAlert.state}
-                onDidDismiss={() =>{
+            <DeleteConfirm
+                state={showAlert.state}
+                onClose={()=>{
                     setShowAlert({
                         state: false,
                         data: null
                     });
                 }}
-                cssClass=''
-                header="Alert!!"
-                subHeader="Confirmation"
-                message="Are you sure you will like to delete this item?"
-                buttons={[
-                    {
-                        text: 'Cancel',
-                        role: 'cancel',
-                        cssClass: 'secondary',
-                        handler: () => {
-                            setShowAlert({
-                                state: false,
-                                data: null
-                            });
-                        }
-                    },{
-                        text: 'Okay',
-                        handler: () => {
-                            cart.delete(showAlert.data?.id);
-                            if (props.refresh) props.refresh();
-                        }
-                    }
-                ]}
+                onAccept={()=>{
+                    cart.delete(showAlert.data?.id);
+                    if (props.refresh) props.refresh();
+                    updateGrandTotal();
+                }}
+                onDecline={()=>{
+                    setShowAlert({
+                        state: false,
+                        data: null
+                    });
+                }}
             />
             <div className="cart-close">
                 <IonIcon class="cart-hover" onClick={()=>{

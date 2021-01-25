@@ -15,6 +15,16 @@ class Database{
         const dataToAdd = db.collection("fashion");
         await dataToAdd.add(record);
     }
+    async getDataById(id){
+        let getDataStore = [];
+        const dataToGEt = db.collection("fashion").where("userId","==",id);
+        const rec = await dataToGEt.get();
+        rec.forEach((record)=>{
+            const info = record.data();
+            getDataStore.push({id:record.id,record: info});
+        });
+        return getDataStore;
+    }
     async getData(limit=5){
         let storeRecords = [];
         const dataToGet = db.collection("fashion").limit(limit);
@@ -24,6 +34,14 @@ class Database{
             storeRecords.push({id:record.id,record: info});
         });
         return {state:true,records:storeRecords};
+    }
+    async updateRecord(id, record){
+        const dataToUpdate = db.collection("fashion").doc(id);
+        await dataToUpdate.update(record);
+    }
+    async deleteRecord(id){
+        const dataToUpdate = db.collection("fashion").doc(id);
+        await dataToUpdate.delete();
     }
     async search(searchBy,limit=5){
         let allRecords = await this.getData(limit);

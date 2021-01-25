@@ -70,7 +70,7 @@ class Login extends Component{
         if (res){
             if (this.rememberChecked){
                 const creds = this.userCreds;
-                this.saveCredentials(creds.username, creds.password);
+                this.saveCredentials(creds?.username, creds?.password);
             }else this.clearCredentials();
             this.routeDirection = tools.lastRoute("get");
             this.setState({routeDirection:this.routeDirection})

@@ -119,6 +119,7 @@ class Home extends Component{
             <IonPage className="home-page">
                 <Header 
                     cart
+                    menu
                     sales
                     signout
                     count={cart.get()?.length}
@@ -126,7 +127,6 @@ class Home extends Component{
                         this.setItemInCart();
                     }}
                 />
-                <Menu/>
                 <CartDisplay 
                     data={this.cartData}
                     state={this.cartOpen}

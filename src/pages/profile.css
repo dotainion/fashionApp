@@ -1,19 +1,32 @@
 .optional{
     color: skyblue;
 }
+.profile-main-header{
+    user-select: none;
+}
+.profile-main-header-hover:hover{
+    color: var(--sys-color);
+}
 .profile-header{
     text-align: center;
     font-weight: bold;
     font-size: 25px;
     color: var(--sys-color);
 }
+.profile-list-menu-button{
+    display: none;
+    font-size: 30px;
+    margin-left: 10px;
+}
+.profile-flext-container{
+    display: flex;
+    padding: 20px;
+    height: 95vh;
+}
 .profile-container{
     padding: 5px;
     width: 50%;
-    margin-top: 40px;
-    margin-left: 50%;
     user-select: none;
-    transform: translateX(-50%);
     background-color: var(--sys-color);
 }
 .profile-spliter{
@@ -57,6 +70,76 @@
     z-index: 99;
     top: 50%;
 }
+.profile-list-container{
+    width: 50%;
+}
+.profile-list-header{
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--sys-color);
+    border-bottom: 1px solid lightgray;
+}
+.profile-item-list{
+    height: 100%;
+    overflow-y: auto;
+}
+.profile-item-list-image{
+    width: 30%;
+    height: auto;
+}
+.profile-item-list-input-container{
+    font-size: 18px;
+    margin: 10px;
+}
+.profile-item-list-input{
+    border: none;
+    outline: none;
+}
+.profile-item-list-textarea{
+    outline: none;
+    width: 100%;
+    min-height: 50px;
+    max-height: 100px;
+    font-size: 16px;
+    overflow-y: auto;
+    resize: none;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid gray;
+    background-color: lightgray;
+}
+.profile-item-list-save-button-container{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 999;
+}
+.profile-item-list-save-button{
+    color: white;
+    text-align: center;
+    padding: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: bold;
+    user-select: none;
+    margin-bottom: 10px;
+    background-color: var(--sys-color);
+    box-shadow: 2px 2px 5px black;
+}
+.profile-button-click:active{
+    box-shadow: 1px 1px 2px black;
+}
+.profile-item-delete{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 25px;
+    color: orange;
+}
+.profile-item-delete-hover:hover{
+    color: red;
+}
 
 @media screen and (max-width:767px){
     .profile-container{
@@ -67,5 +150,20 @@
         user-select: none;
         transform: translateX(-50%);
         background-color: var(--sys-color);
+    }
+    .profile-flext-container{
+        display: block;
+        padding: 0;
+        height: 90vh;
+    }
+    .profile-list-container{
+        position: absolute;
+        top: 0;
+        z-index: 999;
+        width: 100%;
+        height: 90vh;
+    }
+    .profile-list-menu-button{
+        display: block;
     }
 }

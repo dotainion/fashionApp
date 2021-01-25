@@ -41,8 +41,8 @@ class Auth{
         const user = fb.auth().currentUser;
         const creds = tools.getCreds();
         if (user !== null && user?.uid !== anonymousCreds.id) return true;
-        else if (creds.username && creds?.id !== anonymousCreds.id){ 
-            this.signIn(creds.username,creds.password);
+        else if (creds?.username && creds?.id !== anonymousCreds.id){ 
+            this.signIn(creds?.username,creds?.password);
             return true;
         }
         return false;

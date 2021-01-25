@@ -12,6 +12,9 @@
 .checkout-type-main-container{
     width: 60%;
 }
+.checkout-address-card-main-container{
+    display: flex;
+}
 .checkout-type-main-sub-container{
     display: flex;
     padding: 10px;
@@ -56,4 +59,69 @@
 }
 .checkout-cart-close-hover:hover{
     color: red;
+}
+.checkout-shipping-info-container{
+    width: 50%;
+    margin: 5px;
+    border: 1px solid lightgray;
+}
+.checkout-address-header{
+    position: absolute;
+    top: 5px;
+    font-size: 12px;
+}
+.checkout-address-options{
+    border: none;
+    outline: none;
+    width: 100%;
+    margin-bottom: -10px;
+}
+.checkout-payment-container{
+    width: 50%;
+    margin: 5px;
+    border: 1px solid lightgray;
+}
+.checkout-cards{
+    font-size: 50px;
+    margin-right: 5px;
+    color: rgb(12, 78, 131);
+}
+.checkout-input{
+    width: 70%;
+    border: 1px solid lightgray;
+}
+.checkout-button{
+    text-align: center;
+}
+
+@media screen and (max-width:767px){
+    .checkout-main-container{
+        display: block;
+    }
+    .checkout-cart-list-container{
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 999;
+        display: block;
+    }
+    .checkout-type-container{
+        margin: 5px;
+    }
+    .checkout-type-main-container{
+        width: 100%;
+    }
+    .checkout-address-card-main-container{
+        display: block;
+        padding: 5px;
+    }
+    .checkout-shipping-info-container{
+        width: 100%;
+        margin: 0;
+    }
+    .checkout-payment-container{
+        width: 100%;
+        margin: 0;
+        margin-top: 10px;
+    }
 }

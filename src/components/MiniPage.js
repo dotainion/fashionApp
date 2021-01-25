@@ -17,13 +17,13 @@ class ModelsPopUp{
                 }} cssClass='my-custom-class'>
                     <IonHeader>
                         <IonToolbar>
-                            <IonButtons hidden={tools.compare(tools.platform(),true,false,true)} slot="start">
+                            <IonButtons hidden={tools.compare(tools.isMobile(),true,false,true)} slot="start">
                                 <IonBackButton defaultHref="" onClick={()=>{
                                     setModelShow(false);
                                 }}/>
                             </IonButtons>
                             <IonTitle>Favorites</IonTitle>
-                            <IonButtons hidden={tools.compare(tools.platform(),true,true,false)} slot="end">
+                            <IonButtons hidden={tools.compare(tools.isMobile(),true,true,false)} slot="end">
                                 <IonIcon style={{fontSize:"30px"}} icon={close} onClick={()=>{
                                     setModelShow(false);
                                 }}/>
@@ -64,7 +64,7 @@ class ModelsPopUp{
                 }} cssClass='my-custom-class'>
                     <IonHeader>
                         <IonToolbar>
-                            <IonButtons hidden={tools.compare(tools.platform(),true,false,true)} slot="start">
+                            <IonButtons hidden={tools.compare(tools.isMobile(),true,false,true)} slot="start">
                                 <IonBackButton defaultHref="" onClick={()=>{
                                     if (props.onClose) props.onClose();
                                 }}/>
@@ -73,7 +73,7 @@ class ModelsPopUp{
                                 <IonTitle>Cart</IonTitle>
                                 <IonIcon icon={cart}/>
                             </IonItem>
-                            <IonItem hidden={tools.compare(tools.platform(),true,true,false)} slot="end" lines="none">
+                            <IonItem hidden={tools.compare(tools.isMobile(),true,true,false)} slot="end" lines="none">
                                 <IonIcon color={closeColor} icon={close} onClick={()=>{
                                    if (props.onClose) props.onClose();
                                 }} onMouseEnter={()=>{
@@ -97,8 +97,8 @@ class ModelsPopUp{
                             tools.cartItems.map((post, i)=>
                                 <IonCard key={i}>
                                     <IonItem>
-                                        <IonThumbnail style={{width:tools.compare(tools.platform(),true,"105px","210px"),
-                                                height:tools.compare(tools.platform(),true,"80px","160px")}} slot="start">
+                                        <IonThumbnail style={{width:tools.compare(tools.isMobile(),true,"105px","210px"),
+                                                height:tools.compare(tools.isMobile(),true,"80px","160px")}} slot="start">
                                             <IonImg src={IMG.base64+post.img} />
                                         </IonThumbnail>
                                         {/*to display item details in cart*/}
@@ -108,7 +108,7 @@ class ModelsPopUp{
                                             <p style={{textAlign:"center"}}>{post.detail}</p>
                                         </div>
                                         {/*to change quantity in cart*/}
-                                        <div style={{color:"navy",maxWidth:tools.compare(tools.platform(),true,"50px","70px"),margin:"20px"}}>
+                                        <div style={{color:"navy",maxWidth:tools.compare(tools.isMobile(),true,"50px","70px"),margin:"20px"}}>
                                             <div style={{textAlign:"center",width:"100%"}}>
                                             <IonLabel style={{textAlign:"center"}}>Qty</IonLabel>
                                             <IonInput type="number" style={{border:"1px solid #000",height:"20px",

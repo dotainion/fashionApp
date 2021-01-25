@@ -2,6 +2,15 @@
     user-select: none;
     --ion-background-color: white;
 }
+.header-toggle-menu{
+    display: none;
+    font-size: 30px;
+    margin-left: 10px;
+}
+.header-title{
+    font-size: 20px;
+    margin-right: 20px;
+}
 .header-cart{
     margin-right: 30px;
     font-size: 20px;
@@ -24,4 +33,14 @@
     top: 50%;
     left: 50%;
     transform: translate3d(-50%,-50%,0);
+}
+
+@media screen and (max-width:767px){
+    .header-title{
+        font-size: 20px;
+        margin-right: 10px;
+    }
+    .header-toggle-menu{
+        display: block;
+    }
 }
