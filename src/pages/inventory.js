@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonRouterOutlet, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewWillEnter, useIonViewWillLeave, withIonLifeCycle } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react';
-import './profile.css';
+import './inventory.css';
 import img from '../images/defaultImage.jpg';
 import { closeOutline, cloudUploadOutline, imagesOutline, listOutline, radioButtonOnOutline } from 'ionicons/icons';
 import tools from '../components/Tools';
@@ -11,10 +11,12 @@ import { Header } from '../widgets/header';
 
 
 const Profile = () =>{
-    const profileToggleRef = useRef();
+    const inventoryToggleRef = useRef();
     const orderToggleRef = useRef();
-    const profileSwitchRef = useRef();
+    const inventorySwitchRef = useRef();
     const orderSwitchRef = useRef();
+    const uploadToggleRef = useRef();
+    const uploadSwitchRef = useRef();
     const [toUpload, setToUpload] = useState({
         image: img, title: "",price: "", detail: "", userId: ""
     });
@@ -82,26 +84,39 @@ const Profile = () =>{
         price.value = priceDefault;
         detail.value = detailDefault;
     }
-    const listener = () =>
-        setInterval(()=>{
-            try{
-                let element = document.getElementById("profile-list-container");
-                if (!tools.isMobile()) element.style.display = "";
-            }catch{}
-            
-        },400);
+    const togglePage = (cmd) =>{
+        const bgReset = () =>{
+            orderToggleRef.current.style.backgroundColor = "lightgray";
+            inventoryToggleRef.current.style.backgroundColor = "lightgray";
+            uploadToggleRef.current.style.backgroundColor = "lightgray";
+            inventorySwitchRef.current.hidden = true;
+            orderSwitchRef.current.hidden = true;
+            uploadSwitchRef.current.hidden = true;
+        }
+        bgReset();
+        if (cmd === "inventory"){
+            inventoryToggleRef.current.style.backgroundColor = "white";
+            inventorySwitchRef.current.hidden = false;
+            if (!tools.isMobile()) uploadSwitchRef.current.hidden = false;
+        }else if (cmd === "order"){
+            orderToggleRef.current.style.backgroundColor = "white";
+            orderSwitchRef.current.hidden = false;
+        }else if (cmd === "upload"){
+            uploadToggleRef.current.style.backgroundColor = "white";
+            uploadSwitchRef.current.hidden = false;
+        }else console.log(`${cmd} value not recognize`);
+    }
     useIonViewWillLeave(()=>{
         
     });
     useIonViewWillEnter(()=>{
         document.title = "Sales Upload";
         initialize();
-        listener();
     });
     useEffect(()=>{
-        profileToggleRef.current.style.backgroundColor = "white";
+        inventoryToggleRef.current.style.backgroundColor = "white";
         orderToggleRef.current.style.backgroundColor = "lightgray";
-        profileSwitchRef.current.hidden = false;
+        inventorySwitchRef.current.hidden = false;
         orderSwitchRef.current.hidden = true;
     },[]);
     return(
@@ -109,34 +124,18 @@ const Profile = () =>{
             <Header
                 home
                 menu
-                toggleMenu={{
-                    icon: menu,
-                    onClick: ()=>{
-                        let element = document.getElementById("profile-list-container");
-                        if (element.style.display === "none"){ 
-                            setMenu(cloudUploadOutline);
-                            element.style.display = "";
-                        }else{ 
-                            setMenu(radioButtonOnOutline);
-                            element.style.display = "none";
-                        }
-                    }
-                }}
             />
 
             <IonList className="profile-page-toggle-container">
                 <div className="profile-page-toggle-buttons" onClick={()=>{
-                    profileToggleRef.current.style.backgroundColor = "white";
-                    orderToggleRef.current.style.backgroundColor = "lightgray";
-                    profileSwitchRef.current.hidden = false;
-                    orderSwitchRef.current.hidden = true;
-                }} ref={profileToggleRef}>Sales</div>
+                    togglePage("inventory");
+                }} ref={inventoryToggleRef}>Sales</div>
                 <div className="profile-page-toggle-buttons" onClick={()=>{
-                    orderToggleRef.current.style.backgroundColor = "white";
-                    profileToggleRef.current.style.backgroundColor = "lightgray";
-                    profileSwitchRef.current.hidden = true;
-                    orderSwitchRef.current.hidden = false;
+                    togglePage("order")
                 }} ref={orderToggleRef}>Order Status</div>
+                <div className="profile-page-toggle-buttons" onClick={()=>{
+                    togglePage("upload");
+                }} ref={uploadToggleRef}>Upload</div>
             </IonList>
 
             <DeleteConfirm
@@ -181,8 +180,8 @@ const Profile = () =>{
                     }
                 </IonList>
 
-                <IonList ref={profileSwitchRef} class="profile-flext-container">
-                    <IonList id="profile-list-container" class="profile-list-container">
+                <IonList class="profile-flext-container">
+                    <IonList ref={inventorySwitchRef} class="profile-list-container">
                         <div className="profile-list-header">Store Items</div>
                         <IonList class="profile-item-list">
                             {userRecords.map((item,key)=>(
@@ -228,7 +227,7 @@ const Profile = () =>{
                             ))}
                         </IonList>
                     </IonList>
-                    <IonList class="profile-container">
+                    <IonList ref={uploadSwitchRef} class="profile-container">
                         <IonItem class="profile-header" lines="none">
                             <IonLabel>Upload and Advertise</IonLabel>
                         </IonItem>

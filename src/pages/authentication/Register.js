@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonToolbar, IonTitle, IonButton, IonHeader, IonList, IonCheckbox } from '@ionic/react';
-import tools from '../components/Tools';
+import tools from '../../components/Tools';
 import axios from 'axios';
-import { TextStyle } from '../widgets/textStyle';
+import { TextStyle } from '../../widgets/textStyle';
 import './Register.css';
-import { auth } from '../auth/authentication';
-import { routes } from '../global/routes';
+import { auth } from '../../auth/authentication';
+import { routes } from '../../global/routes';
 import { Link } from 'react-router-dom';
 
 

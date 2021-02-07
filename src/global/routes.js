@@ -3,7 +3,7 @@ class Routes{
     login = "/login";
     recover = "/recover";
     register = "/register";
-    profile = "/profile";
+    inventory = "/inventory";
     checkout = "/checkout";
 }
 

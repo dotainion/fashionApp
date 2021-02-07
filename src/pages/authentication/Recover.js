@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { IonPage, IonItem, IonLabel, IonInput, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonButton } from '@ionic/react';
-import tools from '../components/Tools';
-import { TextStyle } from '../widgets/textStyle';
-import { routes } from '../global/routes';
+import tools from '../../components/Tools';
+import { TextStyle } from '../../widgets/textStyle';
+import { routes } from '../../global/routes';
 import './Recover.css';
 import { Link } from 'react-router-dom';
 

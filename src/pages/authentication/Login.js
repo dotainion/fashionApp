@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { withIonLifeCycle, IonPage, IonItem, IonLabel, IonInput, IonContent, IonHeader, IonToolbar, IonTitle, IonList, IonButton, IonCheckbox, IonLoading } from '@ionic/react';
-import tools from '../components/Tools';
-import { TextStyle } from '../widgets/textStyle';
+import tools from '../../components/Tools';
+import { TextStyle } from '../../widgets/textStyle';
 import './Login.css';
-import { routes } from '../global/routes';
-import { auth } from '../auth/authentication';
+import { routes } from '../../global/routes';
+import { auth } from '../../auth/authentication';
 import { Redirect, Route, useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 

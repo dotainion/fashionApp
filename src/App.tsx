@@ -22,10 +22,10 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Profile from './pages/profile';
-import PasswordRecover from './pages/Recover';
+import Login from './pages/authentication/Login';
+import Register from './pages/authentication/Register';
+import Profile from './pages/inventory';
+import PasswordRecover from './pages/authentication/Recover';
 import { routes } from './global/routes';
 import AuthRouter from './authRoute';
 import CheckOut from './pages/checkOut';
@@ -40,7 +40,7 @@ const App: React.FC = () => (
         <Route path={routes.register} component={Register} exact={true} />
         <Route path={routes.home} component={Home} exact={true} />
         <Route path={routes.checkout} render={() =><AuthRouter component={CheckOut}/>} exact={true} />
-        <Route path={routes.profile} render={() =><AuthRouter component={Profile}/>} exact={true} />
+        <Route path={routes.inventory} render={() =><AuthRouter component={Profile}/>} exact={true} />
         <Route render={()=><Redirect to={routes.home}/>}/>
       </IonRouterOutlet>
     </IonReactRouter>

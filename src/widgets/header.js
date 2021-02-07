@@ -38,8 +38,8 @@ export const Header = (props) =>{
                         history.push(routes.home);
                     }} slot="end">Home</span>
                     <span hidden={!props.sales} className="header-title header-hover" onClick={()=>{
-                        tools.lastRoute(routes.profile);
-                        history.push(routes.profile);
+                        tools.lastRoute(routes.inventory);
+                        history.push(routes.inventory);
                     }} slot="end">Sales</span>
                     <span hidden={!props.cart} className="header-cart header-hover" onClick={()=>{
                         if (props.cartClick) props.cartClick();
