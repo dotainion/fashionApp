@@ -1,17 +1,20 @@
-import { IonButton, IonCard, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonPage, IonTextarea, IonThumbnail, IonTitle, IonToolbar } from '@ionic/react';
-import React, { useEffect, useState } from 'react';
+import { IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonRouterOutlet, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewWillEnter, useIonViewWillLeave, withIonLifeCycle } from '@ionic/react';
+import React, { useEffect, useRef, useState } from 'react';
 import './profile.css';
 import img from '../images/defaultImage.jpg';
 import { closeOutline, cloudUploadOutline, imagesOutline, listOutline, radioButtonOnOutline } from 'ionicons/icons';
 import tools from '../components/Tools';
 import { data } from '../database/database';
-import { useHistory } from 'react-router';
-import { routes } from '../global/routes';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
 import { Header } from '../widgets/header';
 
 
+
 const Profile = () =>{
+    const profileToggleRef = useRef();
+    const orderToggleRef = useRef();
+    const profileSwitchRef = useRef();
+    const orderSwitchRef = useRef();
     const [toUpload, setToUpload] = useState({
         image: img, title: "",price: "", detail: "", userId: ""
     });
@@ -19,6 +22,7 @@ const Profile = () =>{
         state: false,
         data: null
     });
+    const [orders, setOrders] = useState([]);
     const [menu, setMenu] = useState(cloudUploadOutline);
     const [userRecords, setUserRecords] = useState([]);
     const addUserInfo = (cmd,value) =>{
@@ -31,9 +35,9 @@ const Profile = () =>{
         });
     };
 
-    const sendToDatabase = () =>{
+    const sendToDatabase = async() =>{
         if (toUpload.title && toUpload.price){
-            data.addData(toUpload);
+            await data.addData(toUpload);
             setToUpload({
                 image: img, title: "",
                 price: "", detail: "", userId: ""
@@ -46,6 +50,10 @@ const Profile = () =>{
         const user = tools.getCreds();
         const record = await data.getDataById(user?.id);
         setUserRecords(record);
+        const order = await data.getOrder(user?.id);
+        setTimeout(()=>{
+            setOrders(order);
+        },500);
     }
     const saveButtonHidden = (id,state=false) =>{
         let element = document.getElementById(id);
@@ -74,18 +82,28 @@ const Profile = () =>{
         price.value = priceDefault;
         detail.value = detailDefault;
     }
-    const listener = () =>{
+    const listener = () =>
         setInterval(()=>{
-            let element = document.getElementById("profile-list-container");
-            if (!tools.isMobile()) element.style.display = "";
+            try{
+                let element = document.getElementById("profile-list-container");
+                if (!tools.isMobile()) element.style.display = "";
+            }catch{}
+            
         },400);
-    }
-    useEffect(()=>{
+    useIonViewWillLeave(()=>{
+        
+    });
+    useIonViewWillEnter(()=>{
         document.title = "Sales Upload";
         initialize();
         listener();
+    });
+    useEffect(()=>{
+        profileToggleRef.current.style.backgroundColor = "white";
+        orderToggleRef.current.style.backgroundColor = "lightgray";
+        profileSwitchRef.current.hidden = false;
+        orderSwitchRef.current.hidden = true;
     },[]);
-
     return(
         <IonPage>
             <Header
@@ -105,7 +123,22 @@ const Profile = () =>{
                     }
                 }}
             />
-            
+
+            <IonList className="profile-page-toggle-container">
+                <div className="profile-page-toggle-buttons" onClick={()=>{
+                    profileToggleRef.current.style.backgroundColor = "white";
+                    orderToggleRef.current.style.backgroundColor = "lightgray";
+                    profileSwitchRef.current.hidden = false;
+                    orderSwitchRef.current.hidden = true;
+                }} ref={profileToggleRef}>Sales</div>
+                <div className="profile-page-toggle-buttons" onClick={()=>{
+                    orderToggleRef.current.style.backgroundColor = "white";
+                    profileToggleRef.current.style.backgroundColor = "lightgray";
+                    profileSwitchRef.current.hidden = true;
+                    orderSwitchRef.current.hidden = false;
+                }} ref={orderToggleRef}>Order Status</div>
+            </IonList>
+
             <DeleteConfirm
                 state={showAlert.state}
                 onClose={()=>{
@@ -125,7 +158,30 @@ const Profile = () =>{
                 }}
             />
             <IonContent>
-                <IonList class="profile-flext-container">
+                <IonList ref={orderSwitchRef}>
+                    <IonLabel>test order satus</IonLabel>
+                    {
+                        orders.map((order,key)=>(
+                            <IonList key={key}>
+                                {console.log(order)}
+                                <IonThumbnail>
+                                    <IonImg src={order?.record?.image}/>
+                                </IonThumbnail>
+                                <IonItem lines="full">
+                                    <IonLabel>{order?.record?.title}</IonLabel>
+                                </IonItem>
+                                <IonItem lines="full">
+                                    <IonLabel>{order?.record?.price}</IonLabel>
+                                </IonItem>
+                                <IonItem lines="full">
+                                    <IonLabel>{order?.record?.detail}</IonLabel>
+                                </IonItem>
+                            </IonList>
+                        ))
+                    }
+                </IonList>
+
+                <IonList ref={profileSwitchRef} class="profile-flext-container">
                     <IonList id="profile-list-container" class="profile-list-container">
                         <div className="profile-list-header">Store Items</div>
                         <IonList class="profile-item-list">

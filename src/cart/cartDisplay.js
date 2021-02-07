@@ -1,6 +1,6 @@
-import { IonAlert, IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
+import { IonAlert, IonButton, IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
 import { closeOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './cartDisplay.css';
 import { cart } from './utils';
 import noItemImage from '../images/shopping-bags.jpg';
@@ -19,9 +19,17 @@ const removeDuplicate = () =>{
     }
     elementId = uniqueArray;
 }
+
 export const CartDisplay = (props) =>{
     const history = useHistory();
+    let cartListCheck = useRef();
+    cartListCheck = cart.get().length;
     const [grandTotal, setGrandTotal] = useState();
+    const [disableCheckout, setDisableCheckout] = useState({
+        state: false,
+        color: "",
+        shadow: ""
+    })
     const [showAlert, setShowAlert] = useState({
         state: false,
         data: null
@@ -45,6 +53,22 @@ export const CartDisplay = (props) =>{
         }
         setGrandTotal(total);
     }
+    useEffect(()=>{
+        if (cartListCheck <= 0){
+            setDisableCheckout({
+                state: true,
+                color: "gray",
+                shadow: "1px 1px 2px black"
+            });
+        }else{
+            setDisableCheckout({
+                state: false,
+                color: "",
+                shadow: ""
+            });
+        }
+        
+    },[cartListCheck]);
     return(
         <IonModal isOpen={props.state} onDidDismiss={()=>{
             if (props.onClose) props.onClose();
@@ -140,9 +164,14 @@ export const CartDisplay = (props) =>{
                     if (props.onClose) props.onClose();
                 }}>Continue Shopping</div>
                 <div className="cart-checkout-button cart-click" onClick={()=>{
-                    tools.lastRoute(routes.checkout);
-                    history.push(routes.checkout);
-                    if (props.onClose) props.onClose();
+                    if (!disableCheckout.state){
+                        tools.lastRoute(routes.checkout);
+                        history.push(routes.checkout);
+                        if (props.onClose) props.onClose();
+                    }
+                }} style={{
+                    backgroundColor:disableCheckout.color,
+                    boxShadow:disableCheckout.shadow
                 }}>Proceed To Checkout</div>
             </IonList>
         </IonModal>

@@ -1,6 +1,116 @@
 import { isPlatform } from '@ionic/react';
 
-
+class Times{
+    weekAbbrve = [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+    ];
+    monthAbbrve = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ];
+    weekFull = [
+        "Sunday",
+        "Monday",
+        "Tueday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    ];
+    monthFull = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+    index(weekdayOrMonth){
+        let indexed = 0;
+        for (let day of this.weekAbbrve){
+            if (weekdayOrMonth === day){
+                return indexed;
+            }
+            indexed ++;
+        }
+        indexed = 0;
+        for (let day of this.weekFull){
+            if (weekdayOrMonth === day){
+                return indexed;
+            }
+            indexed ++;
+        }
+        indexed = 0;
+        for (let month of this.monthAbbrve){
+            if (weekdayOrMonth === month){
+                return indexed;
+            }
+            indexed ++;
+        }
+        indexed = 0;
+        for (let month of this.monthFull){
+            if (weekdayOrMonth === month){
+                return indexed;
+            }
+            indexed ++;
+        }
+        return null;
+    }
+    getTodaysDate(abbrv=true){
+        let W = ""; 
+        let M = "";
+        const date = new Date();
+        if (abbrv) W = this.weekAbbrve[date.getDay()];
+        else W = this.weekFull[date.getDay()];
+        if (abbrv) M = this.monthAbbrve[date.getMonth()];
+        else M = this.monthFull[date.getDay()];
+        const D = date.getDate().toString();
+        const Y = date.getFullYear().toString();
+        return `${W}/${D}/${M}/${Y}`;
+    }
+    getDates(types="string", month, year){
+        var time = new Date(year, month, 1);
+        var days = [];
+        while (time.getMonth() === month) {
+            const date = new Date(time).getDate();
+            const week = this.weekFull[new Date(time).getDay()];
+            const month = this.monthFull[new Date(time).getMonth()]
+            const year = new Date(time).getFullYear()
+            if (types === "string") days.push(`${week}/${month}/${year}/${date}`);
+            else if (types === "object") days.push({date:date,week:week,month:month,year:year});
+            time.setDate(time.getDate() + 1);
+        }
+        return days;
+    }
+    fullMonthStr(month=new Date().getMonth(), year=new Date().getFullYear()){
+        return this.getDates("string", month, year);
+    }
+    fullMonthObj(month=new Date().getMonth(), year=new Date().getFullYear()){
+        return this.getDates("object", month, year);
+    }
+}
 
 class Address{
     getCities(){
@@ -28,6 +138,7 @@ class Address{
 class Tools{
     constructor(){
         this.address = new Address();
+        this.date = new Times();
 
         this.index = 0;
 

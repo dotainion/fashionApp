@@ -1,12 +1,11 @@
-import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading, IonSearchbar, IonList } from '@ionic/react';
+import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading, IonSearchbar, IonList, IonRefresherContent, IonRefresher, IonHeader, IonToolbar, IonButtons, IonMenuButton } from '@ionic/react';
 import React, { Component, useRef } from 'react';
 import './Home.css';
-import { Menu } from '../components/Menu';
 import { Header } from '../widgets/header';
 import { Searchbar } from '../widgets/searchbar';
 import no_item_img from '../images/shopping-bags.jpg';
 import { data } from '../database/database';
-import { searchOutline } from 'ionicons/icons';
+import { chevronDownCircleOutline, searchOutline } from 'ionicons/icons';
 import { CartDisplay } from '../cart/cartDisplay';
 import { cart } from '../cart/utils';
 import { auth } from '../auth/authentication';
@@ -17,7 +16,7 @@ import { MdCloudOff } from 'react-icons/md';
 class Home extends Component{
     constructor(){
         super()
-
+    
         this.scrollRef = React.createRef();
 
         this.showLoading = true;
@@ -82,10 +81,19 @@ class Home extends Component{
         this.records = res.records;
         this.showLoading = false;
         this.setState({
+            menuId:this.menuId,
             records:this.records,
             showLoading:this.showLoading
         });
         this.limitIterate();
+    }
+    async doRefresh(event){
+        this.searchLimit = this.limit;
+        const res = await data.getData(this.searchLimit);
+        this.records = res.records;
+        this.setState({records:this.records,});
+        this.limitIterate();
+        event.detail.complete();
     }
     addToCart(item){
         cart.add(item);
@@ -114,6 +122,7 @@ class Home extends Component{
         };
         this.setState({showPopover:this.showPopover});
     }
+    
     render(){
         return(
             <IonPage className="home-page">
@@ -127,6 +136,7 @@ class Home extends Component{
                         this.setItemInCart();
                     }}
                 />
+
                 <CartDisplay 
                     data={this.cartData}
                     state={this.cartOpen}
@@ -252,7 +262,15 @@ class Home extends Component{
                             await this.search(this.searchValue);
                         }
                     }
-                }} scrollEvents={true}>
+                }} class="home-main-scroll-container" scrollEvents={true}>
+                    <IonRefresher slot="fixed" onIonRefresh={async(e)=>{this.doRefresh(e)}}>
+                        <IonRefresherContent
+                        pullingIcon={chevronDownCircleOutline}
+                        pullingText="Pull to refresh"
+                        refreshingSpinner="circles"
+                        refreshingText="Refreshing...">
+                        </IonRefresherContent>
+                    </IonRefresher>
                     {
                         this.records.length?
                         this.records.map((info, key)=>(

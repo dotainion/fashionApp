@@ -2,13 +2,14 @@
     background-color: var(--home-bg);
     --ion-background-color: var(--home-bg);
 }
+.home-main-scroll-container{
+    text-align: center;
+}
 .home-item-container{
     position: relative;
     display: inline-block;
-    /*width: 18.4%;
-    height: 35%;*/
-    width: 23.4%;
-    height: 70%;
+    width: 22%;
+    height: 50%;
     user-select: none;
     background-color: white;
 }

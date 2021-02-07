@@ -20,7 +20,7 @@
 }
 .header-count-container{
     position: absolute;
-    top: -8px;
+    top: 8px;
     font-size: 15px;
     color: green;
     width: 20px;

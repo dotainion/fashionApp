@@ -1,5 +1,8 @@
-.menu-container{
+.menu-main-container{
   user-select: none;
+}
+.menu-container{
+  overflow-y: auto;
   --ion-background-color: rgb(245, 248, 248);
 }
 .menu-item-header{

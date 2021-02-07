@@ -21,7 +21,7 @@
 .profile-flext-container{
     display: flex;
     padding: 20px;
-    height: 95vh;
+    height: 89vh;
 }
 .profile-container{
     padding: 5px;
@@ -139,6 +139,17 @@
 }
 .profile-item-delete-hover:hover{
     color: red;
+}
+.profile-page-toggle-container{
+    background-color: lightgray;
+    padding-bottom: 0;
+    padding-left: 10px;
+}
+.profile-page-toggle-buttons{
+    display: inline-block;
+    height: 100%;
+    padding: 5px;
+    user-select: none;
 }
 
 @media screen and (max-width:767px){

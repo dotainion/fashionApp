@@ -33,13 +33,15 @@ class Cart{
         let data = this.get();
         for (let item of data){
             if (item.id === id){
-                //data[index].splice(index,1);
                 data.splice(index,1)
                 window.localStorage.setItem(this.ref,JSON.stringify(data));
                 break;
             }
             index ++;
         }
+    }
+    clear(){
+        window.localStorage.setItem(this.ref,JSON.stringify([]));
     }
 }
 

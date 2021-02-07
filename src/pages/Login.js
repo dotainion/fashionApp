@@ -72,6 +72,9 @@ class Login extends Component{
                 const creds = this.userCreds;
                 this.saveCredentials(creds?.username, creds?.password);
             }else this.clearCredentials();
+            //show logout button in header
+            let element = document.getElementById("show-signout-button");
+            if (element) element.hidden = false;
             this.routeDirection = tools.lastRoute("get");
             this.setState({routeDirection:this.routeDirection})
             setTimeout(()=>{

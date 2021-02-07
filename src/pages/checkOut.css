@@ -93,6 +93,15 @@
 .checkout-button{
     text-align: center;
 }
+.checkout-error-container{
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    width: 100%;
+    text-align: center;
+    color: red;
+    font-weight: bold;
+}
 
 @media screen and (max-width:767px){
     .checkout-main-container{

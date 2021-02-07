@@ -1,15 +1,13 @@
-import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
+import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonPopover, IonRouterOutlet, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
 import { cardOutline, closeOutline, listOutline, radioButtonOnOutline } from 'ionicons/icons';
 import React from 'react';
 import { cart } from '../cart/utils';
-import { Menu } from '../components/Menu';
 import tools from '../components/Tools';
 import { data } from '../database/database';
 import { Header } from '../widgets/header';
 import './checkOut.css';
 import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
-
 
 
 class CheckOut extends React.Component{
@@ -20,6 +18,7 @@ class CheckOut extends React.Component{
             state: false,
             data: null
         };
+        this.showCompleteAlert = false;
 
         this.cartList = [];
 
@@ -35,6 +34,8 @@ class CheckOut extends React.Component{
             email: "",
             phone: ""
         }
+
+        this.errorMessage = "";
 
         this.toggleIcon = cardOutline;
     }
@@ -69,8 +70,42 @@ class CheckOut extends React.Component{
             }
         }return "";
     }
-    submit(){
+    submitChecks(){
+        if (this.deliveryOpton.delivery){
+            this.errorMessage = "Only pickup options availble at the moment";
+            return false;
+        }else if (this.deliveryOpton.pickup){
+            return true;
+        }else{
+            this.errorMessage = "Please choose a delevery option";
+            return false;
+        }
+    }
+    async submit(){
+        if (this.submitChecks()){
+            this.errorMessage = "";
+            let newOrder = [];
+            const orders = cart.get();
+            const user = tools.getCreds();
+            const date = tools.date.getTodaysDate();
+            for (let order of orders){
+                newOrder.push({
+                    qty: order?.qty,
+                    orderDate: date,
+                    orderId: order?.id,
+                    buyerId: user?.id,
+                    sellerId: order?.record?.userId
+                });
+            }
+            await data.order(newOrder);
+            this.showCompleteAlert = true;
+            cart.clear();
 
+        }
+        this.setState({
+            errorMessage:this.errorMessage,
+            showCompleteAlert:this.showCompleteAlert
+        });
     }
     render(){
         return(
@@ -95,6 +130,22 @@ class CheckOut extends React.Component{
                         }
                     }}
                 />
+                
+                <IonAlert
+                    isOpen={this.showCompleteAlert}
+                    onDidDismiss={() =>{
+                        this.showCompleteAlert = false;
+                        this.setState({
+                            showCompleteAlert:this.showCompleteAlert
+                        });
+                    }}
+                    cssClass=''
+                    header="Alert!!"
+                    subHeader="Successful"
+                    message="Order send successful, you will receive an email when ready"
+                    buttons={['OK']}
+                    //duration={200}
+                />
                 <DeleteConfirm
                     state={this.showAlert.state}
                     onClose={()=>{
@@ -116,6 +167,9 @@ class CheckOut extends React.Component{
                         this.setState({showAlert:this.showAlert});
                     }}
                 />
+                <IonPopover>
+
+                </IonPopover>
                 <IonContent>
                     <IonList class="checkout-main-container">
                         <IonList id="checkout-cart-list" class="checkout-cart-list-container">
@@ -147,6 +201,9 @@ class CheckOut extends React.Component{
                             </IonList>
                         </IonList>
                         <IonList class="checkout-type-main-container">
+                            <IonList class="checkout-error-container">
+                                <div>{this.errorMessage}</div>
+                            </IonList>
                             <IonList class="checkout-type-main-sub-container">
                                 <IonList class="checkout-type-container">
                                     <div className="checkout-type-header">Delevery Type</div>
@@ -254,7 +311,7 @@ class CheckOut extends React.Component{
                             </IonList>   
                             <IonList class="checkout-button">
                                 <IonButton onClick={async()=>{
-                                    await data.getUser(tools.getCreds().id)
+                                    this.submit();
                                 }}>Checkout</IonButton>
                             </IonList>
                         </IonList>

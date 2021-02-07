@@ -1,3 +1,4 @@
+import { createNoSubstitutionTemplateLiteral } from 'typescript';
 import { db } from '../auth/authentication';
 
 
@@ -51,6 +52,23 @@ class Database{
             .includes(searchBy.toLowerCase())
         );
         return searchResults;
+    }
+    async order(newOrders){
+        const dataToOrder = db.collection("fashionOrder");
+        for (let orders of newOrders) await dataToOrder.add(orders);
+    }
+    async getOrder(){
+        let orders = [];
+        const orderToGet = db.collection("fashionOrder");
+        const records = await orderToGet.get();
+        records.forEach(async(record)=>{
+            const ord = record.data();
+            const recordByOrder = db.collection("fashion").doc(ord.orderId);
+            const recordOrder = await recordByOrder.get();
+            const info = recordOrder.data();   
+            orders.push({id:recordOrder.id,record: info});
+        });
+        return orders;
     }
 }
 const data = new Database();
