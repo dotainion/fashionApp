@@ -5,6 +5,7 @@ class Routes{
     register = "/register";
     inventory = "/inventory";
     checkout = "/checkout";
+    pendingorder = "/pending";
 }
 
 export const routes = new Routes();

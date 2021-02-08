@@ -21,14 +21,19 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+
+/* Other variables */
+import { routes } from './global/routes';
+
+/* Pages variables */
 import Home from './pages/Home';
 import Login from './pages/authentication/Login';
 import Register from './pages/authentication/Register';
 import Profile from './pages/inventory';
 import PasswordRecover from './pages/authentication/Recover';
-import { routes } from './global/routes';
 import AuthRouter from './authRoute';
 import CheckOut from './pages/checkOut';
+import PendingOrder from './pages/pendingOrder';
 
 
 const App: React.FC = () => (
@@ -41,6 +46,7 @@ const App: React.FC = () => (
         <Route path={routes.home} component={Home} exact={true} />
         <Route path={routes.checkout} render={() =><AuthRouter component={CheckOut}/>} exact={true} />
         <Route path={routes.inventory} render={() =><AuthRouter component={Profile}/>} exact={true} />
+        <Route path={routes.pendingorder} render={() =><AuthRouter component={PendingOrder}/>} exact={true} />
         <Route render={()=><Redirect to={routes.home}/>}/>
       </IonRouterOutlet>
     </IonReactRouter>

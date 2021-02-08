@@ -1,0 +1,16 @@
+.label-tag-container{
+    position: absolute;
+    z-index: 9999999999;
+    left: 0;
+    bottom: -10px;
+}
+.label-tag-text{
+    font-size: 15px;
+    color: rgb(107, 82, 43);
+}
+
+@media screen and (max-width:767px){
+    .label-tag-text{
+        font-size: 9px;
+    }
+}

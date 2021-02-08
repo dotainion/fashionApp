@@ -131,6 +131,7 @@ class Home extends Component{
                     menu
                     sales
                     signout
+                    ordered
                     count={cart.get()?.length}
                     cartClick={()=>{
                         this.setItemInCart();

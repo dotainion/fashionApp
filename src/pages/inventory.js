@@ -8,10 +8,12 @@ import { data } from '../database/database';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
 import { Header } from '../widgets/header';
 import { ItemLoader } from '../widgets/itemLoader';
+import { listenerCount } from 'process';
 
 
 
 const Profile = () =>{
+    let mobilSwapState = "desktop";
     const inventoryToggleRef = useRef();
     const orderToggleRef = useRef();
     const inventorySwitchRef = useRef();
@@ -160,7 +162,7 @@ const Profile = () =>{
                 }}
             />
             <IonContent>
-                <IonList ref={orderSwitchRef}>
+                <IonList id="test-id" ref={orderSwitchRef}>
                     <IonLabel>test order satus</IonLabel>
                     {
                         orders.length?

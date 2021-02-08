@@ -57,9 +57,10 @@ class Database{
         const dataToOrder = db.collection("fashionOrder");
         for (let orders of newOrders) await dataToOrder.add(orders);
     }
-    async getOrder(){
+    async getOrder(userId){
         let orders = [];
-        const orderToGet = db.collection("fashionOrder");
+        const orderToGet = db.collection("fashionOrder")
+        .where("sellerId","==",userId);
         const records = await orderToGet.get();
         records.forEach(async(record)=>{
             const ord = record.data();
