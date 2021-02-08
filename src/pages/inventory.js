@@ -7,6 +7,7 @@ import tools from '../components/Tools';
 import { data } from '../database/database';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
 import { Header } from '../widgets/header';
+import { ItemLoader } from '../widgets/itemLoader';
 
 
 
@@ -17,6 +18,7 @@ const Profile = () =>{
     const orderSwitchRef = useRef();
     const uploadToggleRef = useRef();
     const uploadSwitchRef = useRef();
+    const [itemLoader, setItemLoader] =useState(false);
     const [toUpload, setToUpload] = useState({
         image: img, title: "",price: "", detail: "", userId: ""
     });
@@ -25,7 +27,6 @@ const Profile = () =>{
         data: null
     });
     const [orders, setOrders] = useState([]);
-    const [menu, setMenu] = useState(cloudUploadOutline);
     const [userRecords, setUserRecords] = useState([]);
     const addUserInfo = (cmd,value) =>{
         setToUpload({
@@ -49,12 +50,14 @@ const Profile = () =>{
         }
     }
     const initialize = async () =>{
+        setItemLoader(true);
         const user = tools.getCreds();
         const record = await data.getDataById(user?.id);
         setUserRecords(record);
         const order = await data.getOrder(user?.id);
         setTimeout(()=>{
             setOrders(order);
+            setItemLoader(false);
         },500);
     }
     const saveButtonHidden = (id,state=false) =>{
@@ -160,9 +163,9 @@ const Profile = () =>{
                 <IonList ref={orderSwitchRef}>
                     <IonLabel>test order satus</IonLabel>
                     {
+                        orders.length?
                         orders.map((order,key)=>(
                             <IonList key={key}>
-                                {console.log(order)}
                                 <IonThumbnail>
                                     <IonImg src={order?.record?.image}/>
                                 </IonThumbnail>
@@ -176,7 +179,10 @@ const Profile = () =>{
                                     <IonLabel>{order?.record?.detail}</IonLabel>
                                 </IonItem>
                             </IonList>
-                        ))
+                        )):
+                        <IonItem>
+                            <IonLabel>No records available</IonLabel>
+                        </IonItem>
                     }
                 </IonList>
 
@@ -184,47 +190,54 @@ const Profile = () =>{
                     <IonList ref={inventorySwitchRef} class="profile-list-container">
                         <div className="profile-list-header">Store Items</div>
                         <IonList class="profile-item-list">
-                            {userRecords.map((item,key)=>(
-                                <IonCard style={{display:"flex"}} key={key}>
-                                    <IonThumbnail class="profile-item-list-image">
-                                        <IonImg src={item.record.image}/>
-                                    </IonThumbnail>
-                                    <div style={{width:"100%"}}>
-                                        <div className="profile-item-list-input-container">
-                                            <input className="profile-item-list-input" onChange={()=>{
-                                                saveButtonHidden(`${item.id}${key}`);
-                                            }} type="text" id={`${item.id}title`} defaultValue={item.record.title}/>
+                            <ItemLoader state={itemLoader}/>
+                            {
+                                userRecords.length?
+                                userRecords.map((item,key)=>(
+                                    <IonCard style={{display:"flex"}} key={key}>
+                                        <IonThumbnail class="profile-item-list-image">
+                                            <IonImg src={item.record.image}/>
+                                        </IonThumbnail>
+                                        <div style={{width:"100%"}}>
+                                            <div className="profile-item-list-input-container">
+                                                <input className="profile-item-list-input" onChange={()=>{
+                                                    saveButtonHidden(`${item.id}${key}`);
+                                                }} type="text" id={`${item.id}title`} defaultValue={item.record.title}/>
+                                            </div>
+                                            <div className="profile-item-list-input-container">
+                                                <span>$</span>
+                                                <input className="profile-item-list-input" onChange={()=>{
+                                                    saveButtonHidden(`${item.id}${key}`);
+                                                }} type="number" id={`${item.id}price`} defaultValue={item.record.price}/>
+                                            </div>
+                                            <div className="profile-item-list-input-container">
+                                                <textarea className="profile-item-list-textarea" onChange={()=>{
+                                                    saveButtonHidden(`${item.id}${key}`);
+                                                }} type="text" id={`${item.id}detail`} defaultValue={item.record.detail}/>
+                                            </div>
+                                            <div className="profile-item-list-save-button-container" id={`${item.id}${key}`} hidden>
+                                                <div className="profile-item-list-save-button profile-button-click" onClick={()=>{
+                                                    updateRecord(item.id);
+                                                    saveButtonHidden(`${item.id}${key}`,true);
+                                                }}>Save changes</div>
+                                                <div className="profile-item-list-save-button profile-button-click" onClick={()=>{
+                                                    resetItemValue(item.id,item.record.title,item.record.price,item.record.detail);
+                                                    saveButtonHidden(`${item.id}${key}`,true);
+                                                }}>Cancel</div>
+                                            </div>
+                                            <IonIcon class="profile-item-delete profile-item-delete-hover" onClick={()=>{
+                                                setShowAlert({
+                                                    state: true,
+                                                    data: item
+                                                });
+                                            }} icon={closeOutline}/>
                                         </div>
-                                        <div className="profile-item-list-input-container">
-                                            <span>$</span>
-                                            <input className="profile-item-list-input" onChange={()=>{
-                                                saveButtonHidden(`${item.id}${key}`);
-                                            }} type="number" id={`${item.id}price`} defaultValue={item.record.price}/>
-                                        </div>
-                                        <div className="profile-item-list-input-container">
-                                            <textarea className="profile-item-list-textarea" onChange={()=>{
-                                                saveButtonHidden(`${item.id}${key}`);
-                                            }} type="text" id={`${item.id}detail`} defaultValue={item.record.detail}/>
-                                        </div>
-                                        <div className="profile-item-list-save-button-container" id={`${item.id}${key}`} hidden>
-                                            <div className="profile-item-list-save-button profile-button-click" onClick={()=>{
-                                                updateRecord(item.id);
-                                                saveButtonHidden(`${item.id}${key}`,true);
-                                            }}>Save changes</div>
-                                            <div className="profile-item-list-save-button profile-button-click" onClick={()=>{
-                                                resetItemValue(item.id,item.record.title,item.record.price,item.record.detail);
-                                                saveButtonHidden(`${item.id}${key}`,true);
-                                            }}>Cancel</div>
-                                        </div>
-                                        <IonIcon class="profile-item-delete profile-item-delete-hover" onClick={()=>{
-                                            setShowAlert({
-                                                state: true,
-                                                data: item
-                                            });
-                                        }} icon={closeOutline}/>
-                                    </div>
-                                </IonCard>
-                            ))}
+                                    </IonCard>
+                                )):
+                                <IonItem>
+                                    <IonLabel>No Records</IonLabel>
+                                </IonItem>
+                            }
                         </IonList>
                     </IonList>
                     <IonList ref={uploadSwitchRef} class="profile-container">
