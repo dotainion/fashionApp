@@ -133,7 +133,7 @@ const Profile = () =>{
                 <div className="profile-page-toggle-buttons" onClick={()=>{
                     togglePage("order")
                 }} ref={orderToggleRef}>Order Status</div>
-                <div className="profile-page-toggle-buttons" onClick={()=>{
+                <div className="profile-page-toggle-buttons-U" onClick={()=>{
                     togglePage("upload");
                 }} ref={uploadToggleRef}>Upload</div>
             </IonList>

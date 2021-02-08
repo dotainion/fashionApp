@@ -1,5 +1,5 @@
 import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonPopover, IonRouterOutlet, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
-import { cardOutline, closeOutline, listOutline, radioButtonOnOutline } from 'ionicons/icons';
+import { cardOutline, closeOutline, listOutline, locationOutline, radioButtonOnOutline } from 'ionicons/icons';
 import React from 'react';
 import { cart } from '../cart/utils';
 import tools from '../components/Tools';
@@ -8,13 +8,18 @@ import { Header } from '../widgets/header';
 import './checkOut.css';
 import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
+import { MapModel } from '../map/googleMap';
 
 
 class CheckOut extends React.Component{
     constructor(){
         super();
+
+        this.maps = {
+            state: false
+        }
         
-        this.showAlert = {
+        this.showItemDeleteAlert = {
             state: false,
             data: null
         };
@@ -63,11 +68,12 @@ class CheckOut extends React.Component{
         this.setState({address:this.address});
     }
     isSelected(option){
+        console.log(option)
         const addrOption = Object.keys(this.address);
         for (let addr of addrOption){
-            if (option.toLowerCase() === this.address[addr].toLowerCase()){ 
-                return addr;
-            }
+            /*if (option === this.address[addr]){ 
+                return option;
+            }*/
         }return "";
     }
     submitChecks(){
@@ -130,6 +136,14 @@ class CheckOut extends React.Component{
                         }
                     }}
                 />
+
+                <MapModel
+                    state={this.maps.state}
+                    onClose={()=>{
+                        this.maps.state = false;
+                        this.setState({maps:this.maps});
+                    }}
+                />
                 
                 <IonAlert
                     isOpen={this.showCompleteAlert}
@@ -147,29 +161,27 @@ class CheckOut extends React.Component{
                     //duration={200}
                 />
                 <DeleteConfirm
-                    state={this.showAlert.state}
+                    state={this.showItemDeleteAlert.state}
                     onClose={()=>{
-                        this.showAlert = {
+                        this.showItemDeleteAlert = {
                             state: false,
                             data: null
                         };
-                        this.setState({showAlert:this.showAlert});
+                        this.setState({showAlert:this.showItemDeleteAlert});
                     }}
                     onAccept={()=>{
-                        cart.delete(this.showAlert.data?.id);
+                        cart.delete(this.showItemDeleteAlert.data?.id);
                         this.ionViewWillEnter();
                     }}
                     onDecline={()=>{
-                        this.showAlert = {
+                        this.showItemDeleteAlert = {
                             state: false,
                             data: null
                         };
-                        this.setState({showAlert:this.showAlert});
+                        this.setState({showAlert:this.showItemDeleteAlert});
                     }}
                 />
-                <IonPopover>
-
-                </IonPopover>
+                
                 <IonContent>
                     <IonList class="checkout-main-container">
                         <IonList id="checkout-cart-list" class="checkout-cart-list-container">
@@ -178,6 +190,12 @@ class CheckOut extends React.Component{
                                     this.cartList.length ?
                                     this.cartList.map((item, key)=>(
                                         <IonCard key={key}>
+                                            <IonItem>
+                                                <IonCheckbox onIonChange={(e)=>{
+                                                    cart.onHold(item.id,e.detail.checked);
+                                                }} checked={item.checked} slot="end"/>
+                                                <IonLabel slot="end">Checkout</IonLabel>
+                                            </IonItem>
                                             <IonThumbnail class="checkout-cart-image">
                                                 <IonImg src={item?.record?.image}/>
                                             </IonThumbnail>
@@ -187,11 +205,11 @@ class CheckOut extends React.Component{
                                                 <IonLabel>Price: ${item?.record?.price}</IonLabel><br/>
                                                 <IonNote>{item?.record?.detail}</IonNote>
                                                 <IonIcon class="checkout-cart-delete checkout-cart-close-hover" onClick={()=>{
-                                                    this.showAlert = {
+                                                    this.showItemDeleteAlert = {
                                                         state: true,
                                                         data: item
                                                     };
-                                                    this.setState({showAlert:this.showAlert});
+                                                    this.setState({showAlert:this.showItemDeleteAlert});
                                                 }} icon={closeOutline}/>
                                             </IonList>
                                         </IonCard>
@@ -204,6 +222,13 @@ class CheckOut extends React.Component{
                             <IonList class="checkout-error-container">
                                 <div>{this.errorMessage}</div>
                             </IonList>
+                            <div onClick={()=>{
+                                this.maps.state = true;
+                                this.setState({maps:this.maps});
+                            }} className="checkout-map-button checkout-map-hover">
+                                <IonIcon icon={locationOutline}/>
+                                <div className="checkout-map-text">Google Map</div>
+                            </div>
                             <IonList class="checkout-type-main-sub-container">
                                 <IonList class="checkout-type-container">
                                     <div className="checkout-type-header">Delevery Type</div>
@@ -255,26 +280,35 @@ class CheckOut extends React.Component{
                             <IonList class="checkout-address-card-main-container">
                                 <IonList class="checkout-shipping-info-container" hidden={!this.showShippingAddress}>
                                     <IonItem lines="full">
-                                        <label className="checkout-address-header">Shipping Address</label>
-                                        <select className="checkout-address-options">
-                                            {tools.address.getAddress().map((addr,key)=>(
-                                                <option key={key} defaultValue={this.isSelected(this.address.address)}>{addr}</option>
+                                        <label className="checkout-address-header">State</label>
+                                        <select onChange={(e)=>{
+                                            this.address.state = e.target.value;
+                                            this.setState({address:this.address});
+                                        }} className="checkout-address-options">
+                                            {tools.address.list().map((addr,key)=>(
+                                                <option key={key} defaultValue={this.isSelected(addr.state)}>{addr.state}</option>
                                             ))}
                                         </select>
                                     </IonItem>
                                     <IonItem lines="full">
                                         <label className="checkout-address-header">City</label>
-                                        <select className="checkout-address-options">
-                                            {tools.address.getCities().map((city,key)=>(
-                                                <option key={key} defaultValue={this.isSelected(this.address.city)}>{city}</option>
+                                        <select onChange={(e)=>{
+                                            this.address.city = e.target.value;
+                                            this.setState({address:this.address});
+                                        }} className="checkout-address-options">
+                                            {tools.address.cityByState(this.address.state).map((addr,key)=>(
+                                                <option key={key} defaultValue={this.isSelected(addr.city)}>{addr.city}</option>
                                             ))}
                                         </select>
                                     </IonItem>
                                     <IonItem lines="full">
-                                        <label className="checkout-address-header">State</label>
-                                        <select className="checkout-address-options">
-                                            {tools.address.getStates().map((state,key)=>(
-                                                <option key={key} defaultValue={this.isSelected(this.address.state)}>{state}</option>
+                                        <label className="checkout-address-header">Shipping Address</label>
+                                        <select onChange={(e)=>{
+                                            this.address.address = e.target.value;
+                                            this.setState({address:this.address});
+                                        }} className="checkout-address-options">
+                                            {tools.address.addressByCity(this.address.city).map((addr,key)=>(
+                                                <option key={key} defaultValue={this.isSelected(addr)}>{addr}</option>
                                             ))}
                                         </select>
                                     </IonItem>

@@ -151,6 +151,12 @@
     padding: 5px;
     user-select: none;
 }
+.profile-page-toggle-buttons-U{
+    display: none;
+    height: 100%;
+    padding: 5px;
+    user-select: none;
+}
 
 @media screen and (max-width:767px){
     .profile-container{
@@ -176,5 +182,8 @@
     }
     .profile-list-menu-button{
         display: block;
+    }
+    .profile-page-toggle-buttons-U{
+        display: inline-block;
     }
 }

@@ -2,6 +2,7 @@ class Cart{
     ref = "cart-item-storage";
     add(item){
         let record = [];
+        item["checked"] = true;
         const data = this.get();
         if (data){
             record.push(item);
@@ -22,6 +23,18 @@ class Cart{
         for (let item of data){
             if (item.id === id){
                 data[index]["qty"] = value;
+                window.localStorage.setItem(this.ref,JSON.stringify(data));
+                break;
+            }
+            index ++;
+        }
+    }
+    onHold(id,value){
+        let index = 0;
+        let data = this.get();
+        for (let item of data){
+            if (item.id === id){
+                data[index]["checked"] = value;
                 window.localStorage.setItem(this.ref,JSON.stringify(data));
                 break;
             }

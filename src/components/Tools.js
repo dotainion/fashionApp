@@ -115,12 +115,12 @@ class Times{
 class Address{
     getCities(){
         return[
-            "St. Andrew",
-            "St. David",
+            /*"St. Andrew",
+            "St. David",*/
             "St. George",
-            "St. John",
+            /*"St. John",
             "St. Mark",
-            "St. Patrick",
+            "St. Patrick",*/
         ]
     }
     getAddress(){
@@ -131,6 +131,67 @@ class Address{
     getStates(){
         return[
             "Grenada",
+        ]
+    }
+    cityByState(state){
+        for (let addr of this.list()){
+            if (addr.state === state){
+                console.log(addr.list)
+                return addr.list;
+            }
+        }
+        return [];
+    }
+    addressByCity(city){
+        console.log(city)
+        for (let addr of this.list()){
+            for (let list of addr.list){
+                if (list.city === city){
+                    return list.addr;
+                }
+            }
+        }
+        return [];
+    }
+    list(){
+        return[
+            {
+                state: "Grenada",
+                list:[
+                    {
+                        city: "St. Andrew",
+                        addr: [
+
+                        ]
+                    },{
+                        city: "St. David",
+                        addr: [
+
+                        ]
+                    },{
+                        city: "St. George",
+                        addr: [
+                            "Tempe",
+                            "Grand Anse"
+                        ]
+                    },{
+                        city: "St. John",
+                        addr: [
+
+                        ]
+                    },{
+                        city: "St. Mark",
+                        addr: [
+
+                        ]
+                    },{
+                        city: "St. Patrick",
+                        addr: [
+
+                        ]
+                    },
+                ]
+            },
         ]
     }
 }
