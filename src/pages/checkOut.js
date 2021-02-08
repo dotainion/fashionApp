@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonPopover, IonRouterOutlet, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
+import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonLoading, IonNote, IonPage, IonPopover, IonRouterOutlet, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
 import { cardOutline, closeOutline, listOutline, locationOutline, radioButtonOnOutline } from 'ionicons/icons';
 import React, { createRef } from 'react';
 import { cart } from '../cart/utils';
@@ -28,6 +28,7 @@ class CheckOut extends React.Component{
             data: null
         };
         this.showCompleteAlert = false;
+        this.showLoading = false;
 
         this.cartList = [];
 
@@ -55,6 +56,13 @@ class CheckOut extends React.Component{
             if (!tools.isMobile()) element.style.display = "";
         },400);
     }
+    initializeCartList(){
+        const getCart = cart.get();
+        if (getCart){ 
+            this.cartList = getCart;
+            this.setState({cartList:this.cartList});
+        }
+    }
     async initializeAddress(){
         const user = await data.getUser(tools.getCreds().id);
         this.address = {
@@ -67,47 +75,63 @@ class CheckOut extends React.Component{
         this.setState({address:this.address});
     }
     async ionViewWillEnter(){
-        const getCart = cart.get();
-        if (getCart){ 
-            this.cartList = getCart;
-            this.setState({cartList:this.cartList});
-        }
+        this.initializeCartList();
         this.initializeAddress();
         this.listener();
     }
     submitChecks(){
-        if (this.deliveryOpton.delivery){
-            this.errorMessage = "Only pickup options availble at the moment";
-            return false;
-        }else if (this.deliveryOpton.pickup){
-            return true;
-        }else{
-            this.errorMessage = "Please choose a delevery option";
+        if (cart.get().length > 0){
+            if (cart.checkedIndex() > 0){
+                this.errorMessage = "";            
+                if (this.deliveryOpton.delivery){
+                    this.errorMessage = "Only pickup options availble at the moment";
+                    return false;
+                }else if (this.deliveryOpton.pickup){
+                    return true;
+                }else{
+                    this.errorMessage = "Please choose a delevery option";
+                    return false;
+                }
+            }
+            this.errorMessage = "All item are placed on hold. Please remove hold on items";
             return false;
         }
+        this.errorMessage = "No item in cart";
+        return false;
     }
     async submit(){
         if (this.submitChecks()){
+            this.showLoading = true;
+            this.setState({showLoading:this.showLoading});
             this.errorMessage = "";
             let newOrder = [];
-            const orders = cart.get();
             const user = tools.getCreds();
             const date = tools.date.getTodaysDate();
-            for (let order of orders){
-                newOrder.push({
-                    qty: order?.qty,
-                    orderDate: date,
-                    orderId: order?.id,
-                    buyerId: user?.id,
-                    sellerId: order?.record?.userId
-                });
+            for (let order of cart.get()){
+                if (order.checked){
+                    newOrder.push({
+                        qty: order?.qty,
+                        orderDate: date,
+                        orderId: order?.id,
+                        buyerId: user?.id,
+                        sellerId: order?.record?.userId,
+                        address: this.address.address,
+                        city: this.address.city,
+                        state: this.address.state,
+                        email: this.address.email,
+                        phone: this.address.phone
+                    });
+                }
             }
             await data.order(newOrder);
+            this.showLoading = false;
             this.showCompleteAlert = true;
-            cart.clear();
+            cart.clearSelected();
+            this.initializeCartList();
 
         }
         this.setState({
+            showLoading:this.showLoading,
             errorMessage:this.errorMessage,
             showCompleteAlert:this.showCompleteAlert
         });
@@ -189,6 +213,17 @@ class CheckOut extends React.Component{
                         this.setState({maps:this.maps});
                     }}
                 />
+
+                <IonLoading
+                    cssClass='my-custom-class'
+                    isOpen={this.showLoading}
+                    onDidDismiss={() =>{
+                        this.showLoading = false;
+                        this.setState({showLoading:this.showLoading});
+                    }}
+                    message={'Please wait...'}
+                    duration={5000}
+                />
                 
                 <IonAlert
                     isOpen={this.showCompleteAlert}
@@ -238,8 +273,9 @@ class CheckOut extends React.Component{
                                             <IonItem>
                                                 <IonCheckbox onIonChange={(e)=>{
                                                     cart.onHold(item.id,e.detail.checked);
+                                                    this.initializeCartList();
                                                 }} checked={item.checked} slot="end"/>
-                                                <IonLabel slot="end">Checkout</IonLabel>
+                                                <IonLabel slot="end">Place on hold</IonLabel>
                                             </IonItem>
                                             <IonThumbnail class="checkout-cart-image">
                                                 <IonImg src={item?.record?.image}/>

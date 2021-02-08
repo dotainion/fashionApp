@@ -1,3 +1,5 @@
+import { FaHandHolding } from "react-icons/fa";
+
 class Cart{
     ref = "cart-item-storage";
     add(item){
@@ -55,6 +57,20 @@ class Cart{
     }
     clear(){
         window.localStorage.setItem(this.ref,JSON.stringify([]));
+    }
+    clearSelected(){
+        let holding = [];
+        for (let item of this.get()){
+            if (!item.checked) holding.push(item);
+        }
+        window.localStorage.setItem(this.ref,JSON.stringify(holding));
+    }
+    checkedIndex(){
+        let index = 0;
+        for (let item of this.get()){
+            if (item.checked) index ++;
+        }
+        return index;
     }
 }
 
