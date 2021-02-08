@@ -1,10 +1,16 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
 import { IonIcon, IonModal } from '@ionic/react';
-import { closeOutline } from 'ionicons/icons';
+import { closeOutline, locationOutline } from 'ionicons/icons';
 import './googleMap.css';
  
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
+const AnyReactComponent = ({text}) =>{
+    return (
+        <div>
+            <IonIcon icon={locationOutline}/>
+        </div>
+    )
+}
  
 export const Maps = ({onClose}) =>{
     const defaultPosition = {
@@ -32,7 +38,7 @@ export const Maps = ({onClose}) =>{
             <AnyReactComponent
                 lat={defaultPosition.center.lat}
                 lng={defaultPosition.center.lng}
-                text="Marker"
+                text="Main Office"
             />
             </GoogleMapReact>
         </div>

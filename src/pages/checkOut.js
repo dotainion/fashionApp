@@ -1,6 +1,6 @@
 import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonNote, IonPage, IonPopover, IonRouterOutlet, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
 import { cardOutline, closeOutline, listOutline, locationOutline, radioButtonOnOutline } from 'ionicons/icons';
-import React from 'react';
+import React, { createRef } from 'react';
 import { cart } from '../cart/utils';
 import tools from '../components/Tools';
 import { data } from '../database/database';
@@ -14,6 +14,10 @@ import { MapModel } from '../map/googleMap';
 class CheckOut extends React.Component{
     constructor(){
         super();
+
+        this.selectOptionState = createRef();
+        this.selectOptionCity = createRef();
+        this.selectOptionAddr = createRef();//ref added but not used
 
         this.maps = {
             state: false
@@ -41,6 +45,7 @@ class CheckOut extends React.Component{
         }
 
         this.errorMessage = "";
+        this.addrErrorMsg = "";
 
         this.toggleIcon = cardOutline;
     }
@@ -50,12 +55,7 @@ class CheckOut extends React.Component{
             if (!tools.isMobile()) element.style.display = "";
         },400);
     }
-    async ionViewWillEnter(){
-        const getCart = cart.get();
-        if (getCart){ 
-            this.cartList = getCart;
-            this.setState({cartList:this.cartList});
-        }
+    async initializeAddress(){
         const user = await data.getUser(tools.getCreds().id);
         this.address = {
             address: user?.shippingaddress,
@@ -64,17 +64,16 @@ class CheckOut extends React.Component{
             email: user?.email,
             phone: user?.contact
         }
-        this.listener();
         this.setState({address:this.address});
     }
-    isSelected(option){
-        console.log(option)
-        const addrOption = Object.keys(this.address);
-        for (let addr of addrOption){
-            /*if (option === this.address[addr]){ 
-                return option;
-            }*/
-        }return "";
+    async ionViewWillEnter(){
+        const getCart = cart.get();
+        if (getCart){ 
+            this.cartList = getCart;
+            this.setState({cartList:this.cartList});
+        }
+        this.initializeAddress();
+        this.listener();
     }
     submitChecks(){
         if (this.deliveryOpton.delivery){
@@ -112,6 +111,52 @@ class CheckOut extends React.Component{
             errorMessage:this.errorMessage,
             showCompleteAlert:this.showCompleteAlert
         });
+    }
+    isAddrMatchCity(){
+        let STATE = false;
+        let CITY = false;
+        let ADDRESS = false;
+        const BORDER = "1px solid red";
+        for (let addr of tools.address.list()){
+            if (addr.state === this.address.state){
+                STATE = true;
+                for (let parish of addr.list){
+                    if (parish.city === this.address.city){
+                        CITY = true;
+                        for (let adr of parish.addr){
+                            if (adr === this.address.address){
+                                ADDRESS = true;
+                            }
+                        }
+                        if (!ADDRESS){
+                            this.selectOptionAddr.current.style.border = BORDER;
+                        }
+                    }
+                }
+                if (!CITY){
+                    this.selectOptionCity.current.style.border = BORDER;
+                }
+            }
+        }
+        if (!STATE){
+            this.selectOptionState.current.style.border = BORDER;
+        }
+
+
+        this.setState({address:this.address});
+    }
+    resetSelectOptionErrorThenCheckServicable(){
+        const BORDER = "none";
+        const msg = "We not yet shipping this parish";
+        this.selectOptionAddr.current.style.border = BORDER;
+        this.selectOptionCity.current.style.border = BORDER;
+        this.selectOptionState.current.style.border = BORDER;
+        if (tools.address.addressByCity(this.address.city).length <= 0){
+            this.addrErrorMsg = `${msg} (${this.address.city}).`;
+        }else{
+            this.addrErrorMsg = "";
+        }
+        this.setState({addrErrorMsg:this.addrErrorMsg});
     }
     render(){
         return(
@@ -279,36 +324,48 @@ class CheckOut extends React.Component{
                             </IonList>
                             <IonList class="checkout-address-card-main-container">
                                 <IonList class="checkout-shipping-info-container" hidden={!this.showShippingAddress}>
+                                    <div className="checkout-address-reset checkout-address-reset-hover" onClick={()=>{
+                                        this.initializeAddress();
+                                    }}>Reset</div>
+                                    <div className="checkout-shipping-error">
+                                        <div>{this.addrErrorMsg}</div>
+                                    </div>
                                     <IonItem lines="full">
                                         <label className="checkout-address-header">State</label>
-                                        <select onChange={(e)=>{
+                                        <select ref={this.selectOptionState} onChange={(e)=>{
                                             this.address.state = e.target.value;
-                                            this.setState({address:this.address});
+                                            this.resetSelectOptionErrorThenCheckServicable();
+                                            this.isAddrMatchCity();
                                         }} className="checkout-address-options">
+                                            <option defaultChecked hidden>{this.address.state}</option>
                                             {tools.address.list().map((addr,key)=>(
-                                                <option key={key} defaultValue={this.isSelected(addr.state)}>{addr.state}</option>
+                                                <option key={key}>{addr.state}</option>
                                             ))}
                                         </select>
                                     </IonItem>
                                     <IonItem lines="full">
                                         <label className="checkout-address-header">City</label>
-                                        <select onChange={(e)=>{
+                                        <select ref={this.selectOptionCity} onChange={(e)=>{
                                             this.address.city = e.target.value;
-                                            this.setState({address:this.address});
+                                            this.resetSelectOptionErrorThenCheckServicable();
+                                            this.isAddrMatchCity();
                                         }} className="checkout-address-options">
+                                            <option defaultChecked hidden>{this.address.city}</option>
                                             {tools.address.cityByState(this.address.state).map((addr,key)=>(
-                                                <option key={key} defaultValue={this.isSelected(addr.city)}>{addr.city}</option>
+                                                <option key={key}>{addr.city}</option>
                                             ))}
                                         </select>
                                     </IonItem>
                                     <IonItem lines="full">
                                         <label className="checkout-address-header">Shipping Address</label>
-                                        <select onChange={(e)=>{
+                                        <select ref={this.selectOptionAddr} onChange={(e)=>{
                                             this.address.address = e.target.value;
-                                            this.setState({address:this.address});
+                                            this.resetSelectOptionErrorThenCheckServicable();
+                                            this.isAddrMatchCity();
                                         }} className="checkout-address-options">
+                                            <option defaultChecked hidden>{this.address.address}</option>
                                             {tools.address.addressByCity(this.address.city).map((addr,key)=>(
-                                                <option key={key} defaultValue={this.isSelected(addr)}>{addr}</option>
+                                                <option key={key}>{addr}</option>
                                             ))}
                                         </select>
                                     </IonItem>

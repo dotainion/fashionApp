@@ -102,6 +102,15 @@
     color: red;
     font-weight: bold;
 }
+.checkout-shipping-error{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    color: red;
+    font-size: 11px;
+    text-align: center;
+}
 .checkout-map-button{
     position: absolute;
     z-index: 99999;
@@ -118,6 +127,18 @@
 }
 .checkout-map-hover:hover{
     background-color: lightgray;
+}
+.checkout-address-reset{
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    z-index: 9999;
+    font-size: 15px;
+    color: dodgerblue;
+}
+.checkout-address-reset-hover:hover{
+    color: blue;
+    text-decoration: underline green;
 }
 
 @media screen and (max-width:767px){
