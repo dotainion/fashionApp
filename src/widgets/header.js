@@ -11,17 +11,32 @@ import { FaCartPlus } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import './header.css';
 import { LabelTag } from './labelTag';
-
+import { data } from '../database/database';
 
 
 export const Header = (props) =>{
     const history = useHistory();
+    const [orderedState, setOrderedState] = useState(false);
     const [menuState, setMenuState] = useState(false);
     const [signoutTag, setSignoutTag] = useState(false);
     const [busTag, setBusTag] = useState(false);
     const [homeTag, setHomeTag] = useState(false);
     const [salesTag, setSalesTag] = useState(false);
     const [cartTag, setCartTag] = useState(false);
+
+    const isOrder = async() =>{
+        let items = [];
+        const user = tools.getCreds();
+        items = await data.getClientOrder(user?.id);
+        setTimeout(()=>{        
+            if (props.ordered && items.length)setOrderedState(true);
+            else setOrderedState(false);
+        },1000);
+    }
+
+    useEffect(()=>{
+        isOrder();
+    });
     return(
         <>
         <IonHeader class="header-container">
@@ -50,7 +65,7 @@ export const Header = (props) =>{
                         </span>
                         <LabelTag state={signoutTag} text="Signout"/>
                     </span>
-                    <span hidden={!props.ordered} onMouseEnter={()=>{
+                    <span hidden={!orderedState} onMouseEnter={()=>{
                         setBusTag(true);
                     }} onMouseLeave={()=>{
                         setBusTag(false);

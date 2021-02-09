@@ -12,7 +12,7 @@ const AnyReactComponent = ({text}) =>{
     )
 }
  
-export const Maps = ({onClose}) =>{
+export const Maps = ({onClose,close}) =>{
     const defaultPosition = {
         center: {
         lat: 12.152484542023572,
@@ -26,7 +26,7 @@ export const Maps = ({onClose}) =>{
     return (
     // Important! Always set the container height explicitly
         <div className="map-main-container">
-            <IonIcon icon={closeOutline} onClick={()=>{
+            <IonIcon hidden={!close} icon={closeOutline} onClick={()=>{
                 if (onClose) onClose();
             }} class="map-close map-close-hover"/>
             <GoogleMapReact
@@ -52,7 +52,7 @@ export const MapModel = ({state,onClose}) =>{
         }} isOpen={state}>
             <Maps onClose={()=>{
                 if (onClose) onClose();
-            }}/>
+            }} close/>
         </IonModal>
     )
 }

@@ -22,8 +22,8 @@
 .header-count-container{
     position: absolute;
     z-index: 99999;
-    top: -15px;
-    left: 10px;
+    top: -25px;
+    left: 20px;
     color: green;
     width: 20px;
     height: 20px;

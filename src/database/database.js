@@ -71,6 +71,24 @@ class Database{
         });
         return orders;
     }
+    async  getClientOrder(userId){
+        let orders = [];
+        const orderToGet = db.collection("fashionOrder")
+        .where("buyerId","==",userId);
+        const records = await orderToGet.get();
+        records.forEach(async(record)=>{
+            const ord = record.data();
+            const recordByOrder = db.collection("fashion").doc(ord.orderId);
+            const recordOrder = await recordByOrder.get();
+            const info = recordOrder.data();   
+            orders.push({
+                id:recordOrder.id,
+                record: info,
+                detail: ord
+            });
+        });
+        return orders;
+    }
 }
 const data = new Database();
 export { data };

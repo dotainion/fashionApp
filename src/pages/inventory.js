@@ -163,11 +163,13 @@ const Profile = () =>{
             />
             <IonContent>
                 <IonList id="test-id" ref={orderSwitchRef}>
-                    <IonLabel>test order satus</IonLabel>
+                    <IonList>
+                        <div className="profile-list-header">Pending Orders</div>
+                    </IonList>
                     {
                         orders.length?
                         orders.map((order,key)=>(
-                            <IonList key={key}>
+                            <IonCard key={key}>
                                 <IonThumbnail>
                                     <IonImg src={order?.record?.image}/>
                                 </IonThumbnail>
@@ -180,7 +182,7 @@ const Profile = () =>{
                                 <IonItem lines="full">
                                     <IonLabel>{order?.record?.detail}</IonLabel>
                                 </IonItem>
-                            </IonList>
+                            </IonCard>
                         )):
                         <IonItem>
                             <IonLabel>No records available</IonLabel>
