@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
+import { IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
 import { closeOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import './cartDisplay.css';

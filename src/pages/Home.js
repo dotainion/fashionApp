@@ -1,5 +1,5 @@
-import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonSelect, IonInput, IonSelectOption, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonModal, IonRouterOutlet, IonLoading, IonSearchbar, IonList, IonRefresherContent, IonRefresher, IonHeader, IonToolbar, IonButtons, IonMenuButton } from '@ionic/react';
-import React, { Component, useRef } from 'react';
+import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonInput, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonLoading, IonList, IonRefresherContent, IonRefresher } from '@ionic/react';
+import React, { Component } from 'react';
 import './Home.css';
 import { Header } from '../widgets/header';
 import { Searchbar } from '../widgets/searchbar';

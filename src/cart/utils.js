@@ -1,4 +1,3 @@
-import { FaHandHolding } from "react-icons/fa";
 
 class Cart{
     ref = "cart-item-storage";

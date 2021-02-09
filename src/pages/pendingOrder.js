@@ -7,7 +7,6 @@ import { Header } from '../widgets/header';
 import { IoInformationCircleSharp } from 'react-icons/io5';
 import './pendingOrder.css';
 import { LabelTag } from '../widgets/labelTag';
-import { truncate } from 'fs';
 import { closeOutline } from 'ionicons/icons';
 
 
@@ -101,7 +100,7 @@ const PendingOrder = () =>{
                                         </div>
                                         <div className="pending-order-item-info">
                                             <div>{item?.record?.title}</div>
-                                            <div>{item?.record?.price}</div>
+                                            <div>${item?.record?.price}</div>
                                             <div>{item?.record?.detail}</div>
                                         </div>
                                     </IonCardContent>

@@ -1,19 +1,17 @@
-import { IonButton, IonButtons, IonCard, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonMenuButton, IonPage, IonRouterOutlet, IonTextarea, IonThumbnail, IonTitle, IonToolbar, useIonViewWillEnter, useIonViewWillLeave, withIonLifeCycle } from '@ionic/react';
+import { IonAlert, IonButton, IonCard, IonContent, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonPage, IonThumbnail, useIonViewWillEnter, useIonViewWillLeave } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react';
 import './inventory.css';
 import img from '../images/defaultImage.jpg';
-import { closeOutline, cloudUploadOutline, imagesOutline, listOutline, radioButtonOnOutline } from 'ionicons/icons';
+import { closeOutline, imagesOutline} from 'ionicons/icons';
 import tools from '../components/Tools';
 import { data } from '../database/database';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
 import { Header } from '../widgets/header';
 import { ItemLoader } from '../widgets/itemLoader';
-import { listenerCount } from 'process';
 
 
 
 const Profile = () =>{
-    let mobilSwapState = "desktop";
     const inventoryToggleRef = useRef();
     const orderToggleRef = useRef();
     const inventorySwitchRef = useRef();
@@ -24,9 +22,14 @@ const Profile = () =>{
     const [toUpload, setToUpload] = useState({
         image: img, title: "",price: "", detail: "", userId: ""
     });
-    const [showAlert, setShowAlert] = useState({
+    const [showDelete, setShowDelete] = useState({
         state: false,
-        data: null
+        data: null,
+        other: ""
+    });
+    const [showError, setShowError] = useState({
+        state: false,
+        msg: ""
     });
     const [orders, setOrders] = useState([]);
     const [userRecords, setUserRecords] = useState([]);
@@ -40,15 +43,18 @@ const Profile = () =>{
         });
     };
 
-    const sendToDatabase = async() =>{
+    const sendToDatabase = () =>{
         if (toUpload.title && toUpload.price){
-            await data.addData(toUpload);
+            data.addData(toUpload);
             setToUpload({
                 image: img, title: "",
                 price: "", detail: "", userId: ""
             });
         }else{
-
+            setShowError({
+                state: true,
+                msg: "Please add required field"
+            });
         }
     }
     const initialize = async () =>{
@@ -66,7 +72,7 @@ const Profile = () =>{
         let element = document.getElementById(id);
         if (element) element.hidden = state;
     }
-    const updateRecord = async(id) =>{
+    const updateRecord = (id) =>{
         let title = document.getElementById(`${id}title`);
         let price = document.getElementById(`${id}price`);
         let detail = document.getElementById(`${id}detail`);
@@ -75,10 +81,11 @@ const Profile = () =>{
             price: price.value,
             detail: detail.value
         }
-        await data.updateRecord(id,record);
+        data.updateRecord(id,record);
     }
-    const deleteRecord = async(id) =>{
-        await data.deleteRecord(id);
+    const deleteRecord = (cmd, id) =>{
+        if (cmd === "client") data.deleteClientOrder(id);
+        else data.deleteRecord(id);
         initialize();
     }
     const resetItemValue = (id,titleDefault,priceDefault,detailDefault) =>{
@@ -143,21 +150,36 @@ const Profile = () =>{
                 }} ref={uploadToggleRef}>Upload</div>
             </IonList>
 
+            <IonAlert
+                isOpen={showError.state}
+                onDidDismiss={() =>{
+                    setShowError({state: false,msg: ""});
+                }}
+                cssClass=''
+                header="Alert!!"
+                subHeader="Field's error"
+                message={showError.msg}
+                buttons={['OK']}
+                duration={200}
+            />
+
             <DeleteConfirm
-                state={showAlert.state}
+                state={showDelete.state}
                 onClose={()=>{
-                    setShowAlert({
+                    setShowDelete({
                         state: false,
-                        data: null
+                        data: null,
+                        other: ""
                     });
                 }}
                 onAccept={()=>{
-                    deleteRecord(showAlert.data.id);
+                    deleteRecord(showDelete.other,showDelete.data.id);
                 }}
                 onDecline={()=>{
-                    setShowAlert({
+                    setShowDelete({
                         state: false,
-                        data: null
+                        data: null,
+                        other: ""
                     });
                 }}
             />
@@ -170,6 +192,13 @@ const Profile = () =>{
                         orders.length?
                         orders.map((order,key)=>(
                             <IonCard key={key}>
+                                <IonIcon class="profile-item-delete profile-item-delete-hover" onClick={()=>{
+                                    setShowDelete({
+                                        state: true,
+                                        data: order,
+                                        other: "client"
+                                    });
+                                }} icon={closeOutline}/>
                                 <IonThumbnail>
                                     <IonImg src={order?.record?.image}/>
                                 </IonThumbnail>
@@ -230,9 +259,10 @@ const Profile = () =>{
                                                 }}>Cancel</div>
                                             </div>
                                             <IonIcon class="profile-item-delete profile-item-delete-hover" onClick={()=>{
-                                                setShowAlert({
+                                                setShowDelete({
                                                     state: true,
-                                                    data: item
+                                                    data: item,
+                                                    other: ""
                                                 });
                                             }} icon={closeOutline}/>
                                         </div>
@@ -299,7 +329,7 @@ const Profile = () =>{
                 </IonList>
             </IonContent>
             <input hidden onChange={async(e)=>{
-                addUserInfo("i",await tools.toBase64(e.target.files[0]));
+                if (e.target.files[0]) addUserInfo("i",await tools.toBase64(e.target.files[0]));
             }} id="profile-choose-file" type="file"/>
         </IonPage>
     )

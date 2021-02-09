@@ -1,4 +1,4 @@
-import { isPlatform } from '@ionic/react';
+//import { isPlatform } from '@ionic/react';
 
 class Times{
     weekAbbrve = [

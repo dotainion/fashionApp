@@ -7,6 +7,28 @@ import { anonymousCreds } from './config';
 const fb = firebase.initializeApp(FB_DB_CONFIG);
 const db = fb.firestore();
 
+class Settings{
+    cacheUnlimited(){
+        db.settings({
+            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+        });  
+    }
+    offlineMode(){
+        db.enablePersistence()
+        .then(()=>{
+            console.log("offline enabled");
+        })
+        .catch(()=>{
+            console.log("offline error");
+        });
+    }
+    initAll(){
+        this.cacheUnlimited();
+        this.offlineMode();
+    }
+}
+new Settings().initAll();
+
 class Auth{
     async signIn(email,password){
         try{

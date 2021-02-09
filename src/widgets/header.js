@@ -1,5 +1,5 @@
-import { IonButton, IonButtons, IonHeader, IonIcon, IonItem, IonMenuButton, IonRouterOutlet, IonTitle, IonToolbar } from '@ionic/react';
-import { busOutline, cartOutline, homeOutline, listOutline, star } from 'ionicons/icons';
+import { IonButtons, IonHeader, IonIcon, IonMenuButton, IonRouterOutlet, IonToolbar } from '@ionic/react';
+import { busOutline, homeOutline} from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { auth } from '../auth/authentication';
@@ -25,11 +25,10 @@ export const Header = (props) =>{
     const [cartTag, setCartTag] = useState(false);
 
     const isOrder = async() =>{
-        let items = [];
         const user = tools.getCreds();
-        items = await data.getClientOrder(user?.id);
+        const items = await data.getClientOrder(user?.id);
         setTimeout(()=>{        
-            if (props.ordered && items.length)setOrderedState(true);
+            if (props.ordered && items.length) setOrderedState(true);
             else setOrderedState(false);
         },1000);
     }

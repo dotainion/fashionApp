@@ -1,5 +1,5 @@
-import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonLoading, IonNote, IonPage, IonPopover, IonRouterOutlet, IonThumbnail, IonTitle, IonToolbar, withIonLifeCycle } from '@ionic/react';
-import { cardOutline, closeOutline, listOutline, locationOutline, radioButtonOnOutline } from 'ionicons/icons';
+import { IonAlert, IonButton, IonCard, IonCheckbox, IonContent, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonLoading, IonNote, IonPage, IonThumbnail, withIonLifeCycle } from '@ionic/react';
+import { cardOutline, closeOutline, locationOutline, radioButtonOnOutline } from 'ionicons/icons';
 import React, { createRef } from 'react';
 import { cart } from '../cart/utils';
 import tools from '../components/Tools';
