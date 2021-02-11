@@ -27,7 +27,7 @@ class Settings{
         this.offlineMode();
     }
 }
-new Settings().initAll();
+//new Settings().initAll();
 
 class Auth{
     async signIn(email,password){

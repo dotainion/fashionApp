@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonInput, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonLoading, IonList, IonRefresherContent, IonRefresher } from '@ionic/react';
+import { IonContent, IonPage, IonCard, IonIcon, IonThumbnail, IonImg, IonPopover, IonItem, IonInput, IonButton, IonLabel, IonAlert, withIonLifeCycle, IonLoading, IonList, IonRefresherContent, IonRefresher, IonModal } from '@ionic/react';
 import React, { Component } from 'react';
 import './Home.css';
 import { Header } from '../widgets/header';
@@ -22,7 +22,7 @@ class Home extends Component{
         this.showLoading = true;
         this.showNoData = false;
 
-        this.cartOpen = false;
+        this.cartOpen = true;//pre load to prevent error in offline mode.
         this.cartData = [];
         this.cartCount = 0;
 
@@ -98,13 +98,13 @@ class Home extends Component{
     addToCart(item){
         cart.add(item);
     }
-    setItemInCart(){
-        this.cartOpen = true;
+    async setItemInCart(){
+        /*this.cartOpen = true;
         this.cartData = cart.get();
         this.setState({
             cartOpen:this.cartOpen,
             cartData:this.cartData
-        });
+        });*/
     }
     checkDuplication(item){
         const fromCart = cart.get();
@@ -149,6 +149,7 @@ class Home extends Component{
                         this.setItemInCart();
                     }}
                 />
+                
                 <IonLoading
                     cssClass='my-custom-class'
                     isOpen={this.showLoading}

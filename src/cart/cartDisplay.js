@@ -1,5 +1,5 @@
 import { IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
-import { closeOutline } from 'ionicons/icons';
+import { closeOutline, trophyOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import './cartDisplay.css';
 import { cart } from './utils';
@@ -19,6 +19,7 @@ const removeDuplicate = () =>{
     }
     elementId = uniqueArray;
 }
+let num = true;
 
 export const CartDisplay = (props) =>{
     const history = useHistory();

@@ -39,12 +39,12 @@ class Database{
     async getData(limit=5){
         let storeRecords = [];
         try{
-            const dataToGet = db.collection("fashion").limit(limit);
+            /*const dataToGet = db.collection("fashion").limit(limit);
             const records = await dataToGet.get();
             records.forEach((record)=>{
                 const info = record.data();
                 storeRecords.push({id:record.id,record: info});
-            });
+            });*/
             return {state:true,records:storeRecords};
         }catch{return storeRecords}
     }
@@ -61,15 +61,16 @@ class Database{
         }catch{return }
     }
     async search(searchBy,limit=5){
+        let searchResults = [];
         try{
             let allRecords = await this.getData(limit);
             allRecords = allRecords.records;
-            const searchResults = allRecords.filter((value) =>
+            searchResults = allRecords.filter((value) =>
                 value.record.title.toLowerCase()
                 .includes(searchBy.toLowerCase())
             );
             return searchResults;
-        }catch{return []}
+        }catch{return searchResults}
     }
     async order(newOrders){
         try{
@@ -118,7 +119,6 @@ class Database{
         }catch{return orders}
     }
     async deleteClientOrder(id){
-        console.log(id)
         try{
             const dataToUpdate = db.collection("fashionOrder").doc(id);
             await dataToUpdate.delete();

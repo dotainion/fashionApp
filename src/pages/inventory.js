@@ -43,9 +43,9 @@ const Profile = () =>{
         });
     };
 
-    const sendToDatabase = () =>{
+    const sendToDatabase = async() =>{
         if (toUpload.title && toUpload.price){
-            data.addData(toUpload);
+            await data.addData(toUpload);
             setToUpload({
                 image: img, title: "",
                 price: "", detail: "", userId: ""
@@ -329,7 +329,8 @@ const Profile = () =>{
                 </IonList>
             </IonContent>
             <input hidden onChange={async(e)=>{
-                if (e.target.files[0]) addUserInfo("i",await tools.toBase64(e.target.files[0]));
+                const base64 = await tools.toBase64(e.target.files[0])
+                if (e.target.files[0]) addUserInfo("i",base64);
             }} id="profile-choose-file" type="file"/>
         </IonPage>
     )
