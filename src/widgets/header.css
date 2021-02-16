@@ -45,11 +45,11 @@
 
 @media screen and (max-width:767px){
     .header-title{
-        font-size: 17px;
-        margin-right: 10px;
+        font-size: 25px;
+        margin-right: 0px;
     }
     .header-cart{
-        font-size: 17px;
+        font-size: 25px;
     }
     .header-toggle-menu{
         display: block;
@@ -58,7 +58,8 @@
         margin-left: 20px;
     }
     .header-count-container{
-        top: -10px;
+        top: -15px;
+        left: 15px;
         width: 15px;
         height: 15px;
     }

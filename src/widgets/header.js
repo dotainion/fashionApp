@@ -93,7 +93,7 @@ export const Header = (props) =>{
                             tools.lastRoute(routes.inventory);
                             history.push(routes.inventory);
                         }} slot="end"/>
-                        <LabelTag state={salesTag} text="Sales"/>
+                        <LabelTag state={salesTag} text="My Store"/>
                     </span>
                     <span hidden={!props.cart} onMouseEnter={()=>{
                         setCartTag(true);

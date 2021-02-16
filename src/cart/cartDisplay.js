@@ -19,7 +19,7 @@ const removeDuplicate = () =>{
     }
     elementId = uniqueArray;
 }
-
+let preload = false;
 export const CartDisplay = (props) =>{
     const history = useHistory();
     let cartListCheck = useRef();
@@ -53,10 +53,6 @@ export const CartDisplay = (props) =>{
         }
         setGrandTotal(total);
     }
-    const preload = (shouldLoad,uiState) =>{
-        if (shouldLoad) return true;
-        else return uiState;
-    }
     useEffect(()=>{
         if (cartListCheck <= 0){
             setDisableCheckout({
@@ -74,10 +70,15 @@ export const CartDisplay = (props) =>{
         
     },[cartListCheck]);
     return(
-        <IonModal isOpen={preload(props.preload, props.state)} onDidDismiss={()=>{
+        <IonModal isOpen={props.state} onDidDismiss={()=>{
             if (props.onClose) props.onClose();
         }} onDidPresent={()=>{
             updateGrandTotal();
+        }} onWillPresent={()=>{
+            if (!preload && props.preload){
+                preload = true;
+                props.onClose();
+            }
         }} style={{visibility:"hidden"}} class="cart-main-container">
             <DeleteConfirm
                 state={showAlert.state}
