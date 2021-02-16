@@ -9,6 +9,7 @@ import './checkOut.css';
 import { FaCcMastercard, FaCcVisa } from 'react-icons/fa';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
 import { MapModel } from '../map/googleMap';
+import { FashionAlert } from '../widgets/fashionAlert';
 
 
 class CheckOut extends React.Component{
@@ -22,12 +23,19 @@ class CheckOut extends React.Component{
         this.maps = {
             state: false
         }
-        
+
         this.showItemDeleteAlert = {
             state: false,
             data: null
         };
-        this.showCompleteAlert = false;
+
+        this.showMessageAlert = {
+            state: false,
+            header: "",
+            subHeader: "",
+            message: ""
+        };
+
         this.showLoading = false;
 
         this.cartList = [];
@@ -44,8 +52,8 @@ class CheckOut extends React.Component{
             email: "",
             phone: ""
         }
+        this.disablePickupPayment = false;
 
-        this.errorMessage = "";
         this.addrErrorMsg = "";
 
         this.toggleIcon = cardOutline;
@@ -82,28 +90,55 @@ class CheckOut extends React.Component{
     submitChecks(){
         if (cart.get().length > 0){
             if (cart.checkedIndex() > 0){
-                this.errorMessage = "";            
                 if (this.deliveryOpton.delivery){
-                    this.errorMessage = "Only pickup options availble at the moment";
+                    this.showMessageAlert = {
+                        state: true,
+                        header: "Alert!!",
+                        subHeader: "Unavailable",
+                        message: "Only pickup options availble at the moment"
+                    };
                     return false;
                 }else if (this.deliveryOpton.pickup){
+                    if (!this.disablePickupPayment){
+                        this.showMessageAlert = {
+                            state: true,
+                            header: "Alert!!",
+                            subHeader: "Unavailable",
+                            message: "Credit cart payment is not yet available. Please choose (Pay on pickup)"
+                        };
+                        return false;
+                    }
                     return true;
                 }else{
-                    this.errorMessage = "Please choose a delevery option";
+                    this.showMessageAlert = {
+                        state: true,
+                        header: "Alert!!",
+                        subHeader: "Delevery option",
+                        message: "Please choose a delevery option"
+                    };
                     return false;
                 }
             }
-            this.errorMessage = "All item are placed on hold. Please remove hold on items";
-            return false;
+            this.showMessageAlert = {
+                state: true,
+                header: "Alert!!",
+                subHeader: "On hold",
+                message: "All item are placed on hold. Please remove hold on items"
+            };
+            return false;            
         }
-        this.errorMessage = "No item in cart";
+        this.showMessageAlert = {
+            state: true,
+            header: "Alert!!",
+            subHeader: "Empty cart",
+            message: "No item in cart"
+        };
         return false;
     }
     async submit(){
         if (this.submitChecks()){
             this.showLoading = true;
             this.setState({showLoading:this.showLoading});
-            this.errorMessage = "";
             let newOrder = [];
             const user = tools.getCreds();
             const date = tools.date.getTodaysDate();
@@ -125,7 +160,12 @@ class CheckOut extends React.Component{
             }
             await data.order(newOrder);
             this.showLoading = false;
-            this.showCompleteAlert = true;
+            this.showMessageAlert = {
+                state: true,
+                header: "Alert!!",
+                subHeader: "Successful",
+                message: "Order place successfully."
+            };
             cart.clearSelected();
             this.initializeCartList();
 
@@ -133,7 +173,7 @@ class CheckOut extends React.Component{
         this.setState({
             showLoading:this.showLoading,
             errorMessage:this.errorMessage,
-            showCompleteAlert:this.showCompleteAlert
+            showMessageAlert:this.showMessageAlert
         });
     }
     isAddrMatchCity(){
@@ -224,22 +264,23 @@ class CheckOut extends React.Component{
                     message={'Please wait...'}
                     duration={5000}
                 />
-                
-                <IonAlert
-                    isOpen={this.showCompleteAlert}
-                    onDidDismiss={() =>{
-                        this.showCompleteAlert = false;
-                        this.setState({
-                            showCompleteAlert:this.showCompleteAlert
-                        });
+
+                <FashionAlert
+                    state={this.showMessageAlert.state}
+                    header={this.showMessageAlert.header}
+                    subHeader={this.showMessageAlert.subHeader}
+                    message={this.showMessageAlert.message}
+                    onClose={()=>{
+                        this.showMessageAlert = {
+                            state: false,
+                            header: "",
+                            subHeader: "",
+                            message: ""
+                        };
+                        this.setState({showCompleteAlert:this.showMessageAlert});
                     }}
-                    cssClass=''
-                    header="Alert!!"
-                    subHeader="Successful"
-                    message="Order send successful, you will receive an email when ready"
-                    buttons={['OK']}
-                    //duration={200}
                 />
+
                 <DeleteConfirm
                     state={this.showItemDeleteAlert.state}
                     onClose={()=>{
@@ -275,7 +316,7 @@ class CheckOut extends React.Component{
                                                     cart.onHold(item.id,e.detail.checked);
                                                     this.initializeCartList();
                                                 }} checked={item.checked} slot="end"/>
-                                                <IonLabel slot="end">Place on hold</IonLabel>
+                                                <IonLabel slot="end">Ready</IonLabel>
                                             </IonItem>
                                             <IonThumbnail class="checkout-cart-image">
                                                 <IonImg src={item?.record?.image}/>
@@ -300,9 +341,6 @@ class CheckOut extends React.Component{
                             </IonList>
                         </IonList>
                         <IonList class="checkout-type-main-container">
-                            <IonList class="checkout-error-container">
-                                <div>{this.errorMessage}</div>
-                            </IonList>
                             <div onClick={()=>{
                                 this.maps.state = true;
                                 this.setState({maps:this.maps});
@@ -415,6 +453,22 @@ class CheckOut extends React.Component{
                                     </IonItem>
                                 </IonList> 
                                 <IonList class="checkout-payment-container">
+                                    <IonList hidden={!this.disablePickupPayment || this.showShippingAddress} class="checkout-payment-disable-container">
+                                        <div className="checkout-payment-disable-address">
+                                            <div>Pickup Address:</div>
+                                            <p>
+                                                Pick up is determined by individual 
+                                                sales agent. You will be notify via email
+                                            </p>
+                                        </div>
+                                    </IonList>
+                                    <IonItem hidden={this.showShippingAddress} class="checkout-payment-disable-button">
+                                        <IonCheckbox onIonChange={(e)=>{
+                                            this.disablePickupPayment = e.detail.checked;
+                                            this.setState({disablePickupPayment:this.disablePickupPayment});
+                                        }} checked={this.disablePickupPayment}/>
+                                        <IonLabel>Pay on pickup</IonLabel>
+                                    </IonItem>
                                     <IonItem>
                                         <IonLabel>Pay With</IonLabel>
                                     </IonItem>

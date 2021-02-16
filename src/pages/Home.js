@@ -237,6 +237,9 @@ class Home extends Component{
                         var bottomValue = scrolHightFullLength - scrollHeightContainer;
                         if (bottomValue <= e.detail.scrollTop){
                             await this.search(this.searchValue);
+                        }else{
+                            this.showNoData = false;
+                            this.setState({showNoData:this.showNoData});
                         }
                     }
                 }} class="home-main-scroll-container" scrollEvents={true}>

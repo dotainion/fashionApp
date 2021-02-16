@@ -6,7 +6,7 @@ import { auth } from '../auth/authentication';
 import { Menu } from '../components/Menu';
 import tools from '../components/Tools';
 import { routes } from '../global/routes';
-import { FcSalesPerformance } from 'react-icons/fc';
+import { IoStorefrontSharp } from 'react-icons/io5';
 import { FaCartPlus } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import './header.css';
@@ -89,7 +89,7 @@ export const Header = (props) =>{
                     }} onMouseLeave={()=>{
                         setSalesTag(false);
                     }} className="header-icon-and-tag-contaienr">
-                        <FcSalesPerformance className="header-title header-hover" onClick={()=>{
+                        <IoStorefrontSharp className="header-title header-hover" onClick={()=>{
                             tools.lastRoute(routes.inventory);
                             history.push(routes.inventory);
                         }} slot="end"/>
