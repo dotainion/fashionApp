@@ -1,5 +1,5 @@
 import { IonContent, IonIcon, IonImg, IonItem, IonLabel, IonList, IonModal, IonThumbnail } from '@ionic/react';
-import { closeOutline, trophyOutline } from 'ionicons/icons';
+import { closeOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import './cartDisplay.css';
 import { cart } from './utils';
@@ -19,7 +19,6 @@ const removeDuplicate = () =>{
     }
     elementId = uniqueArray;
 }
-let num = true;
 
 export const CartDisplay = (props) =>{
     const history = useHistory();
@@ -54,6 +53,10 @@ export const CartDisplay = (props) =>{
         }
         setGrandTotal(total);
     }
+    const preload = (shouldLoad,uiState) =>{
+        if (shouldLoad) return true;
+        else return uiState;
+    }
     useEffect(()=>{
         if (cartListCheck <= 0){
             setDisableCheckout({
@@ -71,11 +74,11 @@ export const CartDisplay = (props) =>{
         
     },[cartListCheck]);
     return(
-        <IonModal isOpen={props.state} onDidDismiss={()=>{
+        <IonModal isOpen={preload(props.preload, props.state)} onDidDismiss={()=>{
             if (props.onClose) props.onClose();
         }} onDidPresent={()=>{
             updateGrandTotal();
-        }} class="cart-main-container">
+        }} style={{visibility:"hidden"}} class="cart-main-container">
             <DeleteConfirm
                 state={showAlert.state}
                 onClose={()=>{

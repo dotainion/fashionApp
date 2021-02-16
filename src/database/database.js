@@ -39,12 +39,12 @@ class Database{
     async getData(limit=5){
         let storeRecords = [];
         try{
-            /*const dataToGet = db.collection("fashion").limit(limit);
+            const dataToGet = db.collection("fashion").limit(limit);
             const records = await dataToGet.get();
             records.forEach((record)=>{
                 const info = record.data();
                 storeRecords.push({id:record.id,record: info});
-            });*/
+            });
             return {state:true,records:storeRecords};
         }catch{return storeRecords}
     }

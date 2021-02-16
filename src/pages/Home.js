@@ -6,11 +6,15 @@ import { Searchbar } from '../widgets/searchbar';
 import no_item_img from '../images/shopping-bags.jpg';
 import { data } from '../database/database';
 import { chevronDownCircleOutline, searchOutline } from 'ionicons/icons';
-import { CartDisplay } from '../cart/cartDisplay';
+import { CartDisplay, CartDisplay2 } from '../cart/cartDisplay';
 import { cart } from '../cart/utils';
 import { auth } from '../auth/authentication';
 import { LargeView } from '../widgets/largeView';
 import { MdCloudOff } from 'react-icons/md';
+import { modalController } from '@ionic/core';
+import { FashionAlert } from '../widgets/fashionAlert';
+import { AddToCart } from '../cart/addToCart';
+import { Console } from 'console';
 
 
 class Home extends Component{
@@ -22,7 +26,8 @@ class Home extends Component{
         this.showLoading = true;
         this.showNoData = false;
 
-        this.cartOpen = true;//pre load to prevent error in offline mode.
+        this.cartOpen = false;
+        this.cartPreload = true;
         this.cartData = [];
         this.cartCount = 0;
 
@@ -74,12 +79,23 @@ class Home extends Component{
             this.setState({showNoData:this.showNoData});
         }
     }
+    onPreload(){
+        setTimeout(()=>{
+            this.cartPreload = false;
+            this.setState({cartPreload:this.cartPreload});
+        },100);
+    }
+    componentDidMount(){
+        console.log("this is test")
+    }
     async ionViewWillEnter(){
+        this.onPreload();
         document.title = "Home";
         await auth.anonymous();
         const res = await data.getData(this.searchLimit);
         this.records = res.records;
         this.showLoading = false;
+        this.cartPreload = false;
         this.setState({
             menuId:this.menuId,
             records:this.records,
@@ -99,12 +115,12 @@ class Home extends Component{
         cart.add(item);
     }
     async setItemInCart(){
-        /*this.cartOpen = true;
+        this.cartOpen = true;
         this.cartData = cart.get();
         this.setState({
             cartOpen:this.cartOpen,
             cartData:this.cartData
-        });*/
+        });        
     }
     checkDuplication(item){
         const fromCart = cart.get();
@@ -141,6 +157,7 @@ class Home extends Component{
                 <CartDisplay 
                     data={this.cartData}
                     state={this.cartOpen}
+                    preload={this.cartPreload}
                     onClose={()=>{
                         this.cartOpen = false;
                         this.setState({cartOpen:this.cartOpen});
@@ -160,68 +177,42 @@ class Home extends Component{
                     message={'Please wait...'}
                     duration={5000}
                 />
-                <IonAlert
-                    isOpen={this.showAlert}
-                    onDidDismiss={() =>{
+                
+                <FashionAlert
+                    state={this.showAlert}
+                    header="Alert!!"
+                    subHeader="Duplicate"
+                    message="Item already in your cart"
+                    onClose={()=>{
                         this.showAlert = false;
                         this.setState({showAlert:this.showAlert});
                     }}
-                    cssClass=''
-                    header="Alert!!"
-                    subHeader="Duplicate"
-                    message="Item already in you cart"
-                    buttons={['OK']}
-                    duration={200}
                 />
-                <IonPopover
-                    cssClass=''
-                    event={undefined}
-                    isOpen={this.showPopover.state}
-                    onDidDismiss={() =>{
-                        this.showPopover = {
-                            state: false,
-                            data: undefined,
-                            qty: null
-                        };
+
+                <AddToCart
+                    state={this.showPopover.state}
+                    title={this.showPopover?.data?.record?.title}
+                    value={this.showPopover.qty}
+                    onChange={(e)=>{
+                        let qtyValue = e.detail.value;
+                        if (qtyValue < 0){ 
+                            this.showPopover.qty = 0;
+                            this.setState({showPopover:this.showPopover});
+                        }else{
+                            this.showPopover.qty = qtyValue;
+                        }
+                    }}
+                    onAccept={()=>{
+                        this.showPopover.data["qty"] = this.showPopover.qty;
+                        this.addToCart(this.showPopover.data);
+                        this.showPopover = { state: false, data: undefined, qty: null };
                         this.setState({showPopover:this.showPopover});
                     }}
-                >
-                    <IonItem style={{textAlign:"center"}} lines="full">
-                        <IonLabel>{this.showPopover?.data?.record?.title}</IonLabel>
-                    </IonItem>
-                    <IonItem>
-                        <IonLabel position="floating">Qty</IonLabel>
-                        <IonInput value={this.showPopover.qty} onIonChange={(e)=>{
-                            let qtyValue = e.detail.value;
-                            if (qtyValue < 0){ 
-                                this.showPopover.qty = 0;
-                                this.setState({showPopover:this.showPopover});
-                            }else{
-                                this.showPopover.qty = qtyValue;
-                            }
-                        }} type="number"/>
-                    </IonItem>
-                    <IonItem>
-                        <IonButton color="light" onClick={() =>{
-                            this.showPopover = {
-                                state: false,
-                                data: undefined,
-                                qty: null
-                            };
-                            this.setState({showPopover:this.showPopover});
-                        }} slot="end">Cancel</IonButton>
-                        <IonButton color="light" onClick={() =>{
-                            this.showPopover.data["qty"] = this.showPopover.qty;
-                            this.addToCart(this.showPopover.data);
-                            this.showPopover = {
-                                state: false,
-                                data: undefined,
-                                qty: null
-                            };
-                            this.setState({showPopover:this.showPopover});
-                        }} slot="end">Save</IonButton>
-                    </IonItem>
-                </IonPopover>
+                    onClose={()=>{
+                        this.showPopover = { state: false, data: undefined, qty: null };
+                        this.setState({showPopover:this.showPopover});
+                    }}
+                />
 
                 <LargeView 
                     state={this.showLargeView.state}
@@ -230,10 +221,7 @@ class Home extends Component{
                         this.checkDuplication(item);
                     }}
                     onClose={()=>{
-                        this.showLargeView = {
-                            state: false,
-                            data: null
-                        }
+                        this.showLargeView = { state: false, data: null }
                         this.setState({showLargeView:this.showLargeView});
                     }}
                 />
@@ -301,7 +289,7 @@ class Home extends Component{
                         <IonList class="home-no-items-container">
                             <IonThumbnail class="home-no-items-image">
                                 <IonImg src={no_item_img}/>
-                            </IonThumbnail>
+                                    </IonThumbnail>
                             <IonItem class="home-no-items-content" lines="full">
                                 <IonLabel>No Results</IonLabel>
                             </IonItem>
