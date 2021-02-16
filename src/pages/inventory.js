@@ -2,12 +2,13 @@ import { IonAlert, IonButton, IonCard, IonContent, IonIcon, IonImg, IonInput, Io
 import React, { useEffect, useRef, useState } from 'react';
 import './inventory.css';
 import img from '../images/defaultImage.jpg';
-import { closeOutline, imagesOutline} from 'ionicons/icons';
+import { cameraOutline, closeOutline, imagesOutline} from 'ionicons/icons';
 import tools from '../components/Tools';
 import { data } from '../database/database';
 import { DeleteConfirm } from '../widgets/deleteConfirm';
 import { Header } from '../widgets/header';
 import { ItemLoader } from '../widgets/itemLoader';
+import { fashionCam } from '../camera/camera';
 
 
 
@@ -117,6 +118,20 @@ const Profile = () =>{
             uploadToggleRef.current.style.backgroundColor = "white";
             uploadSwitchRef.current.hidden = false;
         }else console.log(`${cmd} value not recognize`);
+    }
+    const takePicture = async(cmd="") =>{
+        const fromDesktop = () => document.getElementById("profile-choose-file").click();
+        if (tools.isMobile()){
+            if (cmd === "picture"){
+                fashionCam.takePicture((base64)=>{
+                    addUserInfo("i",`data:image;base64,${base64}`);
+                });
+            }else if (cmd === "galery"){
+                fashionCam.getGallery((base64)=>{
+                    addUserInfo("i",`data:image;base64,${base64}`);
+                });  
+            }else fromDesktop();
+        }else fromDesktop();
     }
     useIonViewWillLeave(()=>{
         
@@ -307,16 +322,21 @@ const Profile = () =>{
                             </IonList>
                             <IonList class="profile-image-side">
                                 <IonThumbnail onClick={()=>{
-                                    let element = document.getElementById("profile-choose-file");
-                                    if (element) element.click();
+                                    takePicture();
                                 }} class="profile-upload-image">
                                     <IonImg src={toUpload.image}/>
                                 </IonThumbnail>
                             </IonList>
                         </IonList>
                         <IonItem>
+                            <IonList hidden={!tools.isMobile()} slot="end" onClick={()=>{
+                                takePicture("picture");
+                            }} class="profile-icons-container profile-hover">
+                                <IonIcon class="profile-icons" icon={cameraOutline}/>
+                                <div className="profile-icons-text">take Picture</div>
+                            </IonList>
                             <IonList slot="end" onClick={()=>{
-                                document.getElementById("profile-choose-file").click();
+                                takePicture("galery");
                             }} class="profile-icons-container profile-hover">
                                 <IonIcon class="profile-icons" icon={imagesOutline}/>
                                 <div className="profile-icons-text">Upload Image</div>
@@ -329,9 +349,12 @@ const Profile = () =>{
                 </IonList>
             </IonContent>
             <input hidden onChange={async(e)=>{
-                const base64 = await tools.toBase64(e.target.files[0])
-                if (e.target.files[0]) addUserInfo("i",base64);
-            }} id="profile-choose-file" type="file"/>
+                if (e.target.files[0]){
+                    const base64 = await tools.toBase64(e.target.files[0]);
+                    console.log(base64);
+                    addUserInfo("i",base64);
+                } 
+            }} id="profile-choose-file" type="file" accept="image/*"/>
         </IonPage>
     )
 }

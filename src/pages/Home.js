@@ -13,6 +13,7 @@ import { LargeView } from '../widgets/largeView';
 import { MdCloudOff } from 'react-icons/md';
 import { FashionAlert } from '../widgets/fashionAlert';
 import { AddToCart } from '../cart/addToCart';
+import { fashionCam } from '../camera/camera';
 
 
 class Home extends Component{

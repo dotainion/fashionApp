@@ -446,6 +446,16 @@ class Tools{
             reader.readAsDataURL(file);
         });
     };
+    toPng(imageElementId){
+        try{
+            let pic = document.getElementById(imageElementId);
+            let canvas = document.createElement("canvas");
+            canvas.getContext("2d").drawImage(pic,0,0,50,50);
+            return canvas.toDataURL("image/png");
+        }catch{
+            return "";
+        }
+    }
     lastRoute(value){
         if (value === "get"){
             const data = window.localStorage.getItem("last-route");
