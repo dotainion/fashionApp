@@ -1,21 +1,15 @@
 import React from 'react';
-import { Route } from 'react-router';
-import { auth } from './auth/authentication';
-import Login from './pages/authentication/Login';
+import { Redirect, Route } from 'react-router';
+import { useStore } from './context/Context';
+import { routes } from './global/routes';
 
 
-const AuthRouter = (Props:any) =>{
+const AuthRouter = ({Components}:any) =>{
+    const { isSignIn } = useStore();
     return(
         <Route render={()=>{
-            if (auth.isLogin()){
-                return(
-                    <Props.component/>
-                )
-            }else{
-                return(
-                    <Login/>
-                )
-            }
+            if (isSignIn) return <Components/>
+            return <Redirect to={routes.signIn}/>
         }}/>
     )
 }

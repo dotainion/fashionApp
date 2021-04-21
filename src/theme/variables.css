@@ -78,6 +78,11 @@ http://ionicframework.com/docs/theming/ */
   /** custom **/
   --sys-color: rgb(39, 108, 236);
   --home-bg: rgb(245, 205, 130);
+  --success: rgb(18, 68, 18);
+  --shadow: rgb(0, 0, 0, 0.90);
+  --tool-bar: rgb(6, 3, 39);
+  --mini-tool-bar: rgb(46, 45, 45);
+  --hover-green: rgb(13, 26, 26);
 }
 
 @media (prefers-color-scheme: dark) {

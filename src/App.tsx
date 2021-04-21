@@ -21,35 +21,49 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './theme/custom.css';
+import './theme/responsive.css';
 
 /* Other variables */
 import { routes } from './global/routes';
 
 /* Pages variables */
-import Home from './pages/Home';
-import Login from './pages/authentication/Login';
-import Register from './pages/authentication/Register';
-import Profile from './pages/inventory';
-import PasswordRecover from './pages/authentication/Recover';
+import { Sales } from './sales/Sale';
+import { ContextProvider } from './context/Context';
+import { AgentProducts } from './sales/AgentProducts';
+import { AddProducts } from './dashboard/AddProducts';
+import { Analytics } from './dashboard/Analytics';
+import { Products } from './dashboard/Products';
+import { Orders } from './dashboard/Orders';
+import { Inventory } from './dashboard/Inventory';
 import AuthRouter from './authRoute';
-import CheckOut from './pages/checkOut';
-import PendingOrder from './pages/pendingOrder';
+import { SignIn } from './auth/SignIn';
+import { Cart } from './sales/Cart';
+import { Settings } from './dashboard/Settings';
+import { ViewProduct } from './sales/ViewProduct';
+
 
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route path={routes.recover} component={PasswordRecover} exact={true} />
-        <Route path={routes.login} component={Login} exact={true} />
-        <Route path={routes.register} component={Register} exact={true} />
-        <Route path={routes.home} component={Home} exact={true} />
-        <Route path={routes.checkout} render={() =><AuthRouter component={CheckOut}/>} exact={true} />
-        <Route path={routes.inventory} render={() =><AuthRouter component={Profile}/>} exact={true} />
-        <Route path={routes.pendingorder} render={() =><AuthRouter component={PendingOrder}/>} exact={true} />
-        <Route render={()=><Redirect to={routes.home}/>}/>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <ContextProvider>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route path={routes.sales} component={Sales} exact={true} />
+          <Route path={routes.default} component={Sales} exact={true} />
+          <Route path={routes.cart} component={Cart} exact={true} />
+          <Route path={routes.agent+routes.param} component={AgentProducts} exact={true} />
+          <Route path={routes.viewProduct+routes.param} component={ViewProduct} exact={true} />
+          <Route path={routes.addProducts} component={()=><AuthRouter Components={AddProducts}/>} exact={true} />
+          <Route path={routes.analystics} component={()=><AuthRouter Components={Analytics}/>} exact={true} />
+          <Route path={routes.orders} component={()=><AuthRouter Components={Orders}/>} exact={true} />
+          <Route path={routes.products} component={()=><AuthRouter Components={Products}/>} exact={true} />
+          <Route path={routes.inventory} component={()=><AuthRouter Components={Inventory}/>} exact={true} />
+          <Route path={routes.settings} component={()=><AuthRouter Components={Settings}/>} exact={true} />
+          <Route path={routes.signIn} component={SignIn} exact={true} />
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </ContextProvider>
   </IonApp>
 );
 

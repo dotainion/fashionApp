@@ -1,11 +1,18 @@
-class Routes{
-    home = "/home";
-    login = "/login";
-    recover = "/recover";
-    register = "/register";
-    inventory = "/inventory";
-    checkout = "/checkout";
-    pendingorder = "/pending";
+export const routes = {
+    default: "/",
+    param: ":id",
+    sales: "/sales",
+    agent: "/agent",
+    dashboard: "/dashboard",
+    addProducts: "/add-products",
+    analystics: "/analystics",
+    orders: "/orders",
+    products: "/products",
+    inventory: "/inventory",
+    signIn: "/sign-in",
+    signUp: "/sign-up",
+    cart: "/cart",
+    settings: "/settings",
+    viewProduct: "/view-product",
 }
 
-export const routes = new Routes();
