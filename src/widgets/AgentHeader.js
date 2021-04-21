@@ -15,7 +15,7 @@ export const AgentHeader = ({uid, visit}) =>{
     }
 
     const visitPage = () =>{
-        history.push({pathname:routes.agent+":"+uid});
+        history.push({pathname:routes.store+":"+uid});
     }
 
     useEffect(()=>{

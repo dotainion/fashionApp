@@ -19,7 +19,7 @@ export const NavSideBar = ({isOpen}) =>{
         <div>
             {pageNavigators.map((nav, key)=>(
                  <IonItem id={nav.title} onClick={()=>{
-                    if (nav.route.includes("share")) onShare(`${user?.firstName} ${user?.lastName}`, routes.agent, user?.id);
+                    if (nav.route.includes("share")) onShare(`${user?.firstName} ${user?.lastName}`, routes.store, user?.id);
                     else history.push(nav.route);
                 }} color={heightightNavOption(nav.route)} class="dash-side-nav btn-click btn-hover" key={key}>
                     <IonIcon icon={nav.icon}/>
@@ -33,7 +33,7 @@ export const NavSideBar = ({isOpen}) =>{
 export const NavSideWithWrapper = ({isOpen, onClose, top}) =>{
     return(
         <div hidden={!isOpen} onClick={onClose} className="nav-option-wrapper">
-            <div onClick={(e)=>e.stopPropagation()} style={{marginTop:top}} className="nav-option-sub-wrapper white-bg">
+            <div onClick={(e)=>e.stopPropagation()} style={{marginTop:top}} className="nav-option-sub-wrapper white-bg side-menu-ease-in">
                 <NavSideBar/>
             </div>
         </div>

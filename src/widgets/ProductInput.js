@@ -1,16 +1,17 @@
-import { IonIcon, IonImg, IonItemDivider, IonThumbnail } from '@ionic/react';
-import { addOutline, closeOutline, image, imagesOutline, refreshCircleOutline } from 'ionicons/icons';
+import { IonAlert, IonIcon, IonImg, IonItemDivider, IonThumbnail } from '@ionic/react';
+import { addOutline, closeOutline, imagesOutline, refreshCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../context/Context';
 import defaultImage from '../images/default-image.jpg';
 import { tools } from '../tools/Tools';
-import { ColorPicker } from './ColorPicker';
-import { SizePicker } from './SizePicker';
+import { ColorPicker, SizePicker } from './ChoicePicker';
 
 
 
-export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
+export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef, changeMade, setChangeMade}) =>{
     const { user } = useStore();
+    //edit or add button
+    const [editOrAddBtnText, setEditOrAddBtnText] = useState("Add");
     //holds image
     const [images, setImages] = useState([]);
     //holds the index of a element inside of image
@@ -21,6 +22,12 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
     const [moreSizes, setMoreSizes] = useState([]);
     //hold object id if valu is being edited
     const [editingId, setEditingId] = useState("");
+
+    //show message alert
+    const [alertMessage, setAlertMessage] = useState("");
+    //open alert
+    const [showAlert, setShowAlert] = useState(false);
+
     //open color picker
     const [showColorPicker, setShowColorPicker] = useState(false);
     const [showSizePicker, setShowSizePicker] = useState(false);
@@ -32,6 +39,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
 
     const onImageChange = async(e) =>{
         setImages([...images, await tools.toBase64(e.target.files[0])]);
+        setChangeMade(true);
     }
 
     const onClearFields = () =>{
@@ -46,44 +54,72 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
     }
 
     const addMoreColors = (color) =>{
-        setMoreColors([...moreColors,color.hex]);
-        setShowColorPicker(false)
+        if (!moreColors.includes(color.hex)) setMoreColors([color.hex, ...moreColors]);
+        setChangeMade(true);
     }
 
     const addMoreSize = (size) =>{
-        setMoreSizes([...moreSizes, size]);
+        if (!moreSizes.includes(size)) setMoreSizes([size, ...moreSizes]);
+        setChangeMade(true);
     }
 
     const deleteMoreColors = (index) =>{
         const newColors = JSON.parse(JSON.stringify(moreColors));
         newColors.splice(index,1)
         setMoreColors(newColors);
+        setChangeMade(true);
     }
 
     const deleteMoreSize = (index) =>{
         const newSizes = JSON.parse(JSON.stringify(moreSizes));
         newSizes.splice(index,1)
         setMoreSizes(newSizes);
+        setChangeMade(true);
     }
 
     const deleteAImage = (index) =>{
         const newImages = JSON.parse(JSON.stringify(images));
         newImages.splice(index,1);
         setImages(newImages);
+        setChangeMade(true);
+    }
+
+    const isHasImage = (img) =>{
+        if (img.length > 0) return img;
+        return [defaultImage];
     }
 
     const onAddItem = async() =>{
+        if (Object.keys(record || {})?.length > 0){
+            if (!changeMade){
+                setAlertMessage("No change detected");
+                return setShowAlert(true);
+            }
+        }
+        if (!titleRef.current.value){
+            setAlertMessage("Item title was not provided.");
+            return setShowAlert(true);
+        }
+        if (!priceRef.current.value){
+            setAlertMessage("Cost of the item was not provided.");
+            return setShowAlert(true);
+        }
+        if (moreColors?.length <= 0){
+            setAlertMessage("Must have at least one color.");
+            return setShowAlert(true);
+        }
         const itemObject = {
             title: titleRef.current.value ||  "",
             price: priceRef.current.value ||  "",
             colors: moreColors ||  [],
             sizes: moreSizes ||  [],
-            images: images || [],
+            images: isHasImage(images) || [],
             postBy: user?.id || "",
             description: descriptionRef.current.value || ""
         };
         if (editingId) itemObject["id"] = editingId;
         if (typeof onSubmit === "function") onSubmit(itemObject);
+        setChangeMade(false);
         onClearFields();
     }
 
@@ -95,6 +131,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
     //init data passed in
     useEffect(()=>{
         if (record){
+            setEditOrAddBtnText("Update");
             setEditingId(record?.id);
             setImages(record?.info?.images);
             setMoreSizes(record?.info?.sizes);
@@ -110,12 +147,25 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
                 isOpen={showColorPicker} 
                 onClose={()=>setShowColorPicker(false)} 
                 onChange={(color)=>addMoreColors(color)}
+                selected={moreColors}
             />
             <SizePicker
                 isOpen={showSizePicker} 
                 onClose={()=>setShowSizePicker(false)}
                 onSelect={(size)=>addMoreSize(size)}
+                selected={moreSizes}
+                onDelete={(index)=>deleteMoreSize(index)}
             />
+            <IonAlert
+                isOpen={showAlert}
+                onDidDismiss={()=>setShowAlert(false)}
+                cssClass='my-custom-class'
+                header={'Alert!!'}
+                subHeader={""}
+                message={alertMessage}
+                buttons={['OK']}
+            />
+            
             <IonIcon hidden={!onClose} onClick={onClose} class="float-top-right pad text-hover" style={{fontSize:"25px"}} icon={closeOutline}/>
             <IonItemDivider>{header || "Add Products"}</IonItemDivider>
             <div className="divider item-center center-add-container d-flex-on-mobile">
@@ -135,37 +185,37 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
                         </IonThumbnail>
                     </div>
                 </div>
-                <div className="max-width">
+                <div className="max-width" style={{userSelect:"none"}}>
                     <div className="float-top-right hide-on-mobile">
                         <button onClick={onClearFields} className="add-btn btn-click btn-hover">Clear<IonIcon style={{marginLeft:"5px"}} icon={refreshCircleOutline}/></button>
-                        <button onClick={onAddItem} className="add-btn btn-click btn-hover">Add<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
+                        <button onClick={onAddItem} className="add-btn btn-click btn-hover">{editOrAddBtnText}<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
                     </div>
                     <div className="item-center center-add-container">
                         
                         <div className="add-input-container">
                             <div>title</div>
-                            <input ref={titleRef} className="add-input"/>
+                            <input onChange={()=>setChangeMade(true)} ref={titleRef} placeholder="Item name" className="add-input"/>
                         </div>
                         <div className="add-input-container">
                             <div>price</div>
-                            <input ref={priceRef} className="add-input"/>
+                            <span className="price-dollar-sign"><input onChange={()=>setChangeMade(true)} ref={priceRef} type="number" placeholder="$0.00" className="add-input"/></span>
                         </div>
 
                         <div className="add-input-container">
                             <label>Color</label>
-                            <div className="add-hold-image-picker-item scroll-bar inline">
+                            <div className="add-hold-image-picker-item scroll-bar inline white-bg">
                                 {moreColors?.map((color, key)=>(
-                                    <label className="add-hold-more-item" key={key}>
-                                        <span>{color}</span>
-                                        <IonIcon onClick={()=>deleteMoreColors(key)} class="add-hold-more-delete text-hover" icon={closeOutline}/>
+                                    <label className="add-hold-more-item color-dot" style={{backgroundColor:color,boxShadow:"none"}} key={key}>
+                                        <IonIcon onClick={()=>deleteMoreColors(key)} class="add-hold-more-delete-2 text-hover" icon={closeOutline}/>
                                     </label>
                                 ))}
                             </div>
                             <IonIcon onClick={()=>setShowColorPicker(true)} class="add-product-add-more-btn btn-click btn-hover inline" icon={addOutline}/>
+                            <div hidden={moreColors?.length} className="float-left pad" style={{top:"63%",color:"gray"}}>Click the plus sign to add color</div>
                         </div>
                         <div className="add-input-container">
                             <label>Size</label>
-                            <div className="add-hold-image-picker-item scroll-bar inline">
+                            <div className="add-hold-image-picker-item scroll-bar inline white-bg">
                                 {moreSizes?.map((color, key)=>(
                                     <label className="add-hold-more-item" key={key}>
                                         <span>{color}</span>
@@ -174,10 +224,11 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
                                 ))}
                             </div>
                             <IonIcon onClick={()=>setShowSizePicker(true)} class="add-product-add-more-btn btn-click btn-hover inline" icon={addOutline}/>
+                            <div hidden={moreSizes?.length} className="float-left pad" style={{top:"63%",color:"gray"}}>Click the plus sign to add size</div>
                         </div>
                         <div className="add-input-container">
                             <div>Description</div>
-                            <textarea ref={descriptionRef} rows={5} className="add-input" style={{resize:"none"}}/>
+                            <textarea onChange={()=>setChangeMade(true)} ref={descriptionRef} rows={5} placeholder="Description of item" className="add-input" style={{resize:"none"}}/>
                         </div>
 
                     </div>
@@ -185,7 +236,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
             </div>
             <div className="hide-on-desktop" style={{textAlign:"right",marginBottom:"40px"}}>
                 <button onClick={onClearFields} className="add-btn btn-click btn-hover">Clear<IonIcon style={{marginLeft:"5px"}} icon={refreshCircleOutline}/></button>
-                <button onClick={onAddItem} className="add-btn btn-click btn-hover">Add<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
+                <button ref={prodRef} onClick={onAddItem} className="add-btn btn-click btn-hover">Add<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
             </div>
             <input ref={imageRef} onChange={onImageChange} hidden type="file"/>
         </div>
@@ -194,15 +245,58 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header}) =>{
 
 
 export const ProductInputFloat = ({isOpen, onClose, onSubmit, record}) =>{
+    //open if data needs saving
+    const [showSaveAlert, setShowSaveAlert] = useState(false);
+    //
+    const [changeMade, setChangeMade] = useState(false);
+
+    const updateRef = useRef();
+
+    const triggerClose = () =>{
+        if (changeMade) setShowSaveAlert(true);
+        else{
+            if (typeof onClose === "function") onClose();
+        }
+    }
     return(
-        <div hidden={!isOpen} onClick={onClose} className="backdrop-translucent-screen-size scroll-on-mobile">
+        <div hidden={!isOpen} onClick={triggerClose} className="backdrop-translucent-screen-size scroll-on-mobile">
             <div className="float-center prod-input-width-on-hover">
+                <IonAlert
+                    isOpen={showSaveAlert}
+                    onDidDismiss={()=>setShowSaveAlert(false)}
+                    backdropDismiss={false}
+                    cssClass='my-custom-class'
+                    header={'Alert!!'}
+                    subHeader={"Are you sure you will like to close this window?"}
+                    message={"Changes you made may not be saved."}
+                    buttons={[
+                        {
+                            text: 'Close',
+                            role: 'cancel',
+                            cssClass: 'secondary',
+                            handler: () => {
+                                if (typeof onClose === "function"){
+                                    setChangeMade(false);
+                                    onClose();
+                                }
+                            }
+                        },{
+                            text: 'Save Changes',
+                            handler: () => {
+                                updateRef.current.click();
+                            }
+                        }
+                    ]}
+                />
                 <ProductInput
                     isOpen={true} 
                     record={record}
                     onSubmit={onSubmit} 
-                    onClose={onClose}
+                    onClose={triggerClose}
                     header="Edit Product"
+                    prodRef={updateRef}
+                    changeMade={changeMade}
+                    setChangeMade={setChangeMade}
                 />
             </div>
         </div>

@@ -30,7 +30,7 @@ import { routes } from './global/routes';
 /* Pages variables */
 import { Sales } from './sales/Sale';
 import { ContextProvider } from './context/Context';
-import { AgentProducts } from './sales/AgentProducts';
+import { Store } from './sales/Store';
 import { AddProducts } from './dashboard/AddProducts';
 import { Analytics } from './dashboard/Analytics';
 import { Products } from './dashboard/Products';
@@ -52,7 +52,7 @@ const App: React.FC = () => (
           <Route path={routes.sales} component={Sales} exact={true} />
           <Route path={routes.default} component={Sales} exact={true} />
           <Route path={routes.cart} component={Cart} exact={true} />
-          <Route path={routes.agent+routes.param} component={AgentProducts} exact={true} />
+          <Route path={routes.store+routes.param} component={Store} exact={true} />
           <Route path={routes.viewProduct+routes.param} component={ViewProduct} exact={true} />
           <Route path={routes.addProducts} component={()=><AuthRouter Components={AddProducts}/>} exact={true} />
           <Route path={routes.analystics} component={()=><AuthRouter Components={Analytics}/>} exact={true} />

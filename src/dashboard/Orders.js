@@ -31,7 +31,7 @@ export const Orders = () =>{
                 </div>
                 <div className="divider" style={{paddingTop:"80px"}}>
                     <div className={`dash-nav-container dash-menu-on-mobile ${mobileSideMenu}`}>
-                        <div onClick={menuToggle} className="dash-nav border box-margin max-height">
+                        <div onClick={menuToggle} className="dash-nav border box-margin max-height side-menu-ease-in-on-mobile">
                             <NavSideBar/>
                         </div>
                     </div>
@@ -42,17 +42,21 @@ export const Orders = () =>{
                                 <div>
                                     <IonItemDivider>Orders</IonItemDivider>
                                     {[1,2,2,3,5,4,5,4,4,2,2,3,5,4,5,4,4,2,2,3,5,4,5,4,4].map((item, key)=>(
-                                        <IonCard class="inline max-width-on-mobile">
-                                            <IonCardContent>
-                                                <IonThumbnail class="dashboard-image">
-                                                    <IonImg src={img}/>
-                                                </IonThumbnail>
-                                                <IonList style={{borderBottom:"1px solid lightgray"}}/>
-                                            </IonCardContent>
-                                            <div style={{padding:"15px",paddingTop:"0px"}}>
-                                                <IonIcon style={{float:"right",fontSize:"20px"}} icon={shareSocialOutline}/>
-                                                <div>some title</div>
-                                                <div>some price</div>
+                                        <IonCard class="inline order-width max-width-on-mobile" key={key}>
+                                            <div className="divider" style={{height:"250px"}}>
+                                                <IonCardContent>
+                                                    <IonThumbnail class="dashboard-image">
+                                                        <IonImg src={img}/>
+                                                    </IonThumbnail>
+                                                    <IonList style={{borderBottom:"1px solid lightgray"}}/>
+                                                </IonCardContent>
+                                                <IonCardContent className="scroll-bar order-detail">
+                                                    <div>some title</div>
+                                                    <div>some price</div>
+                                                    <div>some color</div>
+                                                    <div>size</div>
+                                                    <div>some description</div>
+                                                </IonCardContent>
                                             </div>
                                         </IonCard>
                                     ))}

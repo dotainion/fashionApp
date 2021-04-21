@@ -14,7 +14,7 @@ export const Sales = () =>{
     const { products, searchProducts, initProducts, addCartItem } = useStore();
     return(
         <IonPage>
-            <div className="background background-color">
+            <div className="background bg-style-2">
                 <ToolBar 
                     onSearch={(filter)=>searchProducts(filter)}
                     refresh={initProducts}

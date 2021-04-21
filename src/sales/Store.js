@@ -10,46 +10,37 @@ import img from '../images/testdd.jpg'
 import { tools } from '../tools/Tools';
 import { SlideAdvert, SlideAdvertHorizontal } from '../widgets/Advertise';
 import { AgentHeader } from '../widgets/AgentHeader';
+import { Loader } from '../widgets/Loader';
 import { ProductExpand, ProductProspect } from '../widgets/ProductContainer';
 import { ToolBar } from '../widgets/ToolTopBar';
 
 
 
-let expandIdArray = [];
-const addItemIds = (id) =>{
-    expandIdArray.push(id);
-    return null;
-}
 
-const onExpand = (id) =>{
-    for (let c_id of expandIdArray){
-        document.getElementById(c_id).hidden = false;
-        document.getElementById(`${c_id}-exp`).hidden = true;
-    }
-    document.getElementById(id).hidden = true;
-    document.getElementById(`${id}-exp`).hidden = false;
-}
-
-
-export const AgentProducts = () =>{
+export const Store = () =>{
     const history = useHistory();
+    const [showLoader, setShowLoader] = useState(false);
     const { addCartItem } = useStore();
     const [agentProducts, setAgentProducts] = useState([]);
 
     const initAgentRecord = async(uid, prodId) =>{
+        setShowLoader(true)
         setAgentProducts(await getAgentRecord(uid));
+        setShowLoader(false);
     }
 
     useIonViewWillEnter(()=>{
         const [path, objectId] = history.location.pathname.split(tools.shareDevider);
-        const agentId = path.replace(routes.agent+":","");
+        const agentId = path.replace(routes.store+":","");
         initAgentRecord(agentId, objectId);
     });
 
     return(
         <IonPage>
-            <div className="background background-color">
+            <div className="background bg-style-2">
                 <ToolBar home/>
+
+                <Loader isOpen={showLoader}/>
                 
                 <AgentHeader uid={agentProducts?.info?.postBy}/>
 

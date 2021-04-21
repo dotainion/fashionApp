@@ -31,11 +31,12 @@ export const Products = () =>{
         await initAgentProducts();
     }
 
-    const updateItem = async(record) =>{
+    const updateItem = async(record) =>{        
         const id = record?.id;
         delete record["id"];
         await updateProduct(record, id);
         refresh();
+        setShowEdithOrView(false);
     }
 
     const deleteItem = async(record) =>{
@@ -53,8 +54,11 @@ export const Products = () =>{
             <ProductInputFloat
                 isOpen={showEdithOrView} 
                 record={editObject}
-                onSubmit={updateItem} 
-                onClose={()=>setShowEdithOrView(false)}
+                onSubmit={updateItem}
+                onClose={()=>{
+                    setShowEdithOrView(false);
+                    setEditObject({});
+                }}
             />
 
             <div onClick={()=>{if (!mobileSideMenu) setMobileSideMenu("hide")}} className="background">
@@ -67,7 +71,7 @@ export const Products = () =>{
                 </div>
                 <div className="divider" style={{paddingTop:"80px"}}>
                     <div className={`dash-nav-container dash-menu-on-mobile ${mobileSideMenu}`}>
-                        <div onClick={menuToggle} className="dash-nav border box-margin max-height">
+                        <div onClick={menuToggle} className="dash-nav border box-margin max-height side-menu-ease-in-on-mobile">
                             <NavSideBar/>
                         </div>
                     </div>

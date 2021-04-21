@@ -2,7 +2,7 @@ export const routes = {
     default: "/",
     param: ":id",
     sales: "/sales",
-    agent: "/agent",
+    store: "/store",
     dashboard: "/dashboard",
     addProducts: "/add-products",
     analystics: "/analystics",

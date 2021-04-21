@@ -31,7 +31,7 @@ export const Inventory = () =>{
                 </div>
                 <div className="divider" style={{paddingTop:"80px"}}>
                     <div className={`dash-nav-container dash-menu-on-mobile ${mobileSideMenu}`}>
-                        <div onClick={menuToggle} className="dash-nav border box-margin max-height">
+                        <div onClick={menuToggle} className="dash-nav border box-margin max-height side-menu-ease-in-on-mobile">
                             <NavSideBar/>
                         </div>
                     </div>
