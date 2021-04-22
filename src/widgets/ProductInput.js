@@ -39,7 +39,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
 
     const onImageChange = async(e) =>{
         setImages([...images, await tools.toBase64(e.target.files[0])]);
-        setChangeMade(true);
+        if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
     const onClearFields = () =>{
@@ -55,33 +55,33 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
 
     const addMoreColors = (color) =>{
         if (!moreColors.includes(color.hex)) setMoreColors([color.hex, ...moreColors]);
-        setChangeMade(true);
+        if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
     const addMoreSize = (size) =>{
         if (!moreSizes.includes(size)) setMoreSizes([size, ...moreSizes]);
-        setChangeMade(true);
+        if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
     const deleteMoreColors = (index) =>{
         const newColors = JSON.parse(JSON.stringify(moreColors));
         newColors.splice(index,1)
         setMoreColors(newColors);
-        setChangeMade(true);
+        if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
     const deleteMoreSize = (index) =>{
         const newSizes = JSON.parse(JSON.stringify(moreSizes));
         newSizes.splice(index,1)
         setMoreSizes(newSizes);
-        setChangeMade(true);
+        if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
     const deleteAImage = (index) =>{
         const newImages = JSON.parse(JSON.stringify(images));
         newImages.splice(index,1);
         setImages(newImages);
-        setChangeMade(true);
+        if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
     const isHasImage = (img) =>{
@@ -119,7 +119,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         };
         if (editingId) itemObject["id"] = editingId;
         if (typeof onSubmit === "function") onSubmit(itemObject);
-        setChangeMade(false);
+        if (typeof setChangeMade === "function") setChangeMade(false);
         onClearFields();
     }
 
@@ -194,11 +194,11 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                         
                         <div className="add-input-container">
                             <div>title</div>
-                            <input onChange={()=>setChangeMade(true)} ref={titleRef} placeholder="Item name" className="add-input"/>
+                            <input onChange={()=>setChangeMade?.(true)} ref={titleRef} placeholder="Item name" className="add-input"/>
                         </div>
                         <div className="add-input-container">
                             <div>price</div>
-                            <span className="price-dollar-sign"><input onChange={()=>setChangeMade(true)} ref={priceRef} type="number" placeholder="$0.00" className="add-input"/></span>
+                            <span className="price-dollar-sign"><input onChange={()=>setChangeMade?.(true)} ref={priceRef} type="number" placeholder="$0.00" className="add-input"/></span>
                         </div>
 
                         <div className="add-input-container">
@@ -228,7 +228,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                         </div>
                         <div className="add-input-container">
                             <div>Description</div>
-                            <textarea onChange={()=>setChangeMade(true)} ref={descriptionRef} rows={5} placeholder="Description of item" className="add-input" style={{resize:"none"}}/>
+                            <textarea onChange={()=>setChangeMade?.(true)} ref={descriptionRef} rows={5} placeholder="Description of item" className="add-input" style={{resize:"none"}}/>
                         </div>
 
                     </div>

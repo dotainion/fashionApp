@@ -16,8 +16,8 @@ export const ProductProspect = ({title, price, images, colors, onAdd, onMore, on
             <div className="product-action">
                 <div hidden={!onAdd} onClick={onAdd} className="float-left btn btn-slide margin-l-r pad round-r">ADD TO CART</div>
                 <div hidden={!onMore} onClick={onMore} className="float-right text-hover margin-l-r hide-on-mobile">See more</div>
-                <div style={{whiteSpace:"nowrap", position:"relative",textAlign:"right"}}>
-                    <div style={{fontSize:"13px"}}>Available In:</div>
+                <div style={{fontSize:"13px",right:"0px"}}>Available In:</div>
+                <div className="scroll-bar" style={{whiteSpace:"nowrap",overflowX:"auto", position:"relative",textAlign:"right"}}>
                     {colors?.map((color, key)=>(
                         <div style={{backgroundColor:color}} className="color-dot inline" key={key}/>
                     ))}
