@@ -75,7 +75,7 @@ export const SlideAdvert = ({style, cssClass, images, onSelect}) =>{
                 <IonThumbnail onMouseEnter={()=>setHideAddBtn(false)} onMouseLeave={()=>setHideAddBtn(true)} class="advert-slide-image-center white-bg">
                     <IonImg hidden={!imageCenter} src={imageCenter}/>
                 </IonThumbnail>
-                <div hidden={hideAddBtn} className="backdrop-translucent">
+                <div hidden={hideAddBtn} className="backdrop-fill">
                     <div className="float-center">
                         <button onClick={()=>onSelect?.(imageCenter)} className="btn pad btn-click btn-shadow" style={{backgroundColor:"rgb(0,0,0,0.8)"}}>ADD TO CART</button>
                     </div>

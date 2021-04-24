@@ -174,13 +174,30 @@
         padding-left: 5px;
         padding-right: 5px;
     }
-    .prod-imige-small-seperator{
-        margin-top: -20px;
+    .prod-image-small-seperator{
+        margin-top: 0px;
     }
     .side-menu-ease-in-on-mobile{
         max-width: 250px;
         height: 100%;
         animation-fill-mode: forwards;
         animation: open 0.3s linear forwards;
+    }
+    .settings-center-content{
+        transform: translateX(0%);
+    }
+    .add-title{
+        padding: 5px;
+        font-size: 15px;
+    }
+    .color-dot{
+        width: 18px;
+        height: 18px;
+        margin: 3px;
+        border-radius: 50%;
+        border: 1px solid gray;
+    }
+    .product-image{
+        height: 70%;
     }
 }

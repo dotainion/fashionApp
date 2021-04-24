@@ -8,7 +8,6 @@ import { getAgentRecord, getAProduct, getUser } from '../database/CollectionsReq
 import { routes } from '../global/routes';
 import img from '../images/testdd.jpg'
 import { tools } from '../tools/Tools';
-import { SlideAdvert, SlideAdvertHorizontal } from '../widgets/Advertise';
 import { AgentHeader } from '../widgets/AgentHeader';
 import { Loader } from '../widgets/Loader';
 import { ProductExpand, ProductProspect } from '../widgets/ProductContainer';
@@ -18,27 +17,32 @@ import { ToolBar } from '../widgets/ToolTopBar';
 
 
 export const Store = () =>{
+    const { searchProducts } = useStore();
     const history = useHistory();
     const [showLoader, setShowLoader] = useState(false);
-    const { addCartItem } = useStore();
     const [agentProducts, setAgentProducts] = useState([]);
 
-    const initAgentRecord = async(uid, prodId) =>{
+    const initAgentRecord = async(uid) =>{
         setShowLoader(true)
         setAgentProducts(await getAgentRecord(uid));
         setShowLoader(false);
     }
 
     useIonViewWillEnter(()=>{
-        const [path, objectId] = history.location.pathname.split(tools.shareDevider);
-        const agentId = path.replace(routes.store+":","");
-        initAgentRecord(agentId, objectId);
+        const agentId = history.location.pathname.replace(routes.store+":","");
+        initAgentRecord(agentId);
     });
 
     return(
         <IonPage>
             <div className="background bg-style-2">
-                <ToolBar home/>
+                <ToolBar
+                    mostResent
+                    deals
+                    home
+                    refresh
+                    onSearch={searchProducts}
+                />
 
                 <Loader isOpen={showLoader}/>
                 
@@ -53,12 +57,10 @@ export const Store = () =>{
                                 style={{boxShadow:"none"}}
                                 title={item?.info?.title}
                                 price={item?.info?.price}
+                                deal={item?.info?.deal}
                                 images={item?.info?.images}
                                 colors={item?.info?.colors}
-                                onAdd={()=>addCartItem(item)}
-                                onSelect={()=>{
-                                    
-                                }}
+                                onSelect={()=>history.push(routes.viewProduct+":"+item?.id)}
                             />
                         </span>
                     ))

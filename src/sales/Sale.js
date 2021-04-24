@@ -1,4 +1,4 @@
-import { IonPage } from '@ionic/react';
+import { IonItem, IonLabel, IonList, IonPage } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useStore } from '../context/Context';
@@ -11,29 +11,39 @@ import { ToolBar } from '../widgets/ToolTopBar';
 
 export const Sales = () =>{
     const history = useHistory();
-    const { products, searchProducts, initProducts, addCartItem } = useStore();
+    const { products, searchProducts } = useStore();
+    useEffect(()=>{
+        searchProducts("sales","");
+    },[]);
     return(
         <IonPage>
             <div className="background bg-style-2">
                 <ToolBar 
-                    onSearch={(filter)=>searchProducts(filter)}
-                    refresh={initProducts}
+                    onSearch={searchProducts}
+                    refresh
+                    searchbar
+                    mostResent
+                    deals
                 />
                 {
+                    products.length?
                     products?.map((item,key)=>(
                         <ProductProspect
                             key={key}
                             style={{boxShadow:"none"}}
                             title={item?.info?.title}
                             price={item?.info?.price}
+                            deal={item?.info?.deal}
                             colors={item?.info?.colors}
                             images={item?.info?.images}
-                            //onAdd={()=>addCartItem(item)}
                             onSelect={()=>history.push(routes.viewProduct+":"+item?.id)}
-                            //onMore={()=>history.push(routes.agent+":"+item?.info?.postBy+tools.shareDevider+item?.id)}
                         />
-                    ))
-                    }
+                    )):
+                    <div className="pad-xl teal" style={{textAlign:"center"}}>
+                        <label><b>No results</b></label>
+                        <p>Try a different search</p>
+                    </div>
+                }
             </div>
             
         </IonPage>

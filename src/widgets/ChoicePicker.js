@@ -13,7 +13,7 @@ export const ColorPicker = ({isOpen, onChange, onClose, selected, onDelete}) =>{
         setColor(colorObj);
     }
     return(
-        <div hidden={!isOpen} onClick={onClose} className="backdrop-translucent">
+        <div hidden={!isOpen} onClick={onClose} className="backdrop-fill">
             <div onClick={(e)=>e.stopPropagation()} className="float-center">
                 <div style={{width:"220px"}} className="add-hold-image-picker-item scroll-bar inline size-picker-container-holder white-bg">
                     {selected?.map((colr, key)=>(
@@ -55,7 +55,7 @@ export const SizePicker = ({isOpen, onClose, onSelect, selected, onDelete}) =>{
         "MEDIUM",
     ]
     return(
-        <div hidden={!isOpen} onClick={onClose} className="backdrop-translucent">
+        <div hidden={!isOpen} onClick={onClose} className="backdrop-fill">
             <div className="float-center size-picker-container" onClick={(e)=>e.stopPropagation()}>
             <IonIcon style={{top:"-20px"}} onClick={onClose} class="float-top-right text-hover round-shadow" icon={closeOutline}/>
                 <div className="add-hold-image-picker-item scroll-bar inline size-picker-container-holder white-bg">

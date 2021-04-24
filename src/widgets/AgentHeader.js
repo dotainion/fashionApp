@@ -6,7 +6,7 @@ import { routes } from '../global/routes';
 import img from '../images/testdd.jpg'
 
 
-export const AgentHeader = ({uid, visit}) =>{
+export const AgentHeader = ({uid, visit, onLoad}) =>{
     const history = useHistory();
     const [agent, setAgent] = useState({});
 
@@ -21,6 +21,10 @@ export const AgentHeader = ({uid, visit}) =>{
     useEffect(()=>{
         initAgent(uid);
     },[uid]);
+
+    useEffect(()=>{
+        if (typeof onLoad === "function") onLoad(agent);
+    },[agent,onLoad]);
     return(
         <div className="white-bg white-fg">
             <div className="divider bg-style" style={{borderBottom:"1px solid lightgray",paddingTop:"8px",paddingBottom:"8px"}}>

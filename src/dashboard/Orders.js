@@ -41,7 +41,7 @@ export const Orders = () =>{
                                 {/*----------------------------------*/}
                                 <div>
                                     <IonItemDivider>Orders</IonItemDivider>
-                                    {[1,2,2,3,5,4,5,4,4,2,2,3,5,4,5,4,4,2,2,3,5,4,5,4,4].map((item, key)=>(
+                                    {[1,2,3,4,5,6].map((item, key)=>(
                                         <IonCard class="inline order-width max-width-on-mobile" key={key}>
                                             <div className="divider" style={{height:"250px"}}>
                                                 <IonCardContent>

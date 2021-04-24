@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createNoSubstitutionTemplateLiteral } from "typescript";
 import { auth } from "../config/firebase";
-import { getAgentRecord, getProducts, getUser } from "../database/CollectionsRequsts";
+import { searchFilers } from "../content/contents";
+import { addUser, getAgentRecord, getProducts, getUser } from "../database/CollectionsRequsts";
 import { routes } from "../global/routes";
 import { tools } from "../tools/Tools";
 import { Loader } from "../widgets/Loader";
@@ -23,24 +24,34 @@ export const ContextProvider = ({children}) =>{
     //holds cart item
     const [cart, setCart] = useState([]);
 
-    //holds products for sales 
+    //holds products for sales home page
     const [products, setProducts] = useState([]);
 
     //holds agent products for dashboard
     const [agentProducts, setAgentProducts] = useState([]);
 
-    const initProducts = async() =>{
-        setShowLoader(true)
-        setProducts(await getProducts());
-        setShowLoader(false);
-    }
     //search for produts
-    const searchProducts = (filter) =>{
-        alert(filter)
+    const searchProducts = async(cmd, filter) =>{
+        setShowLoader(true);
+        let filter1 = [];
+        let filter2 = [];
+        let resultsQuery = await getProducts();
+        filter1 = resultsQuery.filter((p)=>(
+            p?.info?.title?.toLowerCase()?.includes(filter?.toLowerCase())
+        ));
+        if (filter === searchFilers[2]){
+            filter2 = resultsQuery.filter((p)=>p?.info?.deal);
+        }
+        if (cmd.includes("sales")) setProducts([...filter1, ...filter2]);
+        if (cmd.includes("store")) setAgentProducts([...filter1, ...filter2]);
+        setShowLoader(false);
     }
 
     //init cart items
-    const initCartItem = () => setCart(JSON.parse(window.localStorage.getItem("cart")) || []);
+    const initCartItem = () =>{
+        const cartItems = window.localStorage.getItem("cart");
+        setCart(JSON.parse(cartItems || []));
+    }
 
     //check if item inclued in cart
     const isItemIncludedInCart = (id) =>{
@@ -87,7 +98,7 @@ export const ContextProvider = ({children}) =>{
         initCartItem();
     }
 
-    //update cart item .. will only update quty value
+    //update cart item .. will only update quantity value
     const updateCartItemCheckout = (item, value) =>{
         let remainingItem = [];
         let cartItems = JSON.parse(window.localStorage.getItem("cart")) || [];
@@ -104,6 +115,19 @@ export const ContextProvider = ({children}) =>{
         if (load) setShowLoader(true);
         setAgentProducts(await getAgentRecord(user?.id));
         setShowLoader(false);
+    }
+
+    //sign up for an account
+    const signUp = async(object) =>{
+        try{
+            const response = await auth.createUserWithEmailAndPassword(object.email, object?.password);
+            delete object["password"];
+            addUser(object, response.user.uid);
+            return true;
+        }catch(error){
+            console.log(error.message)
+            return {error: error.message}
+        }
     }
 
     //sign in to account
@@ -145,7 +169,8 @@ export const ContextProvider = ({children}) =>{
     //holds all funtions to be call on render
     const initializeStore = async() =>{
         initCartItem();
-        initProducts();
+        await searchProducts("sales","");
+        await searchProducts("store","");
     }
     
     useEffect(()=>{
@@ -167,10 +192,10 @@ export const ContextProvider = ({children}) =>{
             <AppContext.Provider value={{
                 onShare,
                 signIn,
+                signUp,
                 signOut,
                 products,
                 searchProducts,
-                initProducts,
                 user,
                 isSignIn,
                 cart,

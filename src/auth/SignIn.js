@@ -44,7 +44,7 @@ export const SignIn = () =>{
                                         <IonLabel>Fashion-App</IonLabel>
                                     </IonItem>
                                     <IonList class="text-center">
-                                        <IonLabel>Login</IonLabel>
+                                        <IonLabel>Sign in</IonLabel>
                                     </IonList>
                                     <div className="error">{error}</div>
                                     <IonItem class="item-boxed" lines="full">
@@ -63,7 +63,7 @@ export const SignIn = () =>{
                                         <span className="text-hover" style={{color:"red"}} onClick={()=>{}}>Forget password?</span>
                                     </IonItem>
                                     <IonItem lines="none">
-                                        <span className="text-hover" style={{color:"rgb(29, 134, 29)"}} onClick={()=>{}} slot="start">Create Account</span>
+                                        <span className="text-hover" style={{color:"rgb(29, 134, 29)"}} onClick={()=>history.push(routes.signUp)} slot="start">Create Account</span>
                                     </IonItem>
                                     <IonItem lines="none">
                                         <IonButton slot="end" onClick={onSubmit} fill="outline">Login</IonButton>

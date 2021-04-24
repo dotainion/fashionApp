@@ -1,5 +1,5 @@
 import { IonCard, IonCardContent, IonIcon, IonInput, IonItem, IonLabel, IonList, useIonViewWillEnter } from '@ionic/react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { cartOutline, closeOutline, ellipsisVerticalOutline, refreshOutline, reorderFourOutline, searchOutline, shareSocialOutline } from 'ionicons/icons';
 import { pageNavigators, searchFilers } from '../content/contents';
 import { useHistory } from 'react-router';
@@ -7,13 +7,14 @@ import { useStore } from '../context/Context';
 import { routes } from '../global/routes';
 
 
-export const ToolBar = ({onSearch,refresh,home,share}) =>{
+export const ToolBar = ({onSearch,refresh,share,home,mostResent,deals}) =>{
     const history = useHistory();
     const [showMenuOptions, setShowMenuOptions] = useState(false);
     const [showFilterMenu, setShowFilterMenu] = useState(false);
 
     const triggerSearch = (value) =>{
-        if (typeof onSearch === "function") onSearch(value);
+        const page = history.location.pathname;
+        if (typeof onSearch === "function") onSearch(page, value);
     }
 
     const accountMenuToggle = () =>{
@@ -26,10 +27,10 @@ export const ToolBar = ({onSearch,refresh,home,share}) =>{
     }
     return(
         <>
-            <div>
+            <div style={{backgroundColor:"var(--tool-bar)"}}>
                 <div className="toolbar-container" style={{textAlign:"center"}}>
                     <Title/>
-                    <SearchBar onSearch={onSearch}/>
+                    <SearchBar onSearch={triggerSearch}/>
                     <AccountsMobileMenu onClick={accountMenuToggle} />
                     <Cart/>
                     <AccountsMenu onClick={accountMenuToggle} />
@@ -42,12 +43,12 @@ export const ToolBar = ({onSearch,refresh,home,share}) =>{
                     <div className="search-filter-option" style={{position:"relative"}}>
                         <div className="float-left">
                             {searchFilers.map((filter, key)=>(
-                                <label onClick={()=>triggerSearch(filter)} hidden={filter === searchFilers[0]} key={key}>{filter}</label>
+                                <label onClick={()=>triggerSearch(filter)} hidden={filter === searchFilers[0] || !mostResent || !deals} key={key}>{filter}</label>
                             ))}
-                            <label hidden={!refresh} onClick={refresh}>&#x21bb;</label>
                             <label hidden={!home} onClick={()=>history.push(routes.sales)}>Home</label>
+                            <label hidden={!refresh} onClick={()=>onSearch(history.location.pathname,"")}>&#x21bb;</label>
                             
-                            <label hidden={!share} onClick={share} style={{paddingLeft:"25px"}} class="float-right search-bar-share">
+                            <label hidden={!share} onClick={share} style={{paddingLeft:"25px"}} className="float-right search-bar-share">
                                 <IonIcon class="float-left" style={{left:"5px"}} icon={shareSocialOutline}/>
                                 <span style={{border:"none"}}>Share</span>
                             </label>
@@ -61,7 +62,7 @@ export const ToolBar = ({onSearch,refresh,home,share}) =>{
             />
             <OptionsList isOpen={showMenuOptions} onClose={accountMenuToggle}/>
         </>
-        )
+    )
 }
 const Title = () =>{
     return(
@@ -90,11 +91,15 @@ const SearchBar = ({onSearch}) =>{
         if (typeof onSearch === "function") onSearch(searchValue);
         setSize("search-mobil-effect-on-onpen");
     }
+
+    const onEnterPress = (e) =>{
+        if (e.key === "Enter") triggerSearch();
+    }
     
     return(
-        <IonItem onFocus={()=>setSize("search-mobil-effect-on-onpen")} onBlur={()=>setSize("search-small-on-mobile")} className={`search-container search-text ${size}`} lines="none">
+        <IonItem hidden={!onSearch} onFocus={()=>setSize("search-mobil-effect-on-onpen")} onBlur={()=>setSize("search-small-on-mobile")} className={`search-container search-text ${size}`} lines="none">
             <div className="search-sub-container">
-                <input onChange={(e)=>setSearchValue(e.target.value)} className="search-input" placeholder="Search" value={searchValue} />
+                <input onKeyPress={onEnterPress} onChange={(e)=>setSearchValue(e.target.value)} className="search-input" placeholder="Search" value={searchValue} />
                 <IonIcon hidden={!searchValue} onClick={()=>setSearchValue("")} class="search-clear" icon={closeOutline}/>
                 <IonIcon onClick={triggerSearch} class="search-icon" icon={searchOutline}/>
             </div>
@@ -146,8 +151,10 @@ const OptionsList = ({isOpen,onClose}) =>{
 const FilerSideMenu = ({isOpen,onClose}) =>{
     return(
         <div hidden={!isOpen} onClick={onClose} className="tools-options-menu-backdrop">
-            <div className="float-top-left white-bg side-menu-ease-in" onClick={(e)=>e.stopPropagation()}>
-                hello world
+            <div className="float-top-left white-bg side-menu-ease-in pad" onClick={(e)=>e.stopPropagation()}>
+                <div style={{whiteSpace:"nowrap"}}>
+                    <div>Fashion App</div>
+                </div>
             </div>
         </div>
     )

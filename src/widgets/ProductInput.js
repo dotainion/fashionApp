@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../context/Context';
 import defaultImage from '../images/default-image.jpg';
 import { tools } from '../tools/Tools';
+import { AddDeals } from './AddDeals';
 import { ColorPicker, SizePicker } from './ChoicePicker';
 
 
@@ -27,13 +28,22 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
     const [alertMessage, setAlertMessage] = useState("");
     //open alert
     const [showAlert, setShowAlert] = useState(false);
+    //show input 
+    const [showInputs, setShowInputs] = useState(false);
 
     //open color picker
     const [showColorPicker, setShowColorPicker] = useState(false);
     const [showSizePicker, setShowSizePicker] = useState(false);
 
+    //opne add deals popup
+    const [showAddDeals, setShowAddDeals] = useState(false);
+
+    //holds deal information
+    const [deals, setDeals] = useState({});
+
     const titleRef = useRef();
     const priceRef = useRef();
+    const deliveryRef = useRef();
     const imageRef = useRef();
     const descriptionRef = useRef();
 
@@ -47,9 +57,11 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         setMoreSizes([]);
         setMoreColors([]);
         setEditingId("");
+        setDeals({});
         titleRef.current.value = "";
         priceRef.current.value = "";
         imageRef.current.files = null;
+        deliveryRef.current.value = "";
         descriptionRef.current.value = "";
     }
 
@@ -84,12 +96,13 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         if (typeof setChangeMade === "function") setChangeMade(true);
     }
 
-    const isHasImage = (img) =>{
+    const isContainImage = (img) =>{
         if (img.length > 0) return img;
         return [defaultImage];
     }
 
     const onAddItem = async() =>{
+        let deal;
         if (Object.keys(record || {})?.length > 0){
             if (!changeMade){
                 setAlertMessage("No change detected");
@@ -101,21 +114,34 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
             return setShowAlert(true);
         }
         if (!priceRef.current.value){
-            setAlertMessage("Cost of the item was not provided.");
+            setAlertMessage("Cost of item was not provided.");
+            return setShowAlert(true);
+        }
+        if (!deliveryRef.current.value){
+            setAlertMessage("Delivery cost was not provided.");
             return setShowAlert(true);
         }
         if (moreColors?.length <= 0){
             setAlertMessage("Must have at least one color.");
             return setShowAlert(true);
         }
+        if (Object.keys(deals || {}).length > 0) deal = deals;
+        else deal = false;
+        if (deal && deal.newPrice > priceRef.current.value){
+            setAlertMessage("Deal price cannot be more than current price.");
+            return setShowAlert(true);
+        }
+
         const itemObject = {
             title: titleRef.current.value ||  "",
             price: priceRef.current.value ||  "",
+            delivery: deliveryRef.current.value || "",
             colors: moreColors ||  [],
             sizes: moreSizes ||  [],
-            images: isHasImage(images) || [],
+            images: isContainImage(images) || [],
             postBy: user?.id || "",
-            description: descriptionRef.current.value || ""
+            description: descriptionRef.current.value || "",
+            deal: deal
         };
         if (editingId) itemObject["id"] = editingId;
         if (typeof onSubmit === "function") onSubmit(itemObject);
@@ -123,26 +149,34 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         onClearFields();
     }
 
+    //show or hide input element when open to avoid text shoswing as scattered
+    useEffect(()=>{
+        if (isOpen) setTimeout(()=>{setShowInputs(true)},100);
+        else setShowInputs(false);
+    },[isOpen]);
+
     //detect change images
     useEffect(()=>{
         setImgIndex(images?.length -1);
     },[images]);
 
-    //init data passed in
+    //init data passed in {for editing record}
     useEffect(()=>{
-        if (record){
+        if (Object.keys(record || {}).length > 0){
             setEditOrAddBtnText("Update");
             setEditingId(record?.id);
+            setDeals(record?.info?.deal);
             setImages(record?.info?.images);
             setMoreSizes(record?.info?.sizes);
             setMoreColors(record?.info?.colors);
             titleRef.current.value = record?.info?.title;
             priceRef.current.value = record?.info?.price;
+            deliveryRef.current.value = record?.info?.delivery;
             descriptionRef.current.value = record?.info?.description;
         }
     },[record]);
     return(
-        <div hidden={!isOpen} className="add-edit-on-mobile" onClick={(e)=>e.stopPropagation()} style={{position:"relative"}}>
+        <div hidden={!isOpen} className="add-edit-on-mobile" onClick={(e)=>e.stopPropagation()} style={{position:"relative",zIndex:"99999999999999999"}}>
             <ColorPicker
                 isOpen={showColorPicker} 
                 onClose={()=>setShowColorPicker(false)} 
@@ -164,6 +198,19 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                 subHeader={""}
                 message={alertMessage}
                 buttons={['OK']}
+            />
+            <AddDeals
+                isOpen={showAddDeals}
+                record={deals}
+                onClose={()=>setShowAddDeals(false)}
+                onSubmit={(obj)=>{
+                    setDeals(obj);
+                    setChangeMade(true);
+                }}
+                onError={(error)=>{
+                    setAlertMessage(error);
+                    setShowAlert(true);
+                }}
             />
             
             <IonIcon hidden={!onClose} onClick={onClose} class="float-top-right pad text-hover" style={{fontSize:"25px"}} icon={closeOutline}/>
@@ -187,18 +234,23 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                 </div>
                 <div className="max-width" style={{userSelect:"none"}}>
                     <div className="float-top-right hide-on-mobile">
-                        <button onClick={onClearFields} className="add-btn btn-click btn-hover">Clear<IonIcon style={{marginLeft:"5px"}} icon={refreshCircleOutline}/></button>
-                        <button onClick={onAddItem} className="add-btn btn-click btn-hover">{editOrAddBtnText}<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
+                        <button onClick={()=>setShowAddDeals(true)} className="add-btn btn-click btn-hover white-fg" style={{backgroundColor:"rgb(2, 82, 161)"}}>Deals<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
+                        <button onClick={onClearFields} className="add-btn btn-click btn-hover white-fg dark">Clear<IonIcon style={{marginLeft:"5px"}} icon={refreshCircleOutline}/></button>
+                        <button onClick={onAddItem} className="add-btn btn-click btn-hover white-fg" style={{backgroundColor:"green"}}>{editOrAddBtnText}<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
                     </div>
-                    <div className="item-center center-add-container">
+                    <div hidden={!showInputs} className="item-center center-add-container">
                         
                         <div className="add-input-container">
-                            <div>title</div>
+                            <div>Title</div>
                             <input onChange={()=>setChangeMade?.(true)} ref={titleRef} placeholder="Item name" className="add-input"/>
                         </div>
                         <div className="add-input-container">
-                            <div>price</div>
+                            <div>Price</div>
                             <span className="price-dollar-sign"><input onChange={()=>setChangeMade?.(true)} ref={priceRef} type="number" placeholder="$0.00" className="add-input"/></span>
+                        </div>
+                        <div className="add-input-container">
+                            <div>Delivery<span style={{marginLeft:"10px",fontSize:"11px",color:"rgb(2, 82, 161)"}}>Leave blank if delivery is free</span></div>
+                            <span className="price-dollar-sign"><input onChange={()=>setChangeMade?.(true)} ref={deliveryRef} type="number" placeholder="$0.00" className="add-input"/></span>
                         </div>
 
                         <div className="add-input-container">
@@ -235,8 +287,9 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                 </div>
             </div>
             <div className="hide-on-desktop" style={{textAlign:"right",marginBottom:"40px"}}>
-                <button onClick={onClearFields} className="add-btn btn-click btn-hover">Clear<IonIcon style={{marginLeft:"5px"}} icon={refreshCircleOutline}/></button>
-                <button ref={prodRef} onClick={onAddItem} className="add-btn btn-click btn-hover">Add<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
+                <button onClick={()=>setShowAddDeals(true)} className="add-btn btn-click btn-hover white-fg" style={{backgroundColor:"rgb(2, 82, 161)"}}>Delivery<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
+                <button onClick={onClearFields} className="add-btn btn-click btn-hover white-fg dark">Clear<IonIcon style={{marginLeft:"5px"}} icon={refreshCircleOutline}/></button>
+                <button ref={prodRef} onClick={onAddItem} className="add-btn btn-click btn-hover white-fg" style={{backgroundColor:"green"}}>Add<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
             </div>
             <input ref={imageRef} onChange={onImageChange} hidden type="file"/>
         </div>
@@ -247,7 +300,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
 export const ProductInputFloat = ({isOpen, onClose, onSubmit, record}) =>{
     //open if data needs saving
     const [showSaveAlert, setShowSaveAlert] = useState(false);
-    //
+    //hold boolean value when change is made
     const [changeMade, setChangeMade] = useState(false);
 
     const updateRef = useRef();
@@ -258,8 +311,9 @@ export const ProductInputFloat = ({isOpen, onClose, onSubmit, record}) =>{
             if (typeof onClose === "function") onClose();
         }
     }
+
     return(
-        <div hidden={!isOpen} onClick={triggerClose} className="backdrop-translucent-screen-size scroll-on-mobile">
+        <div hidden={!isOpen} onClick={triggerClose} className="backdrop scroll-on-mobile">
             <div className="float-center prod-input-width-on-hover">
                 <IonAlert
                     isOpen={showSaveAlert}
@@ -289,7 +343,7 @@ export const ProductInputFloat = ({isOpen, onClose, onSubmit, record}) =>{
                     ]}
                 />
                 <ProductInput
-                    isOpen={true} 
+                    isOpen={isOpen} 
                     record={record}
                     onSubmit={onSubmit} 
                     onClose={triggerClose}

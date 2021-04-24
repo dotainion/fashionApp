@@ -2,13 +2,24 @@ import { addData, deleteDataById, getData, getDataByField, getDataById, updateDa
 
 const collection = {
     users: "users",
+    orders: "orders",
     products: "products",
 }
 
 export const addUser = async(data,uid) =>{
     try{
-        await addData(collection.products, data, uid);
+        await addData(collection.users, data, uid);
         return true
+    }catch(error){
+        console.log(error);
+        return false;
+    }
+}
+
+export const updateUser = async(data,uid) =>{
+    try{ 
+        await updateData(collection.users, data, uid);
+        return true;
     }catch(error){
         console.log(error);
         return false;
@@ -74,6 +85,16 @@ export const getAgentRecord = async(agentId,limit=false) =>{
 export const deleteAgentRecord = async(id) =>{
     try{
         await deleteDataById(collection.products,id);
+        return true;
+    }catch(error){
+        console.log(error);
+        return false;
+    }
+}
+
+export const orderProduct = async(data) =>{
+    try{
+        await addData(collection.orders,data);
         return true;
     }catch(error){
         console.log(error);

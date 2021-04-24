@@ -41,6 +41,8 @@ import { SignIn } from './auth/SignIn';
 import { Cart } from './sales/Cart';
 import { Settings } from './dashboard/Settings';
 import { ViewProduct } from './sales/ViewProduct';
+import { Checkout } from './checkout/Checkout';
+import { SignUp } from './auth/SignUp';
 
 
 
@@ -61,6 +63,7 @@ const App: React.FC = () => (
           <Route path={routes.inventory} component={()=><AuthRouter Components={Inventory}/>} exact={true} />
           <Route path={routes.settings} component={()=><AuthRouter Components={Settings}/>} exact={true} />
           <Route path={routes.signIn} component={SignIn} exact={true} />
+          <Route path={routes.signUp} component={SignUp} exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>
     </ContextProvider>

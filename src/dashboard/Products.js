@@ -79,7 +79,7 @@ export const Products = () =>{
                         <div className="box-margin chart-Colors">
                             <div className="border">
                                 {/*----------------------------------*/}
-                                <div>
+                                <div style={{position:"relative",zIndex:"9999999"}}>
                                     <IonItemDivider>Products</IonItemDivider>
                                     {
                                         agentProducts.length?
@@ -88,7 +88,7 @@ export const Products = () =>{
                                                 document.getElementById(`${item?.id}opt`).hidden = false;
                                             }} onMouseLeave={()=>{
                                                 document.getElementById(`${item?.id}opt`).hidden = true;
-                                            }} class="inline max-width-on-mobile" key={key}>
+                                            }} class="inline max-width-on-mobile" style={{width:"23%"}} key={key}>
                                                 <IonCardContent>
                                                     <IonThumbnail class="dashboard-image">
                                                         <IonImg src={item?.info?.images?.[0]}/>
@@ -97,10 +97,10 @@ export const Products = () =>{
                                                 </IonCardContent>
                                                 <div style={{padding:"15px",paddingTop:"0px"}}>
                                                     <IonIcon style={{float:"right",fontSize:"20px"}} icon={shareSocialOutline}/>
-                                                    <div>{item?.info?.title}</div>
+                                                    <div style={{overflow:"hidden",whiteSpace:"nowrap"}}>{item?.info?.title}</div>
                                                     <div>${item?.info?.price}</div>
                                                 </div>
-                                                <div hidden id={`${item?.id}opt`} className="backdrop-translucent show-on-hover">
+                                                <div hidden id={`${item?.id}opt`} className="backdrop-fill show-on-hover">
                                                     <div className="float-center">
                                                         <div><button onClick={()=>{initValueToViewOrEdit(item)}} className="btn pad btn-round btn-hover-2 btn-click btn-shadow">Details/Update</button></div>
                                                         <div><button onClick={()=>deleteItem(item)} className="btn pad btn-round btn-hover-2 btn-click btn-shadow">Delete</button></div>

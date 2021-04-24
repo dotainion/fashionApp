@@ -37,6 +37,12 @@ class Tools{
     async sleep(milliseconds){
         return await new Promise(resolve => setTimeout(resolve, milliseconds));
     }
+    isEmailValid(email){
+        //check if email in valid format
+        var validate = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+        if (validate.test(email)) return true;
+        else return false;
+    }
 }
 
 export const tools = new Tools();
