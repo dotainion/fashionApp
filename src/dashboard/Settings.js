@@ -24,7 +24,7 @@ export const Settings = () =>{
 
     //default feild values
     const [defaultCountry, setDefaultCountry] = useState("");
-    const [defaultState, setDefaultState] = useState("");
+    const [defaultState, setDefaultCity] = useState("");
 
     //hold boolean value when change is made
     const [changeMade, setChangeMade] = useState(false);
@@ -96,7 +96,7 @@ export const Settings = () =>{
             }
             const shippingAddress = {
                 country: country || "",
-                state: statesRef.current.value || "",
+                city: statesRef.current.value || "",
                 address: addressRef.current.value || "",
                 pickupAddress: pickupAddressRef.current.value || ""
             }
@@ -137,7 +137,7 @@ export const Settings = () =>{
         firstNameRef.current.value = user?.firstName || "";
         lastNameRef.current.value = user?.lastName || "";
         setDefaultCountry(user?.country || "");
-        setDefaultState(user?.state || "");
+        setDefaultCity(user?.city || "");
         addressRef.current.value = user?.address || "";
         if (user?.address === user?.pickupAddress) pickupHandler({target:{checked:true}});
         else pickupHandler({target:{checked:false}});
@@ -196,7 +196,7 @@ export const Settings = () =>{
                                             <div style={{color:"green",textAlign:"center"}}>{successMessage}</div>
                                             <div className="divider d-flex-on-mobile">
                                                 <div className="add-input-container max-width">
-                                                    <div>City</div>
+                                                    <div>Country</div>
                                                     <select ref={countriesRef} onChange={(e)=>{setInitState(JSON.parse(e.target.value).code);setChangeMade(true)}} className="select-input-2 max-width">
                                                         <option hidden defaultChecked>{defaultCountry}</option>
                                                         {addr.countries().map((country, key)=>(
@@ -205,7 +205,7 @@ export const Settings = () =>{
                                                     </select>
                                                 </div>
                                                 <div className="add-input-container max-width">
-                                                    <div>State</div>
+                                                    <div>City</div>
                                                     <select ref={statesRef} onChange={()=>setChangeMade(true)} className="select-input-2 max-width">
                                                         <option hidden defaultChecked>{defaultState}</option>
                                                         {addr.states(initSate).map((state, key)=>(

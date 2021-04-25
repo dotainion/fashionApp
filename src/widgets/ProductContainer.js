@@ -14,13 +14,13 @@ export const ProductProspect = ({title, price, deal, images, colors, onAdd, onMo
         nameTitleLargerRef.current.hidden = true;
     }
     const configureTitle = (value) =>{
-        if (value && value.split("").length > 30){
+        if (value && value.split("").length > 25){
             let valued = [];
             let index = 0;
             for (let elem of value.split("")){
                 index ++;
-                if (index < 25) valued.push(elem);
-                if (index > 25){
+                if (index < 20) valued.push(elem);
+                if (index > 20){
                     valued = [...valued, "..."];
                     return valued.join("");
                 }

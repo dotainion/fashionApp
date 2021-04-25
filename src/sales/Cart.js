@@ -72,7 +72,7 @@ export const Cart = () =>{
         }
         setSubTotal(total);
         setTotal(subTotal + parseFloat(shippingCost || shippRef.current.value));
-    },[cart,subTotal,shippingCost])
+    },[cart,subTotal,shippingCost]);
     return(
         <IonPage>
             <div className="background">
@@ -83,6 +83,7 @@ export const Cart = () =>{
                 <Checkout
                     isOpen={showCheckout}
                     onClose={()=>setShowCheckout(false)}
+                    price={total}
                 />
 
                 <NavSideWithWrapper

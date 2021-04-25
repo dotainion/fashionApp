@@ -200,4 +200,7 @@
     .product-image{
         height: 70%;
     }
+    .checkout-container{
+        width: 340px;
+    }
 }
