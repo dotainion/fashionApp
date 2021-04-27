@@ -32,7 +32,7 @@ export const NavSideBar = () =>{
 
 export const NavSideWithWrapper = ({isOpen, onClose, top}) =>{
     return(
-        <div hidden={!isOpen} onClick={onClose} className="nav-option-wrapper">
+        <div hidden={!isOpen} onClick={onClose} className="nav-option-wrapper white-bg">
             <div onClick={(e)=>e.stopPropagation()} style={{marginTop:top}} className="nav-option-sub-wrapper white-bg side-menu-ease-out">
                 <NavSideBar/>
             </div>

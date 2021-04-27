@@ -1,6 +1,6 @@
 import { IonIcon } from '@ionic/react';
 import { refreshOutline, reorderFourOutline } from 'ionicons/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavSideBar } from './NavSideBar';
 
 
@@ -13,6 +13,10 @@ export const DashNavWrapper = ({children,onRefresh}) =>{
         else setMobileSideMenu("hide");
     }
 
+    //make sure menu is close when page opens on first route
+    useEffect(()=>{
+        setMobileSideMenu("hide");
+    },[]);
     return(
         <div onClick={()=>{if (!mobileSideMenu) setMobileSideMenu("hide")}} className="background">
             <div className="main-header dash-header">
@@ -23,8 +27,8 @@ export const DashNavWrapper = ({children,onRefresh}) =>{
                 </div>
             </div>
             <div className="divider" style={{paddingTop:"60px"}}>
-                <div className={`dash-nav-container dash-menu-on-mobile ${mobileSideMenu}`}>
-                    <div onClick={menuToggle} className="dash-nav border box-margin max-height side-menu-ease-out-on-mobile">
+                <div className={`dash-nav-container dash-menu-on-mobile ${mobileSideMenu}`} style={{zIndex:"999999999999999999999999999999999999999999999999999"}}>
+                    <div onClick={menuToggle} className="dash-nav white-bg border box-margin max-height side-menu-ease-out-on-mobile">
                         <NavSideBar/>
                     </div>
                 </div>
