@@ -37,7 +37,6 @@ export const AgentHeader = ({uid, visit, onLoad}) =>{
                     <div className="float-left" style={{paddingRight:"5px"}}>
                         <div><b>Business name</b></div>
                         <div>{`${agent?.firstName || ""} ${agent?.lastName || ""}`}</div>
-                        <div>user location</div>
                     </div>
                 </div>
                 <div className="agent-header-col-3">

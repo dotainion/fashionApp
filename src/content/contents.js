@@ -31,7 +31,7 @@ export const pageNavigators = [
     },{
         icon: homeOutline,
         title: "Home",
-        route: routes.sales
+        route: routes.home
     },{
         icon: settingsOutline,
         title: "Settings",
@@ -44,6 +44,10 @@ export const searchFilers = [
     "Most Resent",
     "Deals"
 ];
+
+export const menuFilter = [
+
+]
 
 class Address{
     countries(){

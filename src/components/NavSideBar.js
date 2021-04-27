@@ -7,7 +7,7 @@ import { routes } from '../global/routes';
 import { tools } from '../tools/Tools';
 
 
-export const NavSideBar = ({isOpen}) =>{
+export const NavSideBar = () =>{
     const history = useHistory();
     const { user, onShare } = useStore();
 
@@ -33,7 +33,7 @@ export const NavSideBar = ({isOpen}) =>{
 export const NavSideWithWrapper = ({isOpen, onClose, top}) =>{
     return(
         <div hidden={!isOpen} onClick={onClose} className="nav-option-wrapper">
-            <div onClick={(e)=>e.stopPropagation()} style={{marginTop:top}} className="nav-option-sub-wrapper white-bg side-menu-ease-in">
+            <div onClick={(e)=>e.stopPropagation()} style={{marginTop:top}} className="nav-option-sub-wrapper white-bg side-menu-ease-out">
                 <NavSideBar/>
             </div>
         </div>

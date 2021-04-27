@@ -15,6 +15,7 @@
 .product-container{
     position: relative;
     display: inline-block;
+    top: 0px;
     width: 23%;
     margin: 1%;
     height: 450px;
@@ -31,8 +32,9 @@
     font-weight: bold;
 }
 .product-image{
+    position: relative;
     width: 100%;
-    height: 75%;
+    height: 74%;
 }
 .product-action{
     position: relative;
@@ -45,6 +47,7 @@
     color: teal;
 }
 .scroll{
+    position: relative;
     overflow-y: auto;
 }
 .fixed-left{
@@ -172,6 +175,9 @@
     border-radius: 5px;
     border: 1px solid rgb(0, 0, 0, 0.30);
     box-shadow: 2px 2px 10px rgb(0, 0, 0, 0.50);
+}
+.close-margin{
+    margin: 10px;
 }
 .btn-flat{
     outline: none;
@@ -413,8 +419,11 @@
     position: fixed;
     z-index: 99999;
     width: 100%;
-    padding: 15px;
+    padding: 10px;
     background-color: white;
+}
+.dash-prod-container{
+    width: 23%;
 }
 .dashboard-image{
     width: 200px;
@@ -628,7 +637,7 @@
 }
 .nav-option-wrapper{
     position: absolute;
-    z-index: 999999999;
+    z-index: 99999999999999999999999999999999999;
     left: 0;
     width: 100%;
     height: 100%;
@@ -848,10 +857,16 @@
     border: 1px solid gray;
 }
 .side-menu-ease-in{
+    max-width: 0px;
+    height: 100%;
+    animation-fill-mode: forwards;
+    animation: easeOut 1s linear forwards;
+}
+.side-menu-ease-out{
     max-width: 250px;
     height: 100%;
     animation-fill-mode: forwards;
-    animation: open 1s linear forwards;
+    animation: easeIn 1s linear forwards;
 }
 .prod-input-width-on-hover{
     width: 80%;
@@ -1009,6 +1024,26 @@
 .checkout-container{
     width: 360px;
 }
+.learn-more{
+    color: dodgerblue;
+    font-size: 11px;
+}
+.link-hover:hover{
+    text-decoration: underline;
+}
+.setting-save-btn{
+    position: fixed;
+    z-index: 99999999999;
+    right: 0;
+    margin: 13px;
+    margin-right: 23.5%;
+}
+.size-picker-item{
+    border-radius: 5px;
+    font-size: 12px;
+    background-color: lightgray;
+    box-shadow: 2px 2px 5px gray;
+}
 
 @keyframes spin {
     from{
@@ -1018,9 +1053,13 @@
     }
 }
 
-@keyframes open {
+@keyframes easeIn {
     0%{width: 0%;}
     100%{width: 100%;}
+}
+@keyframes easeOut {
+    0%{width: 100%;}
+    100%{width: 0%;}
 }
 @keyframes open-modal{
     0%{

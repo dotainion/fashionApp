@@ -6,11 +6,15 @@ import { SketchPicker, SwatchesPicker, PhotoshopPicker, ChromePicker } from 'rea
 
 
 export const ColorPicker = ({isOpen, onChange, onClose, selected, onDelete}) =>{
+    const [showMessage, setShowMessage] = useState({color:"",text: ""});
     const [color, setColor] = useState();
 
     const onTriggerChange = (colorObj) =>{
+        setShowMessage({color:"",text:""});
+        if (selected?.includes(colorObj.hex)) return setShowMessage({color:"red",text:"Already added"});
         if (typeof onChange === "function") onChange(colorObj);
         setColor(colorObj);
+        setShowMessage({color:"green",text:`${colorObj.hex} added`});
     }
     return(
         <div hidden={!isOpen} onClick={onClose} className="backdrop-fill">
@@ -32,7 +36,8 @@ export const ColorPicker = ({isOpen, onChange, onClose, selected, onDelete}) =>{
                 </div>
                 
                 <IonItem style={{marginTop:"5px"}}>
-                    <IonButton onClick={onClose} slot="end">Close</IonButton>
+                    <span style={{color:showMessage.color,fontSize:"12px"}}>{showMessage.text}</span>
+                    <IonButton color="dark" onClick={onClose} slot="end">Done</IonButton>
                 </IonItem>
             </div>
         </div>
@@ -40,6 +45,7 @@ export const ColorPicker = ({isOpen, onChange, onClose, selected, onDelete}) =>{
 }
 
 export const SizePicker = ({isOpen, onClose, onSelect, selected, onDelete}) =>{
+    const [showMessage, setShowMessage] = useState({color:"",text: ""});
     const sizes = [
         "M-L",
         "L-S",
@@ -53,7 +59,14 @@ export const SizePicker = ({isOpen, onClose, onSelect, selected, onDelete}) =>{
         "XXL",
         "SMALL",
         "MEDIUM",
-    ]
+    ];
+
+    const select = (size) =>{
+        setShowMessage({color:"",text:""});
+        if (selected?.includes(size)) return setShowMessage({color:"red",text:"Already added"});
+        if (typeof onSelect === "function") onSelect(size);
+        setShowMessage({color:"green",text:`${size} added`});
+    }
     return(
         <div hidden={!isOpen} onClick={onClose} className="backdrop-fill">
             <div className="float-center size-picker-container" onClick={(e)=>e.stopPropagation()}>
@@ -69,12 +82,13 @@ export const SizePicker = ({isOpen, onClose, onSelect, selected, onDelete}) =>{
 
                 <div className="white-bg pad" style={{boxShadow:"0.5px 0.5px 5px rgb(0, 0, 0,0.5)",borderRadius:"5px"}}>
                     {sizes.map((size, key)=>(
-                        <label style={{borderRadius:"5px",backgroundColor:"lightgray"}} onClick={()=>onSelect?.(size)} key={key}>{size}</label>
+                        <label className="size-picker-item btn-click" onClick={()=>select(size)} key={key}>{size}</label>
                     ))}
                 </div>
 
                 <IonItem style={{marginTop:"5px"}}>
-                    <IonButton onClick={onClose} slot="end">Close</IonButton>
+                    <span style={{color:showMessage.color,fontSize:"12px"}}>{showMessage.text}</span>
+                    <IonButton color="dark" onClick={onClose} slot="end">Done</IonButton>
                 </IonItem>
             </div>
         </div>

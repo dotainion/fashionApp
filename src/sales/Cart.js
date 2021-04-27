@@ -8,7 +8,7 @@ import { routes } from '../global/routes';
 import img from '../images/testdd.jpg'
 import { ShoppAdvert } from '../widgets/Advertise';
 import { DealContainer } from '../widgets/DealContainer';
-import { NavSideBar, NavSideWithWrapper } from '../widgets/NavSideBar';
+import { NavSideBar, NavSideWithWrapper } from '../components/NavSideBar';
 import { ShouldSignIn } from '../widgets/ShouldSignIn';
 
 

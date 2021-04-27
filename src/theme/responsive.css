@@ -21,13 +21,16 @@
     .max-width-on-mobile{
         width: 95%;
     }
+    .dash-prod-container{
+        width: 43%;
+    }
     .dashboard-image{
-        width: 100px;
-        height: auto;
+        width: 100%;
+        height: 100px;
     }
     .dash-menu-on-mobile{
         position: absolute;
-        z-index: 1;
+        z-index: 999999999999999999999999;
         width: 60%;
     }
     .hide{
@@ -141,6 +144,8 @@
         margin-bottom: 0px;
     }
     .add-edit-on-mobile{
+        position: relative;
+        z-index: 1;
         margin-left: -35px;
         margin-right: -35px;
         background-color: white;
@@ -177,7 +182,7 @@
     .prod-image-small-seperator{
         margin-top: 0px;
     }
-    .side-menu-ease-in-on-mobile{
+    .side-menu-ease-out-on-mobile{
         max-width: 250px;
         height: 100%;
         animation-fill-mode: forwards;
@@ -202,5 +207,16 @@
     }
     .checkout-container{
         width: 340px;
+    }
+    .service-address-text{
+        font-size: 15px;
+        background-color: rgb(110, 110, 110);
+    }
+    .service-address-text label{
+        font-size: 13px;
+    }
+    .setting-save-btn{
+        right: 0;
+        margin-right: 10%;
     }
 }

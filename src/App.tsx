@@ -28,9 +28,9 @@ import './theme/responsive.css';
 import { routes } from './global/routes';
 
 /* Pages variables */
-import { Sales } from './sales/Sale';
+import { Home } from './sales/Home';
 import { ContextProvider } from './context/Context';
-import { Store } from './sales/Store';
+import { VenderStore } from './sales/VenderStore';
 import { AddProducts } from './dashboard/AddProducts';
 import { Analytics } from './dashboard/Analytics';
 import { Products } from './dashboard/Products';
@@ -51,10 +51,10 @@ const App: React.FC = () => (
     <ContextProvider>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route path={routes.sales} component={Sales} exact={true} />
-          <Route path={routes.default} component={Sales} exact={true} />
+          <Route path={routes.home} component={Home} exact={true} />
+          <Route path={routes.default} component={Home} exact={true} />
           <Route path={routes.cart} component={Cart} exact={true} />
-          <Route path={routes.store+routes.param} component={Store} exact={true} />
+          <Route path={routes.store+routes.param} component={VenderStore} exact={true} />
           <Route path={routes.viewProduct+routes.param} component={ViewProduct} exact={true} />
           <Route path={routes.addProducts} component={()=><AuthRouter Components={AddProducts}/>} exact={true} />
           <Route path={routes.analystics} component={()=><AuthRouter Components={Analytics}/>} exact={true} />

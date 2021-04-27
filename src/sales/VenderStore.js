@@ -8,15 +8,15 @@ import { getAgentRecord, getAProduct, getUser } from '../database/CollectionsReq
 import { routes } from '../global/routes';
 import img from '../images/testdd.jpg'
 import { tools } from '../tools/Tools';
-import { AgentHeader } from '../widgets/AgentHeader';
+import { AgentHeader } from '../components/AgentHeader';
 import { Loader } from '../widgets/Loader';
-import { ProductExpand, ProductProspect } from '../widgets/ProductContainer';
-import { ToolBar } from '../widgets/ToolTopBar';
+import { ProductProspect } from '../widgets/ProductContainer';
+import { ToolBar } from '../components/ToolTopBar';
 
 
 
 
-export const Store = () =>{
+export const VenderStore = () =>{
     const { searchProducts } = useStore();
     const history = useHistory();
     const [showLoader, setShowLoader] = useState(false);
@@ -37,6 +37,7 @@ export const Store = () =>{
         <IonPage>
             <div className="background bg-style-2">
                 <ToolBar
+                    sideMenu
                     mostResent
                     deals
                     home

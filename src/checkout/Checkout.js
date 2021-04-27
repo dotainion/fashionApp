@@ -7,7 +7,7 @@ import { closeOutline } from 'ionicons/icons';
 
 
 export const Checkout = ({isOpen,onClose,price}) =>{
-    const { user } = useStore();
+    const { user, cart, addCartNotCheckout } = useStore();
 
     const [cardNumber, setCartNumber] = useState();
     const [expiry, setExpiry] = useState();
@@ -21,10 +21,18 @@ export const Checkout = ({isOpen,onClose,price}) =>{
     const addressRef = useRef();
 
     const handleCheckout = async() =>{
-        const order = {
-
+        let itemNotCheckout = [];
+        for (let item of cart){
+            if (item?.checkout){
+                let order = JSON.parse(JSON.stringify(item?.info));
+                order["qty"] = item?.qty;
+                order["itemId"] = item?.id;
+                order["sizeSelected"] = item?.sizeSelected;
+                order["imageSelected"] = item?.imageSelected;
+                await orderProduct(order);
+            }else itemNotCheckout.push(item);
         }
-        await orderProduct(order);
+        addCartNotCheckout(itemNotCheckout);
     }
 
     //init user data in input fields
@@ -78,7 +86,7 @@ export const Checkout = ({isOpen,onClose,price}) =>{
                     }}
                 />
                 <div style={{marginTop:"40px"}}>
-                    <button className="btn-strong pad">PAY ${price}</button>
+                    <button onClick={handleCheckout} className="btn-strong pad">PAY ${price}</button>
                 </div>
             </div>
         </div>

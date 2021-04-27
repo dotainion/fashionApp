@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../context/Context';
 import defaultImage from '../images/default-image.jpg';
 import { tools } from '../tools/Tools';
-import { AddDeals } from './AddDeals';
-import { ColorPicker, SizePicker } from './ChoicePicker';
+import { AddDeals } from '../widgets/AddDeals';
+import { ColorPicker, SizePicker } from '../widgets/ChoicePicker';
 
 
 
-export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef, changeMade, setChangeMade}) =>{
+export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef, changeMade, setChangeMade, stopPropagation}) =>{
     const { user } = useStore();
     //edit or add button
     const [editOrAddBtnText, setEditOrAddBtnText] = useState("Add");
@@ -41,11 +41,29 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
     //holds deal information
     const [deals, setDeals] = useState({});
 
+    //choces for posting eg... sales, services 
+    const [salesOffer, setSalesOffer] = useState(true);
+    const [servicesOffer, setServicesOffer] = useState(false);
+
+    //hold house call to post price for house call
+    const [houseCall, setHouseCall] = useState(false);
+
+    const houseCallPriceRef = useRef();
+
     const titleRef = useRef();
     const priceRef = useRef();
     const deliveryRef = useRef();
     const imageRef = useRef();
     const descriptionRef = useRef();
+
+    //make sure only one check box is checked for offer
+    const initOffers = (cmd) =>{
+        //uncheck all offers checkbox
+        setSalesOffer(false);
+        setServicesOffer(false);
+        if (cmd === "sales") setSalesOffer(true);
+        if (cmd === "services") setServicesOffer(true);
+    }
 
     const onImageChange = async(e) =>{
         setImages([...images, await tools.toBase64(e.target.files[0])]);
@@ -63,6 +81,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         imageRef.current.files = null;
         deliveryRef.current.value = "";
         descriptionRef.current.value = "";
+        houseCallPriceRef.current.value = "";
     }
 
     const addMoreColors = (color) =>{
@@ -101,6 +120,15 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         return [defaultImage];
     }
 
+    //configure housecall data to be posted
+    const conServiceData = () =>{
+        if (servicesOffer){
+            return {
+                price: houseCallPriceRef.current.value || "FREE",
+            }
+        }return false;
+    }
+
     const onAddItem = async() =>{
         let deal;
         if (Object.keys(record || {})?.length > 0){
@@ -113,17 +141,19 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
             setAlertMessage("Item title was not provided.");
             return setShowAlert(true);
         }
-        if (!priceRef.current.value){
-            setAlertMessage("Cost of item was not provided.");
-            return setShowAlert(true);
-        }
-        if (!deliveryRef.current.value){
-            setAlertMessage("Delivery cost was not provided.");
-            return setShowAlert(true);
-        }
-        if (moreColors?.length <= 0){
-            setAlertMessage("Must have at least one color.");
-            return setShowAlert(true);
+        if (!servicesOffer){
+            if (!priceRef.current.value){
+                setAlertMessage("Cost of item was not provided.");
+                return setShowAlert(true);
+            }
+            if (!deliveryRef.current.value){
+                setAlertMessage("Delivery cost was not provided.");
+                return setShowAlert(true);
+            }
+            if (moreColors?.length <= 0){
+                setAlertMessage("Must have at least one color.");
+                return setShowAlert(true);
+            }
         }
         if (Object.keys(deals || {}).length > 0) deal = deals;
         else deal = false;
@@ -135,18 +165,23 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         const itemObject = {
             title: titleRef.current.value ||  "",
             price: priceRef.current.value ||  "",
-            delivery: deliveryRef.current.value || "",
+            delivery: deliveryRef.current.value || "FREE",
             colors: moreColors ||  [],
             sizes: moreSizes ||  [],
             images: isContainImage(images) || [],
             postBy: user?.id || "",
             description: descriptionRef.current.value || "",
-            deal: deal
+            deal: deal,
+            houseCall: conServiceData()
         };
         if (editingId) itemObject["id"] = editingId;
         if (typeof onSubmit === "function") onSubmit(itemObject);
         if (typeof setChangeMade === "function") setChangeMade(false);
         onClearFields();
+    }
+
+    const noPropagation = (e) =>{
+        if (stopPropagation) e.stopPropagation();
     }
 
     //show or hide input element when open to avoid text shoswing as scattered
@@ -176,19 +211,20 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
         }
     },[record]);
     return(
-        <div hidden={!isOpen} className="add-edit-on-mobile" onClick={(e)=>e.stopPropagation()} style={{position:"relative",zIndex:"99999999999999999"}}>
+        <div hidden={!isOpen} className="add-edit-on-mobile" onClick={noPropagation}>
             <ColorPicker
                 isOpen={showColorPicker} 
                 onClose={()=>setShowColorPicker(false)} 
-                onChange={(color)=>addMoreColors(color)}
+                onChange={addMoreColors}
                 selected={moreColors}
+                onDelete={deleteMoreColors}
             />
             <SizePicker
                 isOpen={showSizePicker} 
                 onClose={()=>setShowSizePicker(false)}
-                onSelect={(size)=>addMoreSize(size)}
+                onSelect={addMoreSize}
                 selected={moreSizes}
-                onDelete={(index)=>deleteMoreSize(index)}
+                onDelete={deleteMoreSize}
             />
             <IonAlert
                 isOpen={showAlert}
@@ -239,7 +275,20 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                         <button onClick={onAddItem} className="add-btn btn-click btn-hover white-fg" style={{backgroundColor:"green"}}>{editOrAddBtnText}<IonIcon style={{marginLeft:"5px"}} icon={addOutline}/></button>
                     </div>
                     <div hidden={!showInputs} className="item-center center-add-container">
-                        
+
+                        <div className="add-input-container" style={{paddingTop:"10px"}}>
+                            <div className="inline" style={{marginRight:"10px"}}>
+                                <input onChange={()=>initOffers("sales")} checked={salesOffer} type="checkbox" style={{marginRight:"5px"}}/>
+                                <label>Sales</label>
+                                <div className="learn-more link-hover">Learn more</div>
+                            </div>
+                            <div className="inline" style={{marginRight:"10px"}}>
+                                <input onChange={()=>initOffers("services")} checked={servicesOffer} type="checkbox" style={{marginRight:"5px"}}/>
+                                <label>Services</label>
+                                <div className="learn-more link-hover">Learn more</div>
+                            </div>
+                        </div>
+
                         <div className="add-input-container">
                             <div>Title</div>
                             <input onChange={()=>setChangeMade?.(true)} ref={titleRef} placeholder="Item name" className="add-input"/>
@@ -248,12 +297,21 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                             <div>Price</div>
                             <span className="price-dollar-sign"><input onChange={()=>setChangeMade?.(true)} ref={priceRef} type="number" placeholder="$0.00" className="add-input"/></span>
                         </div>
-                        <div className="add-input-container">
-                            <div>Delivery<span style={{marginLeft:"10px",fontSize:"11px",color:"rgb(2, 82, 161)"}}>Leave blank if delivery is free</span></div>
+                        <div hidden={servicesOffer} className="add-input-container">
+                            <div>Delivery<span className="learn-more" style={{marginLeft:"10px"}}>Leave blank if delivery is free</span></div>
                             <span className="price-dollar-sign"><input onChange={()=>setChangeMade?.(true)} ref={deliveryRef} type="number" placeholder="$0.00" className="add-input"/></span>
                         </div>
 
-                        <div className="add-input-container">
+                        <div hidden={!servicesOffer} className="add-input-container">
+                            <input onChange={(e)=>setHouseCall(e.target.checked)} checked={houseCall} type="checkbox" style={{marginRight:"5px"}} />
+                            <label>House call?</label>
+                            <label hidden={!houseCall} className="learn-more" style={{marginLeft:"10px"}}>Leave blank if free.</label>
+                            <div hidden={!houseCall}>
+                                <span className="price-dollar-sign"><input onChange={()=>setChangeMade?.(true)} ref={houseCallPriceRef} type="number" placeholder="$0.00" className="add-input"/></span>
+                            </div>
+                        </div>
+
+                        <div hidden={servicesOffer} className="add-input-container">
                             <label>Color</label>
                             <div className="add-hold-image-picker-item scroll-bar inline white-bg">
                                 {moreColors?.map((color, key)=>(
@@ -265,7 +323,7 @@ export const ProductInput = ({isOpen, onSubmit, onClose, record, header, prodRef
                             <IonIcon onClick={()=>setShowColorPicker(true)} class="add-product-add-more-btn btn-click btn-hover inline" icon={addOutline}/>
                             <div hidden={moreColors?.length} className="float-left pad" style={{top:"63%",color:"gray"}}>Click the plus sign to add color</div>
                         </div>
-                        <div className="add-input-container">
+                        <div hidden={servicesOffer} className="add-input-container">
                             <label>Size</label>
                             <div className="add-hold-image-picker-item scroll-bar inline white-bg">
                                 {moreSizes?.map((color, key)=>(
@@ -351,6 +409,7 @@ export const ProductInputFloat = ({isOpen, onClose, onSubmit, record}) =>{
                     prodRef={updateRef}
                     changeMade={changeMade}
                     setChangeMade={setChangeMade}
+                    stopPropagation
                 />
             </div>
         </div>

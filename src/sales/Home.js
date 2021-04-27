@@ -6,19 +6,20 @@ import { routes } from '../global/routes';
 import img from '../images/testdd.jpg'
 import { tools } from '../tools/Tools';
 import { ProductProspect } from '../widgets/ProductContainer';
-import { ToolBar } from '../widgets/ToolTopBar';
+import { ToolBar } from '../components/ToolTopBar';
 
 
-export const Sales = () =>{
+export const Home = () =>{
     const history = useHistory();
     const { products, searchProducts } = useStore();
     useEffect(()=>{
-        searchProducts("sales","");
+        searchProducts(routes.home,"");
     },[]);
     return(
         <IonPage>
             <div className="background bg-style-2">
                 <ToolBar 
+                    sideMenu
                     onSearch={searchProducts}
                     refresh
                     searchbar
@@ -41,7 +42,6 @@ export const Sales = () =>{
                     )):
                     <div className="pad-xl teal" style={{textAlign:"center"}}>
                         <label><b>No results</b></label>
-                        <p>Try a different search</p>
                     </div>
                 }
             </div>

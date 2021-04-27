@@ -51,9 +51,13 @@ export const ProductProspect = ({title, price, deal, images, colors, onAdd, onMo
                 <div hidden={!onMore} onClick={onMore} className="float-right text-hover margin-l-r hide-on-mobile">See more</div>
                 <div style={{fontSize:"13px",right:"0px"}}>Available In:</div>
                 <div className="scroll-bar-2" style={{whiteSpace:"nowrap",overflowX:"auto", position:"relative",textAlign:"right"}}>
-                    {colors?.map((color, key)=>(
-                        <div style={{backgroundColor:color}} className="color-dot inline" key={key}/>
-                    ))}
+                    {
+                        colors?.length?
+                        colors?.map((color, key)=>(
+                            <div style={{backgroundColor:color}} className="color-dot inline" key={key}/>
+                        )):
+                        <div style={{backgroundColor:"white",border:"none"}} className="color-dot inline"/>
+                    }
                 </div>
             </div>
         </div>

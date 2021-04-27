@@ -94,7 +94,7 @@ export const SignUp = () =>{
                                         <IonButton slot="end" onClick={onSubmit} fill="outline">Sign up</IonButton>
                                     </IonItem>
                                     <IonList lines="none" style={{padding:"20px"}}>
-                                        <button onClick={()=>history.push(routes.sales)} className="btn-strong">Continue Shopping...</button>
+                                        <button onClick={()=>history.push(routes.home)} className="btn-strong">Continue Shopping...</button>
                                     </IonList>
                                 </IonCardContent>
                             </IonCard>

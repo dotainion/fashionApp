@@ -101,3 +101,12 @@ export const orderProduct = async(data) =>{
         return false;
     }
 }
+
+export const getOrder = async(id) =>{
+    try{
+        return await getDataByField(collection.orders,"postBy",id);
+    }catch(error){
+        console.log(error);
+        return [];
+    }
+}

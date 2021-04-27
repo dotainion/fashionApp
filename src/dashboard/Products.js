@@ -8,27 +8,19 @@ import { deleteAgentRecord, getAgentRecord, updateProduct } from '../database/Co
 import { routes } from '../global/routes';
 import img from '../images/testdd.jpg';
 import { tools } from '../tools/Tools';
-import { NavSideBar } from '../widgets/NavSideBar';
-import { ProductProspect } from '../widgets/ProductContainer';
-import { ProductInput, ProductInputFloat } from '../widgets/ProductInput';
+import { DashNavWrapper } from '../components/DashNavWrapper';
+import { ProductInputFloat } from '../components/ProductInput';
 
 
 export const Products = () =>{
-    const { user, onShare, agentProducts, initAgentProducts } = useStore();
-    //show and hide side menu when in mobile view with habmurger menu
-    const [mobileSideMenu, setMobileSideMenu] = useState("");
+    const { user, onShare, dashboardProduts, initDashboardProducts } = useStore();
     //show or hide modal to view and edit data
     const [showEdithOrView, setShowEdithOrView] = useState(false);
     //holds data that is being edited
     const [editObject, setEditObject] = useState([]);
 
-    const menuToggle = () =>{
-        if (mobileSideMenu) setMobileSideMenu("");
-        else setMobileSideMenu("hide");
-    }
-
     const refresh = async() =>{
-        await initAgentProducts();
+        await initDashboardProducts();
     }
 
     const updateItem = async(record) =>{        
@@ -61,65 +53,43 @@ export const Products = () =>{
                 }}
             />
 
-            <div onClick={()=>{if (!mobileSideMenu) setMobileSideMenu("hide")}} className="background">
-                <div className="main-header dash-header">
-                    <IonIcon onClick={refresh} class="float-right" style={{borderRadius:"50%",marginRight:"20px",backgroundColor:"lightgray"}} icon={refreshOutline}/>
-                    <div className="divider">
-                        <IonIcon onClick={menuToggle} class=" hide-on-desktop dash-burger-menu" icon={reorderFourOutline}/>
-                        <span>Dashboard</span>
-                    </div>
-                </div>
-                <div className="divider" style={{paddingTop:"80px"}}>
-                    <div className={`dash-nav-container dash-menu-on-mobile ${mobileSideMenu}`}>
-                        <div onClick={menuToggle} className="dash-nav border box-margin max-height side-menu-ease-in-on-mobile">
-                            <NavSideBar/>
-                        </div>
-                    </div>
-                    <div className="dash-containser">
-                        <div className="box-margin chart-Colors">
-                            <div className="border">
-                                {/*----------------------------------*/}
-                                <div style={{position:"relative",zIndex:"9999999"}}>
-                                    <IonItemDivider>Products</IonItemDivider>
-                                    {
-                                        agentProducts.length?
-                                        agentProducts.map((item, key)=>(
-                                            <IonCard onMouseEnter={()=>{
-                                                document.getElementById(`${item?.id}opt`).hidden = false;
-                                            }} onMouseLeave={()=>{
-                                                document.getElementById(`${item?.id}opt`).hidden = true;
-                                            }} class="inline max-width-on-mobile" style={{width:"23%"}} key={key}>
-                                                <IonCardContent>
-                                                    <IonThumbnail class="dashboard-image">
-                                                        <IonImg src={item?.info?.images?.[0]}/>
-                                                    </IonThumbnail>
-                                                    <IonList style={{borderBottom:"1px solid lightgray"}}/>
-                                                </IonCardContent>
-                                                <div style={{padding:"15px",paddingTop:"0px"}}>
-                                                    <IonIcon style={{float:"right",fontSize:"20px"}} icon={shareSocialOutline}/>
-                                                    <div style={{overflow:"hidden",whiteSpace:"nowrap"}}>{item?.info?.title}</div>
-                                                    <div>${item?.info?.price}</div>
-                                                </div>
-                                                <div hidden id={`${item?.id}opt`} className="backdrop-fill show-on-hover">
-                                                    <div className="float-center">
-                                                        <div><button onClick={()=>{initValueToViewOrEdit(item)}} className="btn pad btn-round btn-hover-2 btn-click btn-shadow">Details/Update</button></div>
-                                                        <div><button onClick={()=>deleteItem(item)} className="btn pad btn-round btn-hover-2 btn-click btn-shadow">Delete</button></div>
-                                                    </div>
-                                                    <IonIcon onClick={()=>onShare(`${user?.firstName} ${user?.lastName}`, routes.viewProduct, item?.id)} class="float-bottom-right-conner round-shadow-2" style={{fontSize:"20px",margin:"10px",bottom:"12px"}} icon={shareSocialOutline}/>
-                                                </div>
-                                            </IonCard>
-                                        )):
-                                        <IonList>
-                                            <IonLabel>No Records</IonLabel>
-                                        </IonList>
-                                    }
+            <DashNavWrapper onRefresh={refresh}>
+                <div style={{position:"relative",zIndex:"9999999"}}>
+                    <IonItemDivider>Products</IonItemDivider>
+                    {
+                        dashboardProduts.length?
+                        dashboardProduts.map((item, key)=>(
+                            <IonCard onMouseEnter={()=>{
+                                document.getElementById(`${item?.id}opt`).hidden = false;
+                            }} onMouseLeave={()=>{
+                                document.getElementById(`${item?.id}opt`).hidden = true;
+                            }} class="inline dash-prod-container" key={key}>
+                                <IonCardContent>
+                                    <IonThumbnail class="dashboard-image">
+                                        <IonImg src={item?.info?.images?.[0]}/>
+                                    </IonThumbnail>
+                                    <IonList style={{borderBottom:"1px solid lightgray"}}/>
+                                </IonCardContent>
+                                <div style={{padding:"15px",paddingTop:"0px"}}>
+                                    <IonIcon style={{float:"right",fontSize:"20px"}} icon={shareSocialOutline}/>
+                                    <div style={{overflow:"hidden",whiteSpace:"nowrap"}}>{item?.info?.title}</div>
+                                    <div>${item?.info?.price}</div>
                                 </div>
-                                {/*----------------------------------*/}
-                            </div>
-                        </div>
-                    </div>
+                                <div hidden id={`${item?.id}opt`} className="backdrop-fill show-on-hover">
+                                    <div className="float-center">
+                                        <div><button onClick={()=>{initValueToViewOrEdit(item)}} className="btn pad btn-round btn-hover-2 btn-click btn-shadow">Details/Update</button></div>
+                                        <div><button onClick={()=>deleteItem(item)} className="btn pad btn-round btn-hover-2 btn-click btn-shadow">Delete</button></div>
+                                    </div>
+                                    <IonIcon onClick={()=>onShare(`${user?.firstName} ${user?.lastName}`, routes.viewProduct, item?.id)} class="float-bottom-right-conner round-shadow-2" style={{fontSize:"20px",margin:"10px",bottom:"12px"}} icon={shareSocialOutline}/>
+                                </div>
+                            </IonCard>
+                        )):
+                        <IonList>
+                            <IonLabel>No Records</IonLabel>
+                        </IonList>
+                    }
                 </div>
-            </div>
+            </DashNavWrapper>
         </IonPage>
     )
 }

@@ -5,13 +5,14 @@ import { getAgentRecord, getAProduct } from '../database/CollectionsRequsts';
 import { tools } from '../tools/Tools';
 import { routes } from '../global/routes';
 import { SlideAdvertHorizontal } from '../widgets/Advertise';
-import { ToolBar } from '../widgets/ToolTopBar';
+import { ToolBar } from '../components/ToolTopBar';
 import { ProductProspect } from '../widgets/ProductContainer';
 import { useStore } from '../context/Context';
 import { AddToCartButton } from '../widgets/AddToCartButton';
 import { chevronDownOutline, chevronUpOutline, shareSocialOutline } from 'ionicons/icons';
-import { AgentHeader } from '../widgets/AgentHeader';
+import { AgentHeader } from '../components/AgentHeader';
 import { FcInTransit } from 'react-icons/fc';
+import { VenderLocation } from '../widgets/VenderLocation';
 
 
 export const ViewProduct = () =>{
@@ -70,13 +71,25 @@ export const ViewProduct = () =>{
                         </IonThumbnail>
                         
                         <AddToCartButton
+                            hidden={product?.info?.houseCall}
                             size={selectedSize}
-                            image={selectedImage}
+                            image={selectedImage || product?.info?.images?.[0]}
                             product={product}
                             cssClass="hide-on-desktop white-fg"
                             onAdd={onAddToCart}
                             noBorder
                         />
+
+                        <VenderLocation
+                            hidden={!product?.info?.houseCall}
+                            cssClass="pad-xl hide-on-desktop white-fg"
+                            country={agentData?.country}
+                            city={agentData?.city}
+                            address={agentData?.address}
+                            email={agentData?.email}
+                            number={agentData?.number}
+                        />
+
                     </div>
                     <div className="add-cart-agent-right" style={{position:"relative"}}>
                         <div className="teal pad-v pad-xl" style={{backgroundColor:"rgb(211, 211, 211, 0.5)"}}>
@@ -93,14 +106,23 @@ export const ViewProduct = () =>{
                                     <b>${product?.info?.deal?.newPrice}</b>
                                 </label>
                             </div>
-                            <label className="white-fg">Select by Size:</label>
-                            <select onChange={(e)=>setSelectedSize(e.target.value)} className="select-option-input teal">
+                            <label hidden={product?.info?.houseCall} className="white-fg">Select by Size:</label>
+                            <select hidden={product?.info?.houseCall} onChange={(e)=>setSelectedSize(e.target.value)} className="select-option-input teal">
                                 {product?.info?.sizes?.map((size, key)=>(
                                     <option key={key}>{size}</option>
                                 ))}
                             </select>
 
-                            <div className="divider inline" style={{height:"45px",width:"200px"}}>
+                            <div hidden={!product?.info?.houseCall} className="inline" style={{height:"45px",width:"200px"}}>
+                                <div style={{position:"relative"}}>
+                                    <div className="pad white-fg">
+                                        <div>House call</div>
+                                        <div className="teal"><b>${product?.info?.houseCall?.price || "FREE"}</b></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div hidden={product?.info?.houseCall} className="divider inline" style={{height:"45px",width:"200px"}}>
                                 <FcInTransit className="transport"/>
                                 <div style={{position:"relative"}}>
                                     <div className="pad white-fg">
@@ -110,7 +132,7 @@ export const ViewProduct = () =>{
                                 </div>
                             </div>
 
-                            <div className="pad-xl pad-v product-details scroll-bar-2 white-fg">
+                            <div hidden={product?.info?.houseCall} className="pad-xl pad-v product-details scroll-bar-2 white-fg" style={{width: !product?.info?.houseCall || "90%"}}>
                                 <div className="pad-v"><b>Product details:</b></div>
                                 <div style={{paddingLeft:"10px"}}>
                                     <div onClick={showDetailsToggle} style={{fontSize:"13px",userSelect:"none"}}>
@@ -130,18 +152,31 @@ export const ViewProduct = () =>{
                                 </div>
                             </div>
 
+                            <VenderLocation
+                                hidden={!product?.info?.houseCall}
+                                cssClass="pad-xl hide-on-mobile white-fg"
+                                country={agentData?.country}
+                                city={agentData?.city}
+                                address={agentData?.address}
+                                email={agentData?.email}
+                                number={agentData?.number}
+                                style={{border:"0.5px solid white",width:"90%",marginTop:"40px"}}
+                            />
+
                             <AddToCartButton
+                                hidden={product?.info?.houseCall}
                                 size={selectedSize}
-                                image={selectedImage}
-                                product={product}
+                                image={selectedImage || product?.info?.images?.[0]}
+                                user={agentData}
                                 cssClass="hide-on-mobile float-right white-fg"
                                 onAdd={onAddToCart}
                             />
+
                         </div>
                     </div>
                 </div>
 
-                <div className="prod-image-small-seperator white-fg">Other view and color</div>
+                <div className="prod-image-small-seperator white-fg">Availability</div>
 
                 <div className="prod-other-image-container">
                     {

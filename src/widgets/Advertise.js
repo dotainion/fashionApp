@@ -20,7 +20,7 @@ export const ShoppAdvert = () =>{
         <div>
             <IonImg src={image}/>
             <IonList style={{textAlign:"center",margin:"20px"}} lines="none">
-                <IonButton onClick={()=>history.push(routes.sales)} size="small" color="success">Continue Shopping</IonButton>
+                <IonButton onClick={()=>history.push(routes.home)} size="small" color="success">Continue Shopping</IonButton>
             </IonList>
             <ShouldSignIn/>
         </div>

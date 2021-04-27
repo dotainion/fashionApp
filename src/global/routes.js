@@ -1,7 +1,7 @@
 export const routes = {
     default: "/",
     param: ":id",
-    sales: "/sales",
+    home: "/home",
     store: "/store",
     dashboard: "/dashboard",
     addProducts: "/add-products",
